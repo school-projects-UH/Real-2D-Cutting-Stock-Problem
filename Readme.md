@@ -1,1 +1,1 @@
-# A solution given to the Real 2-D Cutting Stuck Problem
+# A solution given to the Real 2D Cutting Stuck Problem
