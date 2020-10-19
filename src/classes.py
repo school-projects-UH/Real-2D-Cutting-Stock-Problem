@@ -6,13 +6,14 @@ class Rectangle:
 
 '''A type of rectangular image requested by the client'''
 class Image(Rectangle):
-    def __init__(width, height, demand):
-        self.super(width, height)
+    def __init__(self, width, height, demand):
+        super.__init__(width, height)
         self.demand = demand
 
 '''An image placed on a sheet'''
-class PlacedImage(Image):
-    def __init__(width, height, position, rotated):
-        self.super(width, height)
+class PlacedImage(Rectangle):
+    def __init__(self, width, height, position, rotated):
+        super().__init__(width, height)
         self.position = position
         self.rotated = rotated
+
