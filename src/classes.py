@@ -4,7 +4,7 @@ class Rectangle:
         self.width = width
         self.height = height
 
-    def __str__(self):
+    def __repr__(self):
         return f'<Rectangle> width: {self.width}, height: {self.height}'
 
 
@@ -14,7 +14,7 @@ class Image(Rectangle):
         super().__init__(width, height)
         self.demand = demand
 
-    def __str__(self):
+    def __repr__(self):
         return f'<Image> width: {self.width}, height: {self.height}, demand: {self.demand}'
 
 '''An image placed on a sheet'''
@@ -24,9 +24,5 @@ class PlacedImage(Rectangle):
         self.position = position
         self.rotated = rotated
 
-    def __str__(self):
+    def __repr__(self):
         return f'<PlacedImage> width: {self.width}, height: {self.height}, position: {self.position}, rotated: {self.rotated}'
-
-print(Rectangle(10, 20))
-print(Image(10, 20, 100))
-print(PlacedImage(10, 20, (1, 1), True))

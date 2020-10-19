@@ -35,3 +35,6 @@ def maxrects_bssf(sheet, images):
 
         # Place the rectangle at the bottom-left of Fi
         placement.append(PlacedImage(width=img.width, height=img.height, position=(free_rect_to_split.position), rotated=need_to_rotate))
+
+
+print(maxrect_split(PlacedImage(20, 20, (0, 60)), PlacedImage(40, 60, (0, 60))))
