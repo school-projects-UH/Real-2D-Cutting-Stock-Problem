@@ -20,13 +20,13 @@ def maxrect_split(rectangle, free_rectangle):
     wf, hf = free_rectangle.width, free_rectangle.height
     w, h = rectangle.width, rectangle.height
 
-    free_rect1 = PlacedImage(width=wf, heigth=hf - h, position=(xf, yf + h))
-    free_rect2 = PlacedImage(width=wf - w, heigth=hf, position=(xf + w, yf))
+    free_rect1 = PlacedImage(width=wf, height=hf - h, position=(xf, yf + h))
+    free_rect2 = PlacedImage(width=wf - w, height=hf, position=(xf + w, yf))
 
     return (free_rect1, free_rect2)
 
 def maxrects_bssf(sheet, images):
-    free_rectangles = [PlacedImage(width=sheet.width, height=sheet.height, position=(0, sheet.height), rotated=False)]
+    free_rectangles = [PlacedImage(width=sheet.width, height=sheet.height, position=(0, sheet.height))]
     placement = []
     for img in images:
         # Find the free Fi rectangle that best fits
@@ -34,6 +34,4 @@ def maxrects_bssf(sheet, images):
         free_rect_to_split = free_rectangles.pop(idx)
 
         # Place the rectangle at the bottom-left of Fi
-        placement.push(PlacedImage(width=img.width, height=img.height, position=(free_rect_to_split.position), rotated=need_to_rotate))
-
-
+        placement.append(PlacedImage(width=img.width, height=img.height, position=(free_rect_to_split.position), rotated=need_to_rotate))

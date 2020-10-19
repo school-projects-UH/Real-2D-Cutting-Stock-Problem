@@ -19,7 +19,7 @@ class Image(Rectangle):
 
 '''An image placed on a sheet'''
 class PlacedImage(Rectangle):
-    def __init__(self, width, height, position, rotated):
+    def __init__(self, width, height, position, rotated=False):
         super().__init__(width, height)
         self.position = position
         self.rotated = rotated
