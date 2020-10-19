@@ -20,7 +20,7 @@ def maxrect_split(rectangle, free_rectangle):
     wf, hf = free_rectangle.width, free_rectangle.height
     w, h = rectangle.width, rectangle.height
 
-    free_rect1 = PlacedImage(width=wf, height=hf - h, position=(xf, yf + h))
+    free_rect1 = PlacedImage(width=wf, height=hf - h, position=(xf, yf - h))
     free_rect2 = PlacedImage(width=wf - w, height=hf, position=(xf + w, yf))
 
     return (free_rect1, free_rect2)
