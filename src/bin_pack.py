@@ -9,7 +9,7 @@ def find_best_fit(rectangle, free_rectangles):
             if shortest_side_fit < best_fit[0]:
                 best_fit = (shortest_side_fit, i, False)
         # Try by rotating the rectangle
-        elif rectangle.width <= free_rect.height and rectangle.height <= free_rect.width:
+        if rectangle.width <= free_rect.height and rectangle.height <= free_rect.width:
             shortest_side_fit = min(free_rect.width - rectangle.height, free_rect.height - rectangle.width)
             if shortest_side_fit < best_fit[0]:
                 best_fit = (shortest_side_fit, i, True)
@@ -58,7 +58,7 @@ def maxrect_split(rectangle: FixedRectangle, free_rectangle: FixedRectangle):
             height=free_rectangle.down - rectangle.down,
             position=free_rectangle.position))
 
-    return new_free_rectangles
+    return list(new_free_rectangles)
 
 def is_contained(point, rectangle):
     x, y = point
@@ -75,11 +75,27 @@ def maxrects_bssf(sheet, images):
         idx, need_to_rotate = find_best_fit(img, free_rectangles)
         free_rect_to_split = free_rectangles.pop(idx)
 
+        fixed_rectangle = FixedRectangle(width=img.width, height=img.height, position=(free_rect_to_split.bottom_left), rotated=need_to_rotate)
+
         # Place the rectangle at the bottom-left of Fi
-        placement.append(FixedRectangle(width=img.width, height=img.height, position=(free_rect_to_split.bottom_left), rotated=need_to_rotate))
+        placement.append(fixed_rectangle)
 
         # Perform the split
-        # free_rect1, free_rect2 = maxrect_split(img, free_rect_to_split)
+        free_rectangles += maxrect_split(img, free_rect_to_split)
+
+        for fr in free_rectangles.copy():
+            l = len(free_rectangles)
+            free_rectangles += maxrect_split(fixed_rectangle ,fr)
+            if len(free_rectangles) > l:
+                free_rectangles.remove(fr)
+
+        for fi in free_rectangles.copy():
+            for fj in free_rectangles.copy():
+                if is_wrapped(fj, fi):
+                    free_rectangles.remove(fj)
+    
+    return placement
+
 
 
 # print(maxrect_split(FixedRectangle(10, 10, (25, 35)), FixedRectangle(30, 30, (0, 30))))
@@ -96,8 +112,7 @@ def maxrects_bssf(sheet, images):
 # rect = FixedRectangle(20, 20, (18, 4))
 # nfr = maxrect_split(rect, free_rect)
 
-# for fr in nfr:
-#     print(fr)
+# print(nfr)
 
 # print(is_wrapped(FixedRectangle(5, 5, (10, 10)), FixedRectangle(20, 20, (0, 20))))
 # print(is_wrapped(FixedRectangle(5, 5, (18, 10)), FixedRectangle(20, 20, (0, 20))))
