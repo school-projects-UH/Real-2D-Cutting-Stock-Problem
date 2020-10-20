@@ -15,15 +15,50 @@ def find_best_fit(rectangle, free_rectangles):
                 best_fit = (shortest_side_fit, i, True)
     return best_fit[1], best_fit[2]
 
-def maxrect_split(rectangle, free_rectangle):
-    xf, yf = free_rectangle.bottom_left
-    wf, hf = free_rectangle.width, free_rectangle.height
-    w, h = rectangle.width, rectangle.height
+def maxrect_split(rectangle: FixedRectangle, free_rectangle: FixedRectangle):
+    new_free_rectangles = set()
 
-    free_rect1 = FixedRectangle(width=wf, height=hf - h, position=(xf, yf - h))
-    free_rect2 = FixedRectangle(width=wf - w, height=hf, position=(xf + w, yf))
+    if is_contained(rectangle.top_left, free_rectangle):
+        new_free_rectangles.add(FixedRectangle(
+            width=rectangle.left - free_rectangle.left,
+            height=free_rectangle.height,
+            position=free_rectangle.position))
+        new_free_rectangles.add(FixedRectangle(
+            width=free_rectangle.width,
+            height=rectangle.up-free_rectangle.up,
+            position=(free_rectangle.left, rectangle.up)))
 
-    return (free_rect1, free_rect2)
+    if is_contained(rectangle.top_right, free_rectangle):
+        new_free_rectangles.add(FixedRectangle(
+            width=free_rectangle.right-rectangle.right,
+            height=free_rectangle.height,
+            position=(rectangle.right, free_rectangle.down)))
+        new_free_rectangles.add(FixedRectangle(
+            width=free_rectangle.width,
+            height=rectangle.up-free_rectangle.up,
+            position=(free_rectangle.left, rectangle.up)))
+
+    if is_contained(rectangle.bottom_right, free_rectangle):
+        new_free_rectangles.add(FixedRectangle(
+            width=free_rectangle.right-rectangle.right,
+            height=free_rectangle.height,
+            position=(rectangle.right, free_rectangle.down)))
+        new_free_rectangles.add(FixedRectangle(
+            width=free_rectangle.width,
+            height=free_rectangle.down - rectangle.down,
+            position=free_rectangle.position))
+
+    if is_contained(rectangle.bottom_left, free_rectangle):
+        new_free_rectangles.add(FixedRectangle(
+            width=rectangle.left - free_rectangle.left,
+            height=free_rectangle.height,
+            position=free_rectangle.position))
+        new_free_rectangles.add(FixedRectangle(
+            width=free_rectangle.width,
+            height=free_rectangle.down - rectangle.down,
+            position=free_rectangle.position))
+
+    return new_free_rectangles
 
 def is_contained(point, rectangle):
     x, y = point
@@ -41,4 +76,22 @@ def maxrects_bssf(sheet, images):
         placement.append(FixedRectangle(width=img.width, height=img.height, position=(free_rect_to_split.bottom_left), rotated=need_to_rotate))
 
         # Perform the split
-        free_rect1, free_rect2 = maxrect_split(img, free_rect_to_split)
+        # free_rect1, free_rect2 = maxrect_split(img, free_rect_to_split)
+
+
+# print(maxrect_split(FixedRectangle(10, 10, (25, 35)), FixedRectangle(30, 30, (0, 30))))
+
+# free_rect = FixedRectangle(20, 20, (0, 20))
+# rect = FixedRectangle(5, 5, (10, 10))
+# nfr = maxrect_split(rect, free_rect)
+
+# free_rect = FixedRectangle(30, 30, (10, 30))
+# rect = FixedRectangle(20, 10, (0, 20))
+# nfr = maxrect_split(rect, free_rect)
+
+# free_rect = FixedRectangle(20, 20, (0, 20))
+# rect = FixedRectangle(20, 20, (18, 4))
+# nfr = maxrect_split(rect, free_rect)
+
+# for fr in nfr:
+#     print(fr)
