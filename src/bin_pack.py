@@ -106,7 +106,7 @@ def maxrects_bssf(sheet, images):
                 if is_wrapped(fi, fj):
                     free_rectangles.pop(i)
                     break
-        print(f'free_rectangles after the elimination of the wrapped ones')
+        print(f'free_rectangles after the elimination of the wrapped ones: {free_rectangles}')
         print('-----------------------------------------------------------\n')
 
     return placement
@@ -135,6 +135,6 @@ def maxrects_bssf(sheet, images):
 # print(is_wrapped(FixedRectangle(20, 20, (0, 20)), FixedRectangle(20, 20, (0, 20))))
 
 sheet = FixedRectangle(50, 50, (0, 50))
-images = [Rectangle(10, 10), Rectangle(20, 8)]
+images = [Rectangle(10, 10), Rectangle(20, 8), Rectangle(10, 5), Rectangle(5, 2), Rectangle(20, 30), Rectangle(20, 30), Rectangle(10, 3), Rectangle(10, 50), Rectangle(1, 18)]
 
 print(maxrects_bssf(sheet, images))
