@@ -25,16 +25,25 @@ def maxrect_split(rectangle, free_rectangle):
 
     return (free_rect1, free_rect2)
 
+def is_contained(point, rectangle):
+    x, y = point
+    up, right, down, left = rectangle.position[1] - rectangle.height, rectangle.position[0] + rectangle.width, rectangle.position[1], rectangle.position[0]
+    return x > left and x < right and y > up and y < down
+
+# def maxrect_split_up_to_four(rectangle, free_rectangle):
+#     x, y = rectangle.position
+#     w, h = rectangle.width, rectangle.height
+
 def maxrects_bssf(sheet, images):
     free_rectangles = [PlacedImage(width=sheet.width, height=sheet.height, position=(0, sheet.height))]
     placement = []
     for img in images:
-        # Find the free Fi rectangle that best fits
+        # Find the free Fi rectangle that best fits and remove it from the free_rectangles list
         idx, need_to_rotate = find_best_fit(img, free_rectangles)
         free_rect_to_split = free_rectangles.pop(idx)
 
         # Place the rectangle at the bottom-left of Fi
         placement.append(PlacedImage(width=img.width, height=img.height, position=(free_rect_to_split.position), rotated=need_to_rotate))
 
-
-print(maxrect_split(PlacedImage(20, 20, (0, 60)), PlacedImage(40, 60, (0, 60))))
+        # Perform the split
+        free_rect1, free_rect2 = maxrect_split(img, free_rect_to_split)
