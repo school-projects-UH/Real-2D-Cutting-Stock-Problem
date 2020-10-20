@@ -64,6 +64,9 @@ def is_contained(point, rectangle):
     x, y = point
     return x > rectangle.left and x < rectangle.right and y > rectangle.up and y < rectangle.down
 
+def is_wrapped(rectangle1, rectangle2):
+    return rectangle1.up >= rectangle2.up and rectangle1.right <= rectangle2.right and rectangle1.left >= rectangle2.left and rectangle1.down <= rectangle2.down
+
 def maxrects_bssf(sheet, images):
     free_rectangles = [FixedRectangle(width=sheet.width, height=sheet.height, position=(0, sheet.height))]
     placement = []
@@ -95,3 +98,8 @@ def maxrects_bssf(sheet, images):
 
 # for fr in nfr:
 #     print(fr)
+
+# print(is_wrapped(FixedRectangle(5, 5, (10, 10)), FixedRectangle(20, 20, (0, 20))))
+# print(is_wrapped(FixedRectangle(5, 5, (18, 10)), FixedRectangle(20, 20, (0, 20))))
+# print(is_wrapped(FixedRectangle(5, 5, (80, 80)), FixedRectangle(20, 20, (0, 20))))
+# print(is_wrapped(FixedRectangle(20, 20, (0, 20)), FixedRectangle(20, 20, (0, 20))))
