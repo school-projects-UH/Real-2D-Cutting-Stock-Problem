@@ -18,11 +18,18 @@ class Image(Rectangle):
         return f'<Image> width: {self.width}, height: {self.height}, demand: {self.demand}'
 
 '''An image placed on a sheet'''
-class PlacedImage(Rectangle):
+class FixedRectangle(Rectangle):
     def __init__(self, width, height, position, rotated=False):
         super().__init__(width, height)
-        self.position = position
         self.rotated = rotated
+        self.up = position[1] - height
+        self.right = position[0] + width
+        self.down = position[1]
+        self.left = position[0]
+        self.bottom_left = position
+        self.top_left = position[0], position[1] - height
+        self.top_right = position[0] + width, position[1] - height
+        self.bottom_right = position[0] + width, position[1]
 
     def __repr__(self):
-        return f'<PlacedImage> width: {self.width}, height: {self.height}, position: {self.position}, rotated: {self.rotated}'
+        return f'<PlacedImage> width: {self.width}, height: {self.height}, position: {self.bottom_left}, rotated: {self.rotated}'
