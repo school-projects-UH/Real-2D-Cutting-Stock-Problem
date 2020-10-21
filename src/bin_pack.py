@@ -1,4 +1,7 @@
-from .classes import Rectangle, FixedRectangle
+try:
+    from .classes import Rectangle, FixedRectangle
+except:
+    from classes import Rectangle, FixedRectangle
 
 def find_best_fit(rectangle, free_rectangles):
     best_fit = (1000000, -1, False)
