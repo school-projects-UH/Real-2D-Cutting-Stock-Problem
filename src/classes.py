@@ -3,7 +3,6 @@ import hashlib
 import json
 import sys
 
-
 ''' Base class for images and also could represent a sheet'''
 class Rectangle:
     def __init__(self, width, height):
@@ -52,3 +51,17 @@ class FixedRectangle(Rectangle):
 
     def __hash__(self):
         return int.from_bytes(hashlib.sha256(json.dumps(self.__dict__).encode()).digest(), byteorder=sys.byteorder)
+
+
+class Bin(FixedRectangle):
+
+    def __init__(self, width, height, total_diff_images):
+        super().__init__(width, height, position=(0, height))
+        self.cuts = []
+        self.no_images = [0 for _ in range(total_diff_images)]
+        self.free_area = width * height
+
+    def add_cut(self, image, i):
+        self.cuts.append(image)
+        self.no_images[i] += 1
+        self.free_area -= image.width * image.height
