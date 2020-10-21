@@ -1,4 +1,4 @@
-from classes import Rectangle, FixedRectangle
+from .classes import Rectangle, FixedRectangle
 
 def find_best_fit(rectangle, free_rectangles):
     best_fit = (1000000, -1, False)
@@ -136,7 +136,7 @@ def maxrects_bssf(sheet, images):
 # print(is_wrapped(FixedRectangle(5, 5, (80, 80)), FixedRectangle(20, 20, (0, 20))))
 # print(is_wrapped(FixedRectangle(20, 20, (0, 20)), FixedRectangle(20, 20, (0, 20))))
 
-# sheet = FixedRectangle(50, 50, (0, 50))
-# images = [Rectangle(10, 10), Rectangle(20, 8), Rectangle(10, 5), Rectangle(5, 2), Rectangle(20, 30), Rectangle(20, 30), Rectangle(10, 3), Rectangle(10, 50), Rectangle(1, 18)]
-# images = [Rectangle(100, 100)]
-# print(maxrects_bssf(sheet, images))
+sheet = FixedRectangle(50, 50, (0, 50))
+images = [Rectangle(10, 10), Rectangle(20, 8), Rectangle(10, 5), Rectangle(5, 2), Rectangle(20, 30), Rectangle(20, 30), Rectangle(10, 3), Rectangle(10, 50), Rectangle(1, 18)]
+#images = [Rectangle(100, 100)]
+print(maxrects_bssf(sheet, images))
