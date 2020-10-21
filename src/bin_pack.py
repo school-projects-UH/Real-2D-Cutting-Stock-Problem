@@ -3,20 +3,24 @@ try:
 except:
     from classes import Rectangle, FixedRectangle, Bin
 
-def find_best_fit(rectangle, free_rectangles):
-    best_fit = (1000000, -1, False)
-    for i in range(len(free_rectangles)):
-        free_rect = free_rectangles[i]
-        if rectangle.width <= free_rect.width and rectangle.height <= free_rect.height:
-            shortest_side_fit = min(free_rect.width - rectangle.width, free_rect.height - rectangle.height)
-            if shortest_side_fit < best_fit[0]:
-                best_fit = (shortest_side_fit, i, False)
-        # Try by rotating the rectangle
-        if rectangle.width <= free_rect.height and rectangle.height <= free_rect.width:
-            shortest_side_fit = min(free_rect.width - rectangle.height, free_rect.height - rectangle.width)
-            if shortest_side_fit < best_fit[0]:
-                best_fit = (shortest_side_fit, i, True)
-    return best_fit[1], best_fit[2]
+# Returns a tuple (i, j, need_to_rotate) where i is the index of the bin and j is the index of the free_rectangle that best fits
+def find_best_fit(rectangle, bins):
+    best_fit = (1000000, -1, -1, False)
+
+    for i,current_bin in enumerate(bins):
+        for j,free_rect in enumerate(current_bin.free_rectangles):
+            # If the rectangle fits inside the current free rectangle...
+            if rectangle.width <= free_rect.width and rectangle.height <= free_rect.height:
+                shortest_side_fit = min(free_rect.width - rectangle.width, free_rect.height - rectangle.height)
+                if shortest_side_fit < best_fit[0]:
+                    best_fit = (shortest_side_fit, i, j, False)
+            # Try by rotating the rectangle
+            if rectangle.width <= free_rect.height and rectangle.height <= free_rect.width:
+                shortest_side_fit = min(free_rect.width - rectangle.height, free_rect.height - rectangle.width)
+                if shortest_side_fit < best_fit[0]:
+                    best_fit = (shortest_side_fit, i, j, True)
+
+    return best_fit[1], best_fit[2], best_fit[3]
 
 def maxrect_split(rectangle: FixedRectangle, free_rectangle: FixedRectangle):
     new_free_rectangles = set()
@@ -71,7 +75,10 @@ def is_wrapped(rectangle1, rectangle2):
     return rectangle1.up >= rectangle2.up and rectangle1.right <= rectangle2.right and rectangle1.left >= rectangle2.left and rectangle1.down <= rectangle2.down
 
 def maxrects_bssf(sheet, images, ilimited_bins=False):
+    # Put it inside the Bin class
     free_rectangles = [FixedRectangle(width=sheet.width, height=sheet.height, position=(0, sheet.height))]
+
+    # This should be a list
     placement = Bin(width=sheet.width, height=sheet.height, total_diff_images=len(images))
 
     for img_idx,img in enumerate(images):
@@ -128,7 +135,7 @@ def maxrects_bssf(sheet, images, ilimited_bins=False):
 # print(is_wrapped(FixedRectangle(5, 5, (80, 80)), FixedRectangle(20, 20, (0, 20))))
 # print(is_wrapped(FixedRectangle(20, 20, (0, 20)), FixedRectangle(20, 20, (0, 20))))
 
-sheet = FixedRectangle(50, 50, (0, 50))
-images = [Rectangle(10, 10), Rectangle(20, 8), Rectangle(10, 5), Rectangle(5, 2), Rectangle(20, 30), Rectangle(20, 30), Rectangle(10, 3), Rectangle(10, 50), Rectangle(1, 18)]
-#images = [Rectangle(100, 100)]
-print(maxrects_bssf(sheet, images).__dict__)
+# sheet = FixedRectangle(50, 50, (0, 50))
+# images = [Rectangle(10, 10), Rectangle(20, 8), Rectangle(10, 5), Rectangle(5, 2), Rectangle(20, 30), Rectangle(20, 30), Rectangle(10, 3), Rectangle(10, 50), Rectangle(1, 18)]
+# images = [Rectangle(100, 100)]
+# print(maxrects_bssf(sheet, images).__dict__)
