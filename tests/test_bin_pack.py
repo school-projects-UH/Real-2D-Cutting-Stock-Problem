@@ -57,7 +57,7 @@ class BinPackTestCase(unittest.TestCase):
     def test_maxrects_bssf_more_than_one_bin(self):
         sheet = FixedRectangle(15, 15, (0, 15))
         images = [Rectangle(10, 5), Rectangle(8, 5), Rectangle(8, 8), Rectangle(3, 15)]
-        placement = maxrects_bssf(sheet, images, ilimited_bins=True)
+        placement = maxrects_bssf(sheet, images, unlimited_bins=True)
 
         b1_cuts = [
             FixedRectangle(width=10, height=5, position=(0,15)),
