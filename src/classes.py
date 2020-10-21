@@ -22,6 +22,7 @@ class Image(Rectangle):
     def __repr__(self):
         return f'<Image> width: {self.width}, height: {self.height}, demand: {self.demand}'
 
+
 '''An image placed on a sheet'''
 class FixedRectangle(Rectangle):
     def __init__(self, width, height, position, rotated=False):
@@ -60,8 +61,15 @@ class Bin(FixedRectangle):
         self.cuts = []
         self.no_images = [0 for _ in range(total_diff_images)]
         self.free_area = width * height
+        self.free_rectangles = [FixedRectangle(width, height, position=(0, height))]
 
     def add_cut(self, image, i):
         self.cuts.append(image)
         self.no_images[i] += 1
         self.free_area -= image.width * image.height
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return f'<Bin> width: {self.width}, height: {self.height}, cuts: {self.cuts}, free area: {self.free_area}'
