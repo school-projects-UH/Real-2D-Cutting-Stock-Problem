@@ -59,7 +59,7 @@ class Bin(FixedRectangle):
     def __init__(self, width, height, total_diff_images):
         super().__init__(width, height, position=(0, height))
         self.cuts = []
-        self.no_images = [0 for _ in range(total_diff_images)]
+        self.no_images = [0 for _ in range(total_diff_images)] # no_images[i] = number of images of type i in this bin
         self.free_area = width * height
         self.free_rectangles = [FixedRectangle(width, height, position=(0, height))]
 

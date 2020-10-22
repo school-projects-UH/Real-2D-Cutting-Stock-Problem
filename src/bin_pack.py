@@ -75,35 +75,40 @@ def is_wrapped(rectangle1, rectangle2):
     return rectangle1.up >= rectangle2.up and rectangle1.right <= rectangle2.right and rectangle1.left >= rectangle2.left and rectangle1.down <= rectangle2.down
 
 def maxrects_bssf(sheet, images, unlimited_bins=False):
+    # start with an empty bin
     bins = [Bin(width=sheet.width, height=sheet.height, total_diff_images=len(images))]
 
     for img_idx,img in enumerate(images):
-        # Find the free Fi rectangle that best fits and remove it from the free_rectangles list
+        # Find the free rectangle Fi that best fits and remove it from the free_rectangles list of the corresponding bin
         bin_idx, fr_idx, need_to_rotate = find_best_fit(img, bins)
         if bin_idx == -1:
+            # Add a new bin
             if unlimited_bins:
                 bins.append(Bin(width=sheet.width, height=sheet.height, total_diff_images=len(images)))
                 bin_idx = len(bins) - 1
+            # not feasible solution
             else:
                 return []
+
         current_bin = bins[bin_idx]
         free_rectangles = current_bin.free_rectangles
         free_rect_to_split = current_bin.free_rectangles.pop(fr_idx)
 
+        # Place the rectangle that represents the cut at the bottom-left of Fi
         fixed_rectangle = FixedRectangle(width=img.width, height=img.height, position=(free_rect_to_split.bottom_left), rotated=need_to_rotate)
-
-        # Place the rectangle at the bottom-left of Fi
         current_bin.add_cut(fixed_rectangle, img_idx)
 
         # Perform the split
         free_rectangles += maxrect_split(fixed_rectangle, free_rect_to_split)
 
+        # Perform the split on all the free rectangles intersected with the new fixed rectangle
         for fr in free_rectangles.copy():
             l = len(current_bin.free_rectangles)
             free_rectangles += maxrect_split(fixed_rectangle, fr)
             if len(free_rectangles) > l:
                 free_rectangles.remove(fr)
 
+        # Remove all free rectangles contained inside another
         fr_copy = free_rectangles.copy()
         for i in range(len(fr_copy)):
             fi = fr_copy[i]
@@ -112,5 +117,4 @@ def maxrects_bssf(sheet, images, unlimited_bins=False):
                 if is_wrapped(fi, fj):
                     free_rectangles.pop(i)
                     break
-
     return bins
