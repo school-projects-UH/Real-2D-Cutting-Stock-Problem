@@ -3,7 +3,7 @@ import hashlib
 import json
 import sys
 
-''' Base class for images and also could represent a sheet'''
+''' Base class for sheet'''
 class Rectangle:
     def __init__(self, width, height):
         self.width = width
@@ -13,17 +13,17 @@ class Rectangle:
         return f'<Rectangle> width: {self.width}, height: {self.height}'
 
 
-'''A type of rectangular image requested by the client'''
-class Image(Rectangle):
+'''A type of rectangular sheet requested by the client'''
+class Sheet(Rectangle):
     def __init__(self, width, height, demand):
         super().__init__(width, height)
         self.demand = demand
 
     def __repr__(self):
-        return f'<Image> width: {self.width}, height: {self.height}, demand: {self.demand}'
+        return f'<Sheet> width: {self.width}, height: {self.height}, demand: {self.demand}'
 
 
-'''An image placed on a sheet'''
+'''An sheet placed on a rectangle'''
 class FixedRectangle(Rectangle):
     def __init__(self, width, height, position, rotated=False):
         if rotated:
@@ -56,17 +56,17 @@ class FixedRectangle(Rectangle):
 
 class Bin(FixedRectangle):
 
-    def __init__(self, width, height, total_diff_images):
+    def __init__(self, width, height, total_diff_sheets):
         super().__init__(width, height, position=(0, height))
         self.cuts = []
-        self.no_images = [0 for _ in range(total_diff_images)] # no_images[i] = number of images of type i in this bin
+        self.no_sheets = [0 for _ in range(total_diff_sheets)] # no_sheets[i] = number of sheets of type i in this bin
         self.free_area = width * height
         self.free_rectangles = [FixedRectangle(width, height, position=(0, height))]
 
-    def add_cut(self, image, i):
-        self.cuts.append(image)
-        self.no_images[i] += 1
-        self.free_area -= image.width * image.height
+    def add_cut(self, sheet, i):
+        self.cuts.append(sheet)
+        self.no_sheets[i] += 1
+        self.free_area -= sheet.width * sheet.height
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__

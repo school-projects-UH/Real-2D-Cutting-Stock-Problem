@@ -74,17 +74,17 @@ def is_contained(point, rectangle):
 def is_wrapped(rectangle1, rectangle2):
     return rectangle1.up >= rectangle2.up and rectangle1.right <= rectangle2.right and rectangle1.left >= rectangle2.left and rectangle1.down <= rectangle2.down
 
-def maxrects_bssf(sheet, images, unlimited_bins=False):
+def maxrects_bssf(rectangle, sheets, unlimited_bins=False):
     # start with an empty bin
-    bins = [Bin(width=sheet.width, height=sheet.height, total_diff_images=len(images))]
+    bins = [Bin(width=rectangle.width, height=rectangle.height, total_diff_sheets=len(sheets))]
 
-    for img_idx,img in enumerate(images):
+    for img_idx,img in enumerate(sheets):
         # Find the free rectangle Fi that best fits and remove it from the free_rectangles list of the corresponding bin
         bin_idx, fr_idx, need_to_rotate = find_best_fit(img, bins)
         if bin_idx == -1:
             # Add a new bin
             if unlimited_bins:
-                bins.append(Bin(width=sheet.width, height=sheet.height, total_diff_images=len(images)))
+                bins.append(Bin(width=rectangle.width, height=rectangle.height, total_diff_sheets=len(sheets)))
                 bin_idx = len(bins) - 1
             # not feasible solution
             else:
