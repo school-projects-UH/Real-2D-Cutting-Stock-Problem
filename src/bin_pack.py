@@ -77,44 +77,62 @@ def is_wrapped(rectangle1, rectangle2):
 def maxrects_bssf(rectangle, sheets, unlimited_bins=False):
     # start with an empty bin
     bins = [Bin(width=rectangle.width, height=rectangle.height, total_diff_sheets=len(sheets))]
+    p = {}  # p[(i,j)] = number of images of type j on pattern(bin) i
 
     for img_idx,img in enumerate(sheets):
-        # Find the free rectangle Fi that best fits and remove it from the free_rectangles list of the corresponding bin
-        bin_idx, fr_idx, need_to_rotate = find_best_fit(img, bins)
-        if bin_idx == -1:
-            # Add a new bin
-            if unlimited_bins:
-                bins.append(Bin(width=rectangle.width, height=rectangle.height, total_diff_sheets=len(sheets)))
-                bin_idx = len(bins) - 1
-            # not feasible solution
-            else:
-                return []
+        for _ in range(img.demand):
 
-        current_bin = bins[bin_idx]
-        free_rectangles = current_bin.free_rectangles
-        free_rect_to_split = free_rectangles.pop(fr_idx)
+            # Find the free rectangle Fi that best fits and remove it from the free_rectangles list of the corresponding bin
+            bin_idx, fr_idx, need_to_rotate = find_best_fit(img, bins)
+            if bin_idx == -1:
+                # Add a new bin
+                if unlimited_bins:
+                    bins.append(Bin(width=rectangle.width, height=rectangle.height, total_diff_sheets=len(sheets)))
+                    bin_idx = len(bins) - 1
+                # not feasible solution
+                else:
+                    return [], {}
 
-        # Place the rectangle that represents the cut at the bottom-left of Fi
-        new_cut = FixedRectangle(width=img.width, height=img.height, position=(free_rect_to_split.bottom_left), rotated=need_to_rotate)
-        current_bin.add_cut(new_cut, img_idx)
+            current_bin = bins[bin_idx]
+            free_rectangles = current_bin.free_rectangles
+            free_rect_to_split = free_rectangles.pop(fr_idx)
 
-        # Perform the split
-        free_rectangles += maxrect_split(new_cut, free_rect_to_split)
+            # Place the rectangle that represents the cut at the bottom-left of Fi
+            new_cut = FixedRectangle(width=img.width, height=img.height, position=(free_rect_to_split.bottom_left), rotated=need_to_rotate)
+            current_bin.add_cut(new_cut, img_idx)
 
-        # Perform the split on all the free rectangles intersected with the new fixed rectangle
-        for fr in free_rectangles.copy():
-            l = len(current_bin.free_rectangles)
-            free_rectangles += maxrect_split(new_cut, fr)
-            if len(free_rectangles) > l:
-                free_rectangles.remove(fr)
+            # update the p vector
+            try:
+                p[bin_idx, img_idx] += 1
+            except KeyError:
+                p[bin_idx, img_idx] = 1
 
-        # Remove all free rectangles contained inside another
-        fr_copy = free_rectangles.copy()
-        for i in range(len(fr_copy)):
-            fi = fr_copy[i]
-            for j in range(i + 1, len(fr_copy)):
-                fj = fr_copy[j]
-                if is_wrapped(fi, fj):
-                    free_rectangles.remove(fi)
-                    break
-    return bins
+            # Perform the split
+            free_rectangles += maxrect_split(new_cut, free_rect_to_split)
+
+            # Perform the split on all the free rectangles intersected with the new fixed rectangle
+            for fr in free_rectangles.copy():
+                l = len(current_bin.free_rectangles)
+                free_rectangles += maxrect_split(new_cut, fr)
+                if len(free_rectangles) > l:
+                    free_rectangles.remove(fr)
+
+            # Remove all free rectangles contained inside another
+            fr_copy = free_rectangles.copy()
+            for i in range(len(fr_copy)):
+                fi = fr_copy[i]
+                for j in range(i + 1, len(fr_copy)):
+                    fj = fr_copy[j]
+                    if is_wrapped(fi, fj):
+                        free_rectangles.remove(fi)
+                        break
+
+    # p[i,j] = 0 if there is no sheet j on pattern(bin) i
+    for b in range(len(bins)):
+        for s in range(len(sheets)):
+            try:
+                p[b,s]
+            except KeyError:
+                p[b,s] = 0
+    print(p)
+    return bins, p
