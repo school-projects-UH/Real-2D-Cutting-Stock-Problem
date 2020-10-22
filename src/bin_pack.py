@@ -92,19 +92,19 @@ def maxrects_bssf(sheet, images, unlimited_bins=False):
 
         current_bin = bins[bin_idx]
         free_rectangles = current_bin.free_rectangles
-        free_rect_to_split = current_bin.free_rectangles.pop(fr_idx)
+        free_rect_to_split = free_rectangles.pop(fr_idx)
 
         # Place the rectangle that represents the cut at the bottom-left of Fi
-        fixed_rectangle = FixedRectangle(width=img.width, height=img.height, position=(free_rect_to_split.bottom_left), rotated=need_to_rotate)
-        current_bin.add_cut(fixed_rectangle, img_idx)
+        new_cut = FixedRectangle(width=img.width, height=img.height, position=(free_rect_to_split.bottom_left), rotated=need_to_rotate)
+        current_bin.add_cut(new_cut, img_idx)
 
         # Perform the split
-        free_rectangles += maxrect_split(fixed_rectangle, free_rect_to_split)
+        free_rectangles += maxrect_split(new_cut, free_rect_to_split)
 
         # Perform the split on all the free rectangles intersected with the new fixed rectangle
         for fr in free_rectangles.copy():
             l = len(current_bin.free_rectangles)
-            free_rectangles += maxrect_split(fixed_rectangle, fr)
+            free_rectangles += maxrect_split(new_cut, fr)
             if len(free_rectangles) > l:
                 free_rectangles.remove(fr)
 
@@ -115,6 +115,6 @@ def maxrects_bssf(sheet, images, unlimited_bins=False):
             for j in range(i + 1, len(fr_copy)):
                 fj = fr_copy[j]
                 if is_wrapped(fi, fj):
-                    free_rectangles.pop(i)
+                    free_rectangles.remove(fi)
                     break
     return bins
