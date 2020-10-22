@@ -76,7 +76,7 @@ def is_wrapped(rectangle1, rectangle2):
 
 def maxrects_bssf(rectangle, sheets, unlimited_bins=False):
     # start with an empty bin
-    bins = [Bin(width=rectangle.width, height=rectangle.height, total_diff_sheets=len(sheets))]
+    bins = [Bin(width=rectangle.width, height=rectangle.height)]
     p = {}  # p[(i,j)] = number of images of type j on pattern(bin) i
 
     for img_idx,img in enumerate(sheets):
@@ -87,7 +87,7 @@ def maxrects_bssf(rectangle, sheets, unlimited_bins=False):
             if bin_idx == -1:
                 # Add a new bin
                 if unlimited_bins:
-                    bins.append(Bin(width=rectangle.width, height=rectangle.height, total_diff_sheets=len(sheets)))
+                    bins.append(Bin(width=rectangle.width, height=rectangle.height))
                     bin_idx = len(bins) - 1
                 # not feasible solution
                 else:

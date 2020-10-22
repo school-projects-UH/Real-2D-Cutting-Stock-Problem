@@ -56,16 +56,14 @@ class FixedRectangle(Rectangle):
 
 class Bin(FixedRectangle):
 
-    def __init__(self, width, height, total_diff_sheets):
+    def __init__(self, width, height):
         super().__init__(width, height, position=(0, height))
         self.cuts = []
-        self.no_sheets = [0 for _ in range(total_diff_sheets)] # no_sheets[i] = number of sheets of type i in this bin
         self.free_area = width * height
         self.free_rectangles = [FixedRectangle(width, height, position=(0, height))]
 
     def add_cut(self, sheet, i):
         self.cuts.append(sheet)
-        self.no_sheets[i] += 1
         self.free_area -= sheet.width * sheet.height
 
     def __eq__(self, other):

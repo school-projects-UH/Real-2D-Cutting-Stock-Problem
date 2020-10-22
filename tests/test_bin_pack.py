@@ -6,7 +6,7 @@ class BinPackTestCase(unittest.TestCase):
 
     def test_find_best_fit_one_bin(self):
         rect = Rectangle(10, 58)
-        b1 = Bin(100, 100, 12)
+        b1 = Bin(100, 100)
         b1.free_rectangles = [Rectangle(70, 80), Rectangle(60, 60)]
         bins = [b1]
 
@@ -15,9 +15,9 @@ class BinPackTestCase(unittest.TestCase):
 
     def test_find_best_fit_more_than_one_bin(self):
         rect = Rectangle(30, 30)
-        b1 = Bin(100, 100, 12)
+        b1 = Bin(100, 100)
         b1.free_rectangles = [Rectangle(40, 80), Rectangle(60, 60), Rectangle(20, 80), Rectangle(32, 32)]
-        b2 = Bin(100, 100, 12)
+        b2 = Bin(100, 100)
         b2.free_rectangles = [Rectangle(30, 40), Rectangle(10, 2)]
         bins = [b1, b2]
 
@@ -26,9 +26,9 @@ class BinPackTestCase(unittest.TestCase):
 
     def test_find_best_fit_no_solution(self):
         rect = Rectangle(30, 30)
-        b1 = Bin(100, 100, 12)
+        b1 = Bin(100, 100)
         b1.free_rectangles = [Rectangle(20, 10)]
-        b2 = Bin(100, 100, 12)
+        b2 = Bin(100, 100)
         b2.free_rectangles = [Rectangle(10, 15)]
         bins = [b1, b2]
 
