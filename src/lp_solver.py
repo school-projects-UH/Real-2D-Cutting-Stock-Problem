@@ -15,7 +15,7 @@ def solve_LP(r, p, d):
     x = { j: LpVariable(f'x{j}', lowBound=0, cat="Integer") for j in range(m)}
 
     for i, di in enumerate(d):
-        model += (lpSum([pj[i] * r[j] for j, pj in enumerate(p)) >= di, f'constrain-{i}')
+        model += (lpSum(pj[i] * x[j] for j, pj in enumerate(p)) >= di, f'constrain-{i}')
 
     model += lpSum(x[j] * r[j] for j in range(m))
 
@@ -33,3 +33,5 @@ def solve_LP(r, p, d):
         print(f"{name}: {constraint.value()}")
     
     return model
+
+solve_LP([1, 2], [[0, 1], [1, 1]], [5, 10])
