@@ -33,5 +33,3 @@ def solve_LP(r, p, d):
         print(f"{name}: {constraint.value()}")
     
     return model
-
-solve_LP([1, 2], [[0, 1], [1, 1]], [5, 10])
