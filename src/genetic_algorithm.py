@@ -157,7 +157,7 @@ class Solver():
 
     def crossover(self, Population):
         def select_patterns(parent):
-            patterns = [(bin.free_space, bin) for bin in parent.bins]
+            patterns = [(bin.free_space, j, bin) for j, bin in enumerate(parent.bins)]
             patterns.sort()
 
             # select a number between the [25%, 50%] of the patterns (patterns_len must be >= 4 since 0.25 * 4 = 1)
@@ -165,14 +165,38 @@ class Solver():
                                 random.randint(0.25 * len(patterns), 0.5 * len(patterns)) or \
                                 random.randint(0, len(patterns) - 1)
             
-            return [bin for _, bin in patterns[:count_to_select]]
-
+            return [(j, bin) for _, j, bin in patterns[:count_to_select]]
+        
         P = list(Population)
         parent1 = P[random.randint(0, len(P)-1)]
         P.remove(parent1)
         parent2 = P[random.randint(0, len(P)-1)]
 
+        set_patterns1 = select_patterns(parent1)
+        set_patterns2 = select_patterns(parent2)
 
+        sheets_not_in_patterns_sets = []
+        for i,_ in enumerate(self.sheets)
+            for j,_ in set_patterns1 + set_patterns2:
+                if (j,i) in parent1.sheets_per_pattern or (j,i) in parent2.sheets_per_pattern:
+                   continue
+            sheets_not_in_patterns_sets.append(i)
+        
+        empty_sheets = [Sheet(s.width, s.height, 1) for i, s in enumerate(self.sheets) if i not in sheets_not_in_patterns_sets]
+        placement, p = maxrects_bssf(self.rectangle, empty_sheets)
+        
+        selected_bins = [bin for _, bin in set_patterns1 + set_patterns2]
+        bins = selected_bins + placement
+        j_offset, i_offset = len(selected_bins), len(self.sheets) - len(empty_sheets)
+        p = { key,value for key,value in map(lambda (j,i),v: ((j+j_offset,i+i_offset),v), p.items()) }        
+        patterns_idxs = set([j for j,_ in set_patterns1] + [j for j,_ in set_patterns2])
+        sheets_per_patterns1 = { (j, i) : count for (j, i), count in parent1.sheets_per_pattern if j in patterns_idxs}
+        sheets_per_patterns2 = { (j, i) : count for (j, i), count in parent2.sheets_per_pattern if j in patterns_idxs}
+        sheets_per_patterns = { **sheets_per_patterns1, **sheets_per_patterns2, **p }
+
+        off_spring = Solution(bins, sheets_per_patterns)
+
+        # Call Hillclimb
 
     def mutation(self, population):
         parent = population[randint(0, len(population)-1)]
