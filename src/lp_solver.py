@@ -26,14 +26,4 @@ def solve_LP(waste, sheets_per_pattern, demands):
     # Solve the optimization problem
     status = model.solve()
 
-    # Get the results
-    print(f"status: {model.status}, {LpStatus[model.status]}")
-    print(f"objective: {model.objective.value()}")
-
-    for var in x.values():
-        print(f"{var.name}: {var.value()}")
-
-    for name, constraint in model.constraints.items():
-        print(f"{name}: {constraint.value()}")
-    
     return model.objective.value(), x
