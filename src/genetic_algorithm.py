@@ -155,8 +155,23 @@ class Solver():
     def bests_solution_reproduction(self):
         pass
 
-    def crossover(self):
-        pass
+    def crossover(self, Population):
+        def select_patterns(parent):
+            patterns_len = len(set([j for (j, _), _ in parent.sheets_per_pattern]))
+            
+            # select a number between the [25%, 50%] of the patterns (patterns_len must be >= 4 since 0.25 * 4 = 1)
+            count_to_select = patterns_len >= 4 and \
+                                random.randint(0.25 * patterns_len, 0.5 * patterns_len) or \
+                                random.randint(0, patterns_len - 1)
+
+
+
+        P = list(Population)
+        parent1 = P[random.randint(0, len(P)-1)]
+        P.remove(parent1)
+        parent2 = P[random.randint(0, len(P)-1)]
+
+
 
     def mutation(self, population):
         parent = population[randint(0, len(population)-1)]
