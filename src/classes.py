@@ -71,3 +71,11 @@ class Bin(FixedRectangle):
 
     def __repr__(self):
         return f'<Bin> width: {self.width}, height: {self.height}, cuts: {self.cuts}, free area: {self.free_area}'
+
+
+class Solution:
+    def __init__(self, bins, sheets_per_pattern, number_of_prints_per_pattern, minimum_waste):
+        self.bins = bins
+        self.sheets_per_pattern = sheets_per_pattern
+        self.number_of_prints_per_pattern = number_of_prints_per_pattern
+        self.minimum_waste = minimum_waste
