@@ -37,5 +37,3 @@ def solve_LP(waste, sheets_per_pattern, demands):
         print(f"{name}: {constraint.value()}")
     
     return model.objective.value(), x
-
-solve_LP([1, 2], {(0,0): 1, (0,1): 2, (1,0): 1, (1,1): 2}, [5, 5])
