@@ -157,14 +157,15 @@ class Solver():
 
     def crossover(self, Population):
         def select_patterns(parent):
-            patterns_len = len(set([j for (j, _), _ in parent.sheets_per_pattern]))
-            
+            patterns = [(bin.free_space, bin) for bin in parent.bins]
+            patterns.sort()
+
             # select a number between the [25%, 50%] of the patterns (patterns_len must be >= 4 since 0.25 * 4 = 1)
-            count_to_select = patterns_len >= 4 and \
-                                random.randint(0.25 * patterns_len, 0.5 * patterns_len) or \
-                                random.randint(0, patterns_len - 1)
-
-
+            count_to_select = len(patterns) >= 4 and \
+                                random.randint(0.25 * len(patterns), 0.5 * len(patterns)) or \
+                                random.randint(0, len(patterns) - 1)
+            
+            return [bin for _, bin in patterns[:count_to_select]]
 
         P = list(Population)
         parent1 = P[random.randint(0, len(P)-1)]
