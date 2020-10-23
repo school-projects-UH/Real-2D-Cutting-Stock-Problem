@@ -1,6 +1,6 @@
 from pulp import LpMinimize, LpProblem, LpStatus, lpSum, LpVariable
 
-def solve_LP(r, p, d):
+def solve_LP(waste, sheets_per_pattern, demands):
     '''
     min * sum(xj* rj) 0 <= j < m
     s.a
@@ -9,15 +9,19 @@ def solve_LP(r, p, d):
     xj Integer
     '''
 
-    m = len(r)
+    m, n = len(waste), len(demands)
     model = LpProblem(name="cuts", sense=LpMinimize)
 
     x = { j: LpVariable(f'x{j}', lowBound=0, cat="Integer") for j in range(m)}
 
-    for i, di in enumerate(d):
+    p = [[0 for _ in range(n)] for _ in range(m)]
+    for (j, i), sheets in sheets_per_pattern.items():
+        p[j][i] = sheets
+
+    for i, di in enumerate(demands):
         model += (lpSum(pj[i] * x[j] for j, pj in enumerate(p)) >= di, f'constrain-{i}')
 
-    model += lpSum(x[j] * r[j] for j in range(m))
+    model += lpSum(x[j] * waste[j] for j in range(m))
 
     # Solve the optimization problem
     status = model.solve()
@@ -32,4 +36,6 @@ def solve_LP(r, p, d):
     for name, constraint in model.constraints.items():
         print(f"{name}: {constraint.value()}")
     
-    return model
+    return model.objective.value(), x
+
+solve_LP([1, 2], {(0,0): 1, (0,1): 2, (1,0): 1, (1,1): 2}, [5, 5])
