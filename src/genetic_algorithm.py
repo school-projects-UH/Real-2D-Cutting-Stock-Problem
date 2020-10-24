@@ -82,10 +82,8 @@ class Solver():
 
     '''swaps two sheets from two different patterns'''
     def swap(self, solution):
-        pattern_one = random.randint(0,len(solution.bins)-1)
-        pattern_two = random.randint(0,len(solution.bins)-1)
-        sheet_one = random.randint(0, self.total_sheets - 1)
-        sheet_two = random.randint(0, self.total_sheets - 1)
+        pattern_one, pattern_two = _pick_two_randoms(len(solution.bins))
+        sheet_one, sheet_two = _pick_two_randoms(self.total_sheets)
 
         sheets_per_pattern = dict(solution.sheets_per_pattern)
 
@@ -149,5 +147,5 @@ GA = Solver(sheets, demands, 15, 15)
 s1 = Solution(placement, sheets_per_pattern)
 
 print(s1.sheets_per_pattern)
-new_sheets_per_pattern = GA.move(s1)
+new_sheets_per_pattern = GA.swap(s1)
 print(new_sheets_per_pattern)
