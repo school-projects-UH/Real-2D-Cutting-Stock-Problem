@@ -26,4 +26,4 @@ def solve_LP(waste, sheets_per_pattern, demands):
     # Solve the optimization problem
     status = model.solve()
 
-    return model.objective.value(), x
+    return model.objective.value(), {variable.name: variable.varValue for variable in model.variables()}
