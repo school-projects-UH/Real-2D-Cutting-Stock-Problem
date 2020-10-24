@@ -175,13 +175,3 @@ class Solver():
 
     def genetic_algorithm(self):
         pass
-
-
-rectangle = Rectangle(15, 15)
-sheets = [(10, 5), (8, 5), (8, 8), (3, 15), (6, 1), (5, 6), (10, 2), (4, 4)]
-demands = [2, 5, 4, 2, 6, 10, 11, 8]
-
-S = Solver(sheets, demands, 15, 15)
-
-p = S.create_initial_population()
-print(p)
