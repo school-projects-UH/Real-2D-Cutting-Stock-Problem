@@ -149,7 +149,7 @@ class Solver():
     def update_best_solution(self):
         pass
 
-    def roulette_wheel_selection(self):
+    def roulette_wheel_selection(self, population):
         pass
 
     def bests_solution_reproduction(self):
