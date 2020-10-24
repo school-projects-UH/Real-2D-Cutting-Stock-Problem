@@ -20,7 +20,7 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    def __init__(self, rectangle, sheets, pop_size=10, random_walk_steps=30, hill_climbing_neighbors=10):
+    def __init__(self, rectangle, sheets, pop_size=10, random_walk_steps=30, hill_climbing_neighbors=10, roulette_pop = 10):
         self.total_sheets = len(sheets)
         self.rectangle = rectangle
         self.sheets = sheets
@@ -34,6 +34,7 @@ class Solver():
         self.pop_size = pop_size
         self.random_walk_steps = random_walk_steps
         self.hill_climbing_neighbors = hill_climbing_neighbors
+        self.roulette_pop = roulette_pop
 
     def compute_amount_and_fitness(self):
         pass
@@ -150,7 +151,19 @@ class Solver():
         pass
 
     def roulette_wheel_selection(self, population):
-        pass
+        fitness = [solution.fitness for solution in population]
+        total_fit = float(sum(fitness))
+        relative_fitness = [f / total_fit for f in fitness]
+        probabilities = [sum(relative_fitness[:i+1]) for i in range(len(relative_fitness))]
+ 
+        chosen = []
+        for _ in range(self.roulette_pop):
+            r = random.random()
+            for (i, solution) in enumerate(population):
+                if r <= probabilities[i]:
+                    chosen.append(solution)
+                    break
+        return chosen
 
     def bests_solution_reproduction(self):
         pass
