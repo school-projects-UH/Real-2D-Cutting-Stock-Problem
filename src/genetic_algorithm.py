@@ -2,6 +2,7 @@ import math
 import random
 from classes import *
 from bin_pack import maxrects_bssf
+from lp_solver import solve_LP
 from random import randint
 
 def _pick_two_randoms(top):
@@ -106,7 +107,29 @@ class Solver():
         return sheets_per_pattern
 
     def choose_neighbor(self, solution):
-        pass
+        operator = [self.add, self.remove, self.move, self.swap][randint(0, 3)]
+        sheets_per_pattern = operator(solution)
+
+        # if the operator could not be applied
+        if sheets_per_pattern == None:
+            return None
+
+        bins = []
+        # Check the feasibility of the new solution
+        for i in range(len(solution.bins)):
+            sheets = [Sheet(s.width, s.height, sheets_per_pattern[i, j]) for j,s in enumerate(self.sheets)]
+            placement, _ = maxrects_bssf(self.rectangle, sheets)
+            if placement == []:
+                return None
+            bins += placement
+
+        waste = [b.free_area for b in bins]
+        demands = [s.demand for s in self.sheets]
+        fitness, prints_per_pattern = solve_LP(waste, sheets_per_pattern, demands)
+        neighbor = Solution(bins, sheets_per_pattern, prints_per_pattern, fitness)
+
+        return neighbor
+
 
     def create_initial_population(self):
         pass
@@ -137,15 +160,20 @@ class Solver():
 
 
 rectangle = Rectangle(15, 15)
-sheets = [Sheet(10, 5, 1), Sheet(8, 5, 1), Sheet(8, 8, 1), Sheet(3, 15, 1)]
-placement, sheets_per_pattern = maxrects_bssf(rectangle, sheets, unlimited_bins=True)
-sheets = [(10, 5), (8, 5), (8, 8), (3, 15)]
-demands = [1, 1, 1, 1]
+sheets = [(10, 5), (8, 5), (8, 8), (3, 15), (6, 1), (5, 6), (10, 2), (4, 4)]
+demands = [2, 5, 4, 2, 6, 10, 11, 8]
 
-GA = Solver(sheets, demands, 15, 15)
+initial_sheets = [Sheet(width, height, 1) for width, height in sheets]
+placement, sheets_per_pattern = maxrects_bssf(rectangle, initial_sheets, unlimited_bins=True)
+waste = [b.free_area for b in placement]
+fitness, prints_per_pattern = solve_LP(waste, sheets_per_pattern, demands)
 
-s1 = Solution(placement, sheets_per_pattern)
+print(placement)
 
-print(s1.sheets_per_pattern)
-new_sheets_per_pattern = GA.swap(s1)
-print(new_sheets_per_pattern)
+initial_solution = Solution(placement, sheets_per_pattern, prints_per_pattern, fitness)
+
+S = Solver(sheets, demands, 15, 15)
+try:
+    print(S.choose_neighbor(initial_solution).__dict__ )
+except:
+    print(None)
