@@ -176,7 +176,7 @@ class Solver():
         set_patterns2 = select_patterns(parent2)
 
         all_selected_patterns = list(set([bin for _,bin in set_patterns1 + set_patterns2]))
-        coverd_sheets = set([sheet for sheet in bin.cuts for _,bin in all_selected_patterns])
+        covered_sheets = set([sheet for sheet in bin.cuts for _,bin in all_selected_patterns])
         not_covered_sheets = [Sheet(s.width, s.height, 1) for s in self.sheets if sheet not in coverd_sheets]
         
         placement, p = maxrects_bssf(self.rectangle, not_covered_sheets)
