@@ -175,24 +175,27 @@ class Solver():
         set_patterns1 = select_patterns(parent1)
         set_patterns2 = select_patterns(parent2)
 
-        sheets_not_in_patterns_sets = []
-        for i,_ in enumerate(self.sheets)
-            for j,_ in set_patterns1 + set_patterns2:
-                if (j,i) in parent1.sheets_per_pattern or (j,i) in parent2.sheets_per_pattern:
-                   continue
-            sheets_not_in_patterns_sets.append(i)
+        all_selected_patterns = list(set([bin for _,bin in set_patterns1 + set_patterns2]))
+        coverd_sheets = set([sheet for sheet in bin.cuts for _,bin in all_selected_patterns])
+        not_covered_sheets = [Sheet(s.width, s.height, 1) for s in self.sheets if sheet not in coverd_sheets]
         
-        empty_sheets = [Sheet(s.width, s.height, 1) for i, s in enumerate(self.sheets) if i not in sheets_not_in_patterns_sets]
-        placement, p = maxrects_bssf(self.rectangle, empty_sheets)
+        placement, p = maxrects_bssf(self.rectangle, not_covered_sheets)
         
-        selected_bins = [bin for _, bin in set_patterns1 + set_patterns2]
-        bins = selected_bins + placement
-        j_offset, i_offset = len(selected_bins), len(self.sheets) - len(empty_sheets)
-        p = { key,value for key,value in map(lambda (j,i),v: ((j+j_offset,i+i_offset),v), p.items()) }        
-        patterns_idxs = set([j for j,_ in set_patterns1] + [j for j,_ in set_patterns2])
+        bins = all_selected_patterns + placement
+        
+        updated_p, j_offset = {}, len(all_selected_patterns)
+        for sheet_idx, sheet in enumerate(self.sheets):
+            if sheet in covered_sheets: continue
+            for (j, i), count in p.items():
+                if sheet == not_covered_sheets[i]:
+                    updated_p[j+j_offset, sheet_idx] = count
+
+        patterns1_bins = set([bin for _,bin in set_patterns1])
+        patterns_idxs = set([j for j,_ in set_patterns1] + [j for j,bin in set_patterns2 if bin not in patterns1_bins])
+        
         sheets_per_patterns1 = { (j, i) : count for (j, i), count in parent1.sheets_per_pattern if j in patterns_idxs}
         sheets_per_patterns2 = { (j, i) : count for (j, i), count in parent2.sheets_per_pattern if j in patterns_idxs}
-        sheets_per_patterns = { **sheets_per_patterns1, **sheets_per_patterns2, **p }
+        sheets_per_patterns = { **sheets_per_patterns1, **sheets_per_patterns2, **updated_p }
 
         off_spring = Solution(bins, sheets_per_patterns)
 

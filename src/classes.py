@@ -11,6 +11,9 @@ class Rectangle:
 
     def __repr__(self):
         return f'<Rectangle> width: {self.width}, height: {self.height}'
+    
+    def __eq__(self, other):
+        return isinstance(other, Rectangle) and self.width == other.other and self.height == other.height
 
 
 '''A type of rectangular sheet requested by the client'''
