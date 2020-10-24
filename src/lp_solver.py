@@ -1,4 +1,4 @@
-from pulp import LpMinimize, LpProblem, LpStatus, lpSum, LpVariable
+from pulp import LpMinimize, LpProblem, LpStatus, lpSum, LpVariable, PULP_CBC_CMD
 
 def solve_LP(waste, sheets_per_pattern, demands):
     '''
@@ -24,6 +24,14 @@ def solve_LP(waste, sheets_per_pattern, demands):
     model += lpSum(x[j] * waste[j] for j in range(m))
 
     # Solve the optimization problem
-    model.solve()
+    model.solve(solver=PULP_CBC_CMD(msg=0))
 
     return model.objective.value(), {variable.name: variable.varValue for variable in model.variables()}
+
+waste = [1, 3]
+demands = [10, 15, 13]
+sheets_per_pattern = {
+    (0, 0): 0, (0, 1): 2, (0, 2): 1, (1, 0): 1, (1, 1): 2, (1, 2): 1
+}
+
+print(solve_LP(waste, sheets_per_pattern, demands))
