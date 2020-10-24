@@ -80,7 +80,7 @@ class Solver():
             return None
 
         sheets_per_pattern[pattern_one, sheet_two] += 1
-        if sheets_per_pattern[pattern_one, sheet_two] >= self.ub_sheet[sheet]:
+        if sheets_per_pattern[pattern_one, sheet_two] >= self.ub_sheet[sheet_two]:
             return None
 
         sheets_per_pattern[pattern_two, sheet_two] -= 1
@@ -88,10 +88,10 @@ class Solver():
             return None
 
         sheets_per_pattern[pattern_two, sheet_one] += 1
-        if sheets_per_pattern[pattern_two, sheet_one] >= self.ub_sheet[sheet]:
+        if sheets_per_pattern[pattern_two, sheet_one] >= self.ub_sheet[sheet_one]:
             return None
 
-        return sheets_per_pattern       
+        return sheets_per_pattern
 
     def choose_neighbor(self, solution):
         pass
