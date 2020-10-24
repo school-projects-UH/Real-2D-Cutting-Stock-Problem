@@ -24,6 +24,6 @@ def solve_LP(waste, sheets_per_pattern, demands):
     model += lpSum(x[j] * waste[j] for j in range(m))
 
     # Solve the optimization problem
-    status = model.solve()
+    model.solve()
 
     return model.objective.value(), {variable.name: variable.varValue for variable in model.variables()}

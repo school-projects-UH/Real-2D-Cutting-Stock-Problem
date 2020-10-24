@@ -18,7 +18,7 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    def __init__(self,sheets,demands, width ,height):
+    def __init__(self,sheets,demands, width ,height, pop_size=10, random_walk_steps=20):
         self.total_sheets = len(sheets)
         self.rectangle = Rectangle(width ,height)
         self.sheets = []
@@ -31,12 +31,20 @@ class Solver():
             self.sheets.append(Sheet(w, h, demands[i]))
             self.ub_sheet[i] = math.floor((width * height) / (w * h))
 
+        self.pop_size = pop_size
+        self.random_walk_steps = random_walk_steps
 
     def compute_amount_and_fitness(self):
         pass
 
-    def random_walk(self):
-        pass
+    def random_walk(self, initial_solution):
+        current_solution = initial_solution
+        for step in range(self.random_walk_steps):
+            new_solution = self.choose_neighbor(current_solution)
+            if new_solution != None:
+                current_solution = new_solution
+        return current_solution
+
 
     '''Adds one sheet i in the pattern j'''
     def add(self, solution):
@@ -62,7 +70,6 @@ class Solver():
             return None
 
         return sheets_per_pattern
-
 
 
     '''Moves one sheet from a pattern to another one'''
@@ -132,7 +139,18 @@ class Solver():
 
 
     def create_initial_population(self):
-        pass
+        initial_sheets = [Sheet(s.width, s.height, 1) for s in self.sheets]
+        placement, sheets_per_pattern = maxrects_bssf(self.rectangle, initial_sheets, unlimited_bins=True)
+        waste = [b.free_area for b in placement]
+        demands = [s.demand for s in self.sheets]
+        prints_per_parent, fitness = solve_LP(waste, sheets_per_pattern, demands)
+        initial_solution = Solution(placement, sheets_per_pattern, prints_per_parent, fitness)
+
+        initial_population = []
+        for _ in range(self.pop_size):
+            initial_population.append(self.random_walk(initial_solution))
+        
+        return initial_population
 
     def update_best_solution(self):
         pass
@@ -163,17 +181,7 @@ rectangle = Rectangle(15, 15)
 sheets = [(10, 5), (8, 5), (8, 8), (3, 15), (6, 1), (5, 6), (10, 2), (4, 4)]
 demands = [2, 5, 4, 2, 6, 10, 11, 8]
 
-initial_sheets = [Sheet(width, height, 1) for width, height in sheets]
-placement, sheets_per_pattern = maxrects_bssf(rectangle, initial_sheets, unlimited_bins=True)
-waste = [b.free_area for b in placement]
-fitness, prints_per_pattern = solve_LP(waste, sheets_per_pattern, demands)
-
-print(placement)
-
-initial_solution = Solution(placement, sheets_per_pattern, prints_per_pattern, fitness)
-
 S = Solver(sheets, demands, 15, 15)
-try:
-    print(S.choose_neighbor(initial_solution).__dict__ )
-except:
-    print(None)
+
+p = S.create_initial_population()
+print(p)
