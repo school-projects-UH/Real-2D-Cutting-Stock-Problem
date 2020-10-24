@@ -77,5 +77,3 @@ class Solution:
     def __init__(self, bins, sheets_per_pattern):
         self.bins = bins
         self.sheets_per_pattern = sheets_per_pattern
-        self.number_of_prints_per_pattern = []
-        self.minimum_waste = -1
