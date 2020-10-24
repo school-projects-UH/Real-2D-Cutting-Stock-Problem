@@ -157,7 +157,7 @@ class Solver():
 
     def crossover(self, Population):
         def select_patterns(parent):
-            patterns = [(bin.free_space, j, bin) for j, bin in enumerate(parent.bins)]
+            patterns = [(bin.free_space, bin) for bin in parent.bins]
             patterns.sort()
 
             # select a number between the [25%, 50%] of the patterns (patterns_len must be >= 4 since 0.25 * 4 = 1)
@@ -165,7 +165,7 @@ class Solver():
                                 random.randint(0.25 * len(patterns), 0.5 * len(patterns)) or \
                                 random.randint(0, len(patterns) - 1)
             
-            return [(j, bin) for _, j, bin in patterns[:count_to_select]]
+            return [bin for _, bin in patterns[:count_to_select]]
         
         P = list(Population)
         parent1 = P[random.randint(0, len(P)-1)]
@@ -175,28 +175,21 @@ class Solver():
         set_patterns1 = select_patterns(parent1)
         set_patterns2 = select_patterns(parent2)
 
-        all_selected_patterns = list(set([bin for _,bin in set_patterns1 + set_patterns2]))
-        covered_sheets = set([sheet for sheet in bin.cuts for _,bin in all_selected_patterns])
-        not_covered_sheets = [Sheet(s.width, s.height, 1) for s in self.sheets if sheet not in coverd_sheets]
-        
-        placement, p = maxrects_bssf(self.rectangle, not_covered_sheets)
+        all_selected_patterns = list(set(set_patterns1 + set_patterns2))
+        covered_sheets = set([sheet for sheet in bin.cuts for bin in all_selected_patterns])
+
+        sheets_to_process = [Sheet(s.width, s.heigth, s in covered_sheets and 0 or 1) for s in self.sheets]
+        placement, _ = maxrects_bssf(self.rectangle, sheets_to_process)
         
         bins = all_selected_patterns + placement
-        
-        updated_p, j_offset = {}, len(all_selected_patterns)
-        for sheet_idx, sheet in enumerate(self.sheets):
-            if sheet in covered_sheets: continue
-            for (j, i), count in p.items():
-                if sheet == not_covered_sheets[i]:
-                    updated_p[j+j_offset, sheet_idx] = count
+        sheets_per_patterns = { }
+        sheets_idx = { s:i for i,s in enumerate(self.sheets) }
 
-        patterns1_bins = set([bin for _,bin in set_patterns1])
-        patterns_idxs = set([j for j,_ in set_patterns1] + [j for j,bin in set_patterns2 if bin not in patterns1_bins])
+        for j, bin in enumerate(bins):
+            for s in bin.cuts:
+                i = sheets_idx[s]
+                sheets_per_patterns[j,i] = (j,i) not in sheets_per_patterns and 1 or sheets_per_patterns[j,i]+1
         
-        sheets_per_patterns1 = { (j, i) : count for (j, i), count in parent1.sheets_per_pattern if j in patterns_idxs}
-        sheets_per_patterns2 = { (j, i) : count for (j, i), count in parent2.sheets_per_pattern if j in patterns_idxs}
-        sheets_per_patterns = { **sheets_per_patterns1, **sheets_per_patterns2, **updated_p }
-
         off_spring = Solution(bins, sheets_per_patterns)
 
         # Call Hillclimb

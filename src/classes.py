@@ -14,6 +14,9 @@ class Rectangle:
     
     def __eq__(self, other):
         return isinstance(other, Rectangle) and self.width == other.other and self.height == other.height
+    
+    def __hash__(self):
+        return hash((self.width, self.height))
 
 
 '''A type of rectangular sheet requested by the client'''
