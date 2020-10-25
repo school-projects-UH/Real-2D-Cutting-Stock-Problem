@@ -155,8 +155,44 @@ class Solver():
     def bests_solution_reproduction(self):
         pass
 
-    def crossover(self):
-        pass
+    def crossover(self, Population):
+        def select_patterns(parent):
+            patterns = [(bin.free_space, bin) for bin in parent.bins]
+            patterns.sort()
+
+            # select a number between the [25%, 50%] of the patterns (patterns_len must be >= 4 since 0.25 * 4 = 1)
+            count_to_select = len(patterns) >= 4 and \
+                                random.randint(0.25 * len(patterns), 0.5 * len(patterns)) or \
+                                random.randint(0, len(patterns) - 1)
+            
+            return [bin for _, bin in patterns[:count_to_select]]
+        
+        P = list(Population)
+        parent1 = P[random.randint(0, len(P)-1)]
+        P.remove(parent1)
+        parent2 = P[random.randint(0, len(P)-1)]
+
+        set_patterns1 = select_patterns(parent1)
+        set_patterns2 = select_patterns(parent2)
+
+        all_selected_patterns = list(set(set_patterns1 + set_patterns2))
+        covered_sheets = set([sheet for sheet in bin.cuts for bin in all_selected_patterns])
+
+        sheets_to_process = [Sheet(s.width, s.heigth, s in covered_sheets and 0 or 1) for s in self.sheets]
+        placement, _ = maxrects_bssf(self.rectangle, sheets_to_process)
+        
+        bins = all_selected_patterns + placement
+        sheets_per_patterns = { }
+        sheets_idx = { s:i for i,s in enumerate(self.sheets) }
+
+        for j, bin in enumerate(bins):
+            for s in bin.cuts:
+                i = sheets_idx[s]
+                sheets_per_patterns[j,i] = (j,i) not in sheets_per_patterns and 1 or sheets_per_patterns[j,i]+1
+        
+        off_spring = Solution(bins, sheets_per_patterns)
+
+        # Call Hillclimb
 
     def mutation(self, population):
         parent = population[randint(0, len(population)-1)]
