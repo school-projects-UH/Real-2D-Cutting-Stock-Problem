@@ -2,9 +2,12 @@ import math
 import random
 from classes import *
 from bin_pack import maxrects_bssf
+from lp_solver import solve_LP
 from random import randint
 
 def _pick_two_randoms(top):
+    if top == 1:
+        return 0, 0
     r1 = randint(0, top-1)
     r2 = None
     if r1 == 0:
@@ -17,25 +20,32 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    def __init__(self,sheets,demands, width ,height):
+    def __init__(self, rectangle, sheets, pop_size=10, random_walk_steps=30, hill_climbing_neighbors=10):
         self.total_sheets = len(sheets)
-        self.rectangle = Rectangle(width ,height)
-        self.sheets = []
+        self.rectangle = rectangle
+        self.sheets = sheets
 
-        self.lb_patterns = math.ceil(sum([w * h for (w, h) in sheets]) / (width * height)) #lower bound of the number of patterns
+        self.lb_patterns = math.ceil(sum([s.width * s.height for s in sheets]) / (rectangle.width * rectangle.height)) #lower bound of the number of patterns
         self.ub_sheet = {}  # the number of sheets i which can be placed on one pattern
 
         for i, sheet in enumerate(sheets):
-            w, h = sheet
-            self.sheets.append(Sheet(w, h, demands[i]))
-            self.ub_sheet[i] = math.floor((width * height) / (w * h))
+            self.ub_sheet[i] = math.floor((rectangle.width * rectangle.height) / (sheet.width * sheet.height))
 
+        self.pop_size = pop_size
+        self.random_walk_steps = random_walk_steps
+        self.hill_climbing_neighbors = hill_climbing_neighbors
 
     def compute_amount_and_fitness(self):
         pass
 
-    def random_walk(self):
-        pass
+    def random_walk(self, initial_solution):
+        current_solution = initial_solution
+        for step in range(self.random_walk_steps):
+            new_solution = self.choose_neighbor(current_solution)
+            if new_solution != None:
+                current_solution = new_solution
+        return current_solution
+
 
     '''Adds one sheet i in the pattern j'''
     def add(self, solution):
@@ -56,12 +66,10 @@ class Solver():
         sheet = random.randint(0, self.total_sheets - 1)
         sheets_per_pattern = dict(solution.sheets_per_pattern)
         sheets_per_pattern[pattern, sheet] -= 1
-
-        if sheets_per_pattern[pattern,sheet] < 0 or sum([sheets_per_pattern[_pattern, _sheet] for _pattern, _sheet in sheets_per_pattern if _pattern == pattern]) == 0:
+        if sheets_per_pattern[pattern,sheet] < 0 or sum([sheets_per_pattern[_pattern, _sheet] for _pattern, _sheet in sheets_per_pattern if _sheet == sheet]) == 0:
             return None
 
         return sheets_per_pattern
-
 
 
     '''Moves one sheet from a pattern to another one'''
@@ -106,10 +114,37 @@ class Solver():
         return sheets_per_pattern
 
     def choose_neighbor(self, solution):
-        pass
+        operator = [self.add, self.remove, self.move, self.swap][randint(0, 3)]
+        sheets_per_pattern = operator(solution)
+
+        # if the operator could not be applied
+        if sheets_per_pattern == None:
+            return None
+
+        bins = []
+        # Check the feasibility of the new solution
+        for i in range(len(solution.bins)):
+            sheets = [Sheet(s.width, s.height, sheets_per_pattern[i, j]) for j,s in enumerate(self.sheets)]
+            placement, _ = maxrects_bssf(self.rectangle, sheets)
+            if placement == []:
+                return None
+            bins += placement
+
+        fitness, prints_per_pattern = solve_LP(bins, sheets_per_pattern, self.sheets)
+        neighbor = Solution(bins, sheets_per_pattern, prints_per_pattern, fitness)
+        return neighbor
+
 
     def create_initial_population(self):
-        pass
+        initial_sheets = [Sheet(s.width, s.height, 1) for s in self.sheets]
+        placement, sheets_per_pattern = maxrects_bssf(self.rectangle, initial_sheets, unlimited_bins=True)
+        fitness, prints_per_pattern = solve_LP(placement, sheets_per_pattern, self.sheets)
+        initial_solution = Solution(placement, sheets_per_pattern, prints_per_pattern, fitness)
+        initial_population = []
+        for _ in range(self.pop_size):
+            initial_population.append(self.random_walk(initial_solution))
+
+        return initial_population
 
     def update_best_solution(self):
         pass
@@ -123,29 +158,34 @@ class Solver():
     def crossover(self):
         pass
 
-    def mutation(self):
-        pass
+    def mutation(self, population):
+        parent = population[randint(0, len(population)-1)]
+        print(f"Parent solution:\n{parent}")
+        offspring = self.random_walk(parent)
+        offspring = self.hill_climbing(offspring, self.hill_climbing_neighbors)
+        print(f"Offspring:\n{offspring}")
+        return offspring
 
-    def hill_climbing(self):
-        pass
+
+    def hill_climbing(self, solution, no_neighbors):
+        current_solution = solution
+
+        while True:
+            best_neighbor = current_solution
+            for _ in range(no_neighbors):
+                new_neighbor = self.choose_neighbor(current_solution)
+                if new_neighbor != None and new_neighbor.fitness < best_neighbor.fitness:
+                    best_neighbor = new_neighbor
+
+            if best_neighbor.fitness < current_solution.fitness:
+                current_solution = best_neighbor
+            else:
+                break
+
+        return current_solution
 
     def delete_overproduction(self):
         pass
 
     def genetic_algorithm(self):
         pass
-
-
-rectangle = Rectangle(15, 15)
-sheets = [Sheet(10, 5, 1), Sheet(8, 5, 1), Sheet(8, 8, 1), Sheet(3, 15, 1)]
-placement, sheets_per_pattern = maxrects_bssf(rectangle, sheets, unlimited_bins=True)
-sheets = [(10, 5), (8, 5), (8, 8), (3, 15)]
-demands = [1, 1, 1, 1]
-
-GA = Solver(sheets, demands, 15, 15)
-
-s1 = Solution(placement, sheets_per_pattern)
-
-print(s1.sheets_per_pattern)
-new_sheets_per_pattern = GA.swap(s1)
-print(new_sheets_per_pattern)

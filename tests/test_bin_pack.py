@@ -49,14 +49,14 @@ class BinPackTestCase(unittest.TestCase):
         self.assertTrue(len(placement) == 1)
         self.assertTrue(placement[0].cuts == [
             FixedRectangle(width=10, height=10, position=(0, 50), rotated=False),
-            FixedRectangle(width=20, height=8, position=(0, 40), rotated=True),
-            FixedRectangle(width=10, height=5, position=(0, 20), rotated=True),
-            FixedRectangle(width=5, height=2, position=(0, 10), rotated=True),
-            FixedRectangle(width=20, height=30, position=(5, 20), rotated=True),
-            FixedRectangle(width=20, height=30, position=(10, 50), rotated=False),
-            FixedRectangle(width=10, height=3, position=(2, 10), rotated=True),
-            FixedRectangle(width=10, height=50, position=(35, 50), rotated=False),
-            FixedRectangle(width=1, height=18, position=(8, 40), rotated=False)])
+            FixedRectangle(width=20, height=8, position=(10, 50), rotated=False),
+            FixedRectangle(width=10, height=5, position=(30, 50), rotated=False),
+            FixedRectangle(width=5, height=2, position=(40, 50), rotated=False),
+            FixedRectangle(width=20, height=30, position=(30, 45), rotated=False),
+            FixedRectangle(width=20, height=30, position=(0, 40), rotated=True),
+            FixedRectangle(width=10, height=3, position=(40, 15), rotated=False),
+            FixedRectangle(width=10, height=50, position=(0, 12), rotated=True),
+            FixedRectangle(width=1, height=18, position=(10, 42), rotated=True)])
 
     def test_maxrects_bssf_more_than_one_bin(self):
         sheet = FixedRectangle(15, 15, (0, 15))
