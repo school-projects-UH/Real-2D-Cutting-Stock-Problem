@@ -79,3 +79,6 @@ class Solution:
         self.sheets_per_pattern = sheets_per_pattern
         self.prints_per_pattern = prints_per_pattern
         self.fitness = fitness
+
+    def __repr__(self):
+        return f"<Solution>:\nBins:\n{self.bins}\nSheets Per Pattern:\n{self.sheets_per_pattern}\nPrints per Pattern:\n{self.prints_per_pattern}\nFitness: {self.fitness}\n\n"
