@@ -1,7 +1,7 @@
 try:
-    from .classes import Rectangle, FixedRectangle, Bin
+    from .classes import Rectangle, FixedRectangle, Bin, Sheet
 except:
-    from classes import Rectangle, FixedRectangle, Bin
+    from classes import Rectangle, FixedRectangle, Bin, Sheet
 
 # Returns a tuple (i, j, need_to_rotate) where i is the index of the bin and j is the index of the free_rectangle that best fits
 def find_best_fit(rectangle, bins):
@@ -25,45 +25,29 @@ def find_best_fit(rectangle, bins):
 def maxrect_split(rectangle: FixedRectangle, free_rectangle: FixedRectangle):
     new_free_rectangles = set()
 
-    if is_contained(rectangle.top_left, free_rectangle):
-        new_free_rectangles.add(FixedRectangle(
-            width=rectangle.left - free_rectangle.left,
-            height=free_rectangle.height,
-            position=free_rectangle.position))
+    if rectangle.up > free_rectangle.up and rectangle.up < free_rectangle.down and rectangle.left < free_rectangle.right and rectangle.right > free_rectangle.left:
         new_free_rectangles.add(FixedRectangle(
             width=free_rectangle.width,
-            height=rectangle.up-free_rectangle.up,
+            height=rectangle.up - free_rectangle.up,
             position=(free_rectangle.left, rectangle.up)))
 
-    if is_contained(rectangle.top_right, free_rectangle):
+    if rectangle.right < free_rectangle.right and rectangle.right > free_rectangle.left and rectangle.up < free_rectangle.down and rectangle.down > free_rectangle.up:
         new_free_rectangles.add(FixedRectangle(
-            width=free_rectangle.right-rectangle.right,
+            width=free_rectangle.right - rectangle.right,
             height=free_rectangle.height,
             position=(rectangle.right, free_rectangle.down)))
-        new_free_rectangles.add(FixedRectangle(
-            width=free_rectangle.width,
-            height=rectangle.up-free_rectangle.up,
-            position=(free_rectangle.left, rectangle.up)))
 
-    if is_contained(rectangle.bottom_right, free_rectangle):
-        new_free_rectangles.add(FixedRectangle(
-            width=free_rectangle.right-rectangle.right,
-            height=free_rectangle.height,
-            position=(rectangle.right, free_rectangle.down)))
+    if rectangle.down < free_rectangle.down and rectangle.down > free_rectangle.up and rectangle.left < free_rectangle.right and rectangle.right > free_rectangle.left:
         new_free_rectangles.add(FixedRectangle(
             width=free_rectangle.width,
             height=free_rectangle.down - rectangle.down,
-            position=free_rectangle.position))
+            position=(free_rectangle.left, free_rectangle.down)))
 
-    if is_contained(rectangle.bottom_left, free_rectangle):
+    if rectangle.left > free_rectangle.left and rectangle.left < free_rectangle.right and rectangle.down > free_rectangle.up and rectangle.up < free_rectangle.down:
         new_free_rectangles.add(FixedRectangle(
             width=rectangle.left - free_rectangle.left,
             height=free_rectangle.height,
-            position=free_rectangle.position))
-        new_free_rectangles.add(FixedRectangle(
-            width=free_rectangle.width,
-            height=free_rectangle.down - rectangle.down,
-            position=free_rectangle.position))
+            position=(free_rectangle.left, free_rectangle.down)))
 
     return list(new_free_rectangles)
 
@@ -114,7 +98,7 @@ def maxrects_bssf(rectangle, sheets, unlimited_bins=False):
             for fr in free_rectangles.copy():
                 l = len(current_bin.free_rectangles)
                 free_rectangles += maxrect_split(new_cut, fr)
-                if len(free_rectangles) > l:
+                if len(free_rectangles) > l or is_wrapped(fr, new_cut):
                     free_rectangles.remove(fr)
 
             # Remove all free rectangles contained inside another
@@ -135,3 +119,4 @@ def maxrects_bssf(rectangle, sheets, unlimited_bins=False):
             except KeyError:
                 p[b,s] = 0
     return bins, p
+

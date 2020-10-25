@@ -20,7 +20,7 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    def __init__(self, rectangle, sheets, pop_size=10, random_walk_steps=20):
+    def __init__(self, rectangle, sheets, pop_size=10, random_walk_steps=30):
         self.total_sheets = len(sheets)
         self.rectangle = rectangle
         self.sheets = sheets
@@ -131,7 +131,6 @@ class Solver():
 
         fitness, prints_per_pattern = solve_LP(bins, sheets_per_pattern, self.sheets)
         neighbor = Solution(bins, sheets_per_pattern, prints_per_pattern, fitness)
-
         return neighbor
 
 
@@ -162,18 +161,22 @@ class Solver():
         pass
 
     def hill_climbing(self, solution, no_neighbors):
+        print(f'Initial Solution: {solution}')
         current_solution = solution
 
         while True:
-            neighbors = [self.choose_neighbor(current_solution) for _ in range(no_neighbors)]
-            fitness_of_neighbors = [n.fitness if n != None else solution.fitness for n in neighbors]
-            best_neighbor = neighbors[fitness_of_neighbors.index(min(fitness_of_neighbors))]
+            best_neighbor = current_solution
+            for _ in range(no_neighbors):
+                new_neighbor = self.choose_neighbor(current_solution)
+                if new_neighbor != None and new_neighbor.fitness < best_neighbor.fitness:
+                    best_neighbor = new_neighbor
 
-            if (best_neighbor.fitness < current_solution.fitness):
+            if best_neighbor.fitness < current_solution.fitness:
                 current_solution = best_neighbor
             else:
                 break
-
+        
+        print(f'Improved solution: {current_solution}')
         return current_solution
 
     def delete_overproduction(self):
@@ -182,7 +185,10 @@ class Solver():
     def genetic_algorithm(self):
         pass
 
-rectangle = Rectangle(50, 50)
-sheets = [Sheet(10, 10, 1), Sheet(10, 15, 1), Sheet(25, 30, 1), Sheet(25, 25, 1)]
-solver = Solver(rectangle, sheets,5)
-print(solver.create_initial_population())
+
+
+# rectangle = Rectangle(40, 40)
+# sheets = [Sheet(10, 20, 100), Sheet(30, 40, 300), Sheet(20, 20, 800)]
+# solver = Solver(rectangle, sheets)
+# A = solver.create_initial_population()
+# solver.hill_climbing(A[0], 10)
