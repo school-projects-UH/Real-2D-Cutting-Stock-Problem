@@ -20,7 +20,7 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    def __init__(self, rectangle, sheets, pop_size=10, random_walk_steps=30):
+    def __init__(self, rectangle, sheets, pop_size=10, random_walk_steps=30, hill_climbing_neighbors=10):
         self.total_sheets = len(sheets)
         self.rectangle = rectangle
         self.sheets = sheets
@@ -33,6 +33,7 @@ class Solver():
 
         self.pop_size = pop_size
         self.random_walk_steps = random_walk_steps
+        self.hill_climbing_neighbors = hill_climbing_neighbors
 
     def compute_amount_and_fitness(self):
         pass
@@ -157,11 +158,16 @@ class Solver():
     def crossover(self):
         pass
 
-    def mutation(self):
-        pass
+    def mutation(self, population):
+        parent = population[randint(0, len(population)-1)]
+        print(f"Parent solution:\n{parent}")
+        offspring = self.random_walk(parent)
+        offspring = self.hill_climbing(offspring, self.hill_climbing_neighbors)
+        print(f"Offspring:\n{offspring}")
+        return offspring
+
 
     def hill_climbing(self, solution, no_neighbors):
-        print(f'Initial Solution: {solution}')
         current_solution = solution
 
         while True:
@@ -175,8 +181,7 @@ class Solver():
                 current_solution = best_neighbor
             else:
                 break
-        
-        print(f'Improved solution: {current_solution}')
+
         return current_solution
 
     def delete_overproduction(self):
@@ -184,11 +189,3 @@ class Solver():
 
     def genetic_algorithm(self):
         pass
-
-
-
-# rectangle = Rectangle(40, 40)
-# sheets = [Sheet(10, 20, 100), Sheet(30, 40, 300), Sheet(20, 20, 800)]
-# solver = Solver(rectangle, sheets)
-# A = solver.create_initial_population()
-# solver.hill_climbing(A[0], 10)
