@@ -150,7 +150,6 @@ class Solver():
         initial_population = []
         for _ in range(self.pop_size):
             initial_population.append(self.random_walk(initial_solution))
-
         return initial_population
 
     def update_best_solution(self, population):
@@ -279,13 +278,29 @@ class Solver():
             self.trace.write("----------------------------------------------------------------------------------------------\n\n")
 
         best_known = self.hill_climbing(best_known)
-
+        self.clean_solution(best_known)
         self.output.write(f"Output:\n{best_known}")
+
         # delete overproduction ???
+
         end_time = time.time()
         exec_time = end_time - start_time
         self.output.write(f"Time:{exec_time} seconds")
+
         return best_known
+
+    def clean_solution(self, solution):
+        updated_prints_per_pattern = {}
+        counter = 0
+        for i, bin in enumerate(solution.bins):
+            if solution.prints_per_pattern[f'x{i}'] != 0:
+                updated_prints_per_pattern[f'x{counter}'] = solution.prints_per_pattern[f'x{i}']
+                counter += 1
+        for (i, no_prints) in solution.prints_per_pattern.items():
+            if no_prints == 0:
+                solution.bins.pop(int(i[1:]))
+        solution.prints_per_pattern = updated_prints_per_pattern
+
 
     def print_population(self, population):
         result = ''
