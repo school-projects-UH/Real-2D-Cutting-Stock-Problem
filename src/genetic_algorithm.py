@@ -22,7 +22,7 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    def __init__(self, rectangle, sheets, pop_size=15, random_walk_steps=30, hill_climbing_neighbors=10, roulette_pop = 10, no_best_solutions=8):
+    def __init__(self, rectangle, sheets, pop_size=15, random_walk_steps=30, hill_climbing_neighbors=10, roulette_pop = 10, no_best_solutions=8, no_generations=20, prob_crossover=0.75):
         self.total_sheets = len(sheets)
         self.rectangle = rectangle
         self.sheets = sheets
@@ -38,6 +38,8 @@ class Solver():
         self.hill_climbing_neighbors = hill_climbing_neighbors
         self.roulette_pop = roulette_pop
         self.no_best_solutions = no_best_solutions
+        self.no_generations = no_generations
+        self.prob_crossover=prob_crossover
 
     def compute_amount_and_fitness(self):
         pass
@@ -144,8 +146,12 @@ class Solver():
 
         return initial_population
 
-    def update_best_solution(self):
-        pass
+    def update_best_solution(self, population):
+        best_solution = population[0]
+        for solution in population:
+            if solution.fitness < best_solution.fitness:
+                best_solution = solution
+        return best_solution
 
     def roulette_wheel_selection(self, population):
         fitness = [solution.fitness for solution in population]
@@ -162,8 +168,10 @@ class Solver():
                     break
         return chosen
 
-    def bests_solution_reproduction(self):
-        pass
+    def bests_solution_reproduction(self, population):
+        solutions = [(solution.fitness, solution) for solution in population]
+        solutions.sort()
+        return [solution for (_, solution) in solutions[:self.no_best_solutions]]
 
     def crossover(self, Population):
         def select_patterns(parent):
@@ -172,7 +180,7 @@ class Solver():
 
             # select a number between the [25%, 50%] of the patterns (patterns_len must be >= 4 since 0.25 * 4 = 1)
             count_to_select = len(patterns) >= 4 and \
-                                random.randint(0.25 * len(patterns), 0.5 * len(patterns)) or \
+                                random.randint(math.ceil(0.25 * len(patterns)),math.floor(0.5 * len(patterns))) or \
                                 random.randint(0, len(patterns) - 1)
 
             return [bin for _, bin in patterns[:count_to_select]]
@@ -240,7 +248,22 @@ class Solver():
         pass
 
     def genetic_algorithm(self):
-        pass
+        current_generation = self.create_initial_population()
+        best_known = self.update_best_solution(current_generation)
+
+        for k in range(self.no_generations):
+            intermediate_generation = self.roulette_wheel_selection(current_generation)
+            current_generation = self.bests_solution_reproduction(current_generation)
+            for i in range(len(current_generation), self.pop_size):
+                if random.random() < self.prob_crossover:
+                    current_generation.append(self.crossover(intermediate_generation))
+                else:
+                    current_generation.append(self.mutation(intermediate_generation))
+
+        best_known = self.update_best_solution(current_generation)
+        best_known = self.hill_climbing(best_known)
+        # delete overproduction ???
+        return best_known
 
     def print_population(self, population):
         result = ''
@@ -254,8 +277,17 @@ sheets = [Sheet(40, 60, 500), Sheet(50, 50, 1000), Sheet(22, 22, 400), Sheet(70,
 solver = Solver(rectangle, sheets)
 
 
-first_generation = solver.create_initial_population()
-print(f'First Generation:\n{solver.print_population(first_generation)}\n')
-intermediate_generation = solver.roulette_wheel_selection(first_generation)
-second_generation = solver.crossover(intermediate_generation)
-print(f'Second Generation:\n{solver.print_population([second_generation])}\n')
+
+print(solver.genetic_algorithm())
+
+# first_generation = solver.create_initial_population()
+# print(f'First Generation:\n{solver.print_population(first_generation)}\n')
+
+# print(f'Best solution: {solver.update_best_solution(first_generation)}')
+
+# intermediate_generation = solver.roulette_wheel_selection(first_generation)
+# second_generation = solver.crossover(intermediate_generation)
+# print(f'Second Generation:\n{solver.print_population([second_generation])}\n')
+
+# bests_solutions = solver.bests_solution_reproduction(first_generation)
+# print(f'Best solutions:\n{solver.print_population(bests_solutions)}')

@@ -93,6 +93,9 @@ class Solution:
         self.prints_per_pattern = prints_per_pattern
         self.fitness = fitness
 
+    def __gt__(self, other):
+        return self.fitness > other.fitness
+
     def __repr__(self):
         result = ''
         for idx,bin in enumerate(self.bins):
