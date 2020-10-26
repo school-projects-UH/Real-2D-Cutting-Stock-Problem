@@ -5,7 +5,7 @@ from random import randint
 from bin_pack import maxrects_bssf
 from classes import *
 from lp_solver import solve_LP
-
+import time
 
 def _pick_two_randoms(top):
     if top == 1:
@@ -255,6 +255,7 @@ class Solver():
         pass
 
     def genetic_algorithm(self):
+        start_time = time.time()
         self.trace = open("trace.txt", "w")
         current_generation = self.create_initial_population()
         self.trace.write(f"Initial Generation:\n{self.print_population(current_generation)}")
@@ -272,7 +273,7 @@ class Solver():
                     current_generation.append(self.mutation(intermediate_generation))
 
             best_known = self.update_best_solution(current_generation)
-            print(f"Generation #{k}")
+            print(f"Generation #{k+1}")
             self.trace.write(f"Generation #{k+1}:\n{self.print_population(current_generation)}")
             self.trace.write(f"Best known solution:\n{best_known}\n")
             self.trace.write("----------------------------------------------------------------------------------------------\n\n")
@@ -281,6 +282,9 @@ class Solver():
 
         self.output.write(f"Output:\n{best_known}")
         # delete overproduction ???
+        end_time = time.time()
+        exec_time = end_time - start_time
+        self.output.write(f"Time:{exec_time} seconds")
         return best_known
 
     def print_population(self, population):
@@ -288,24 +292,3 @@ class Solver():
         for idx, solution in enumerate(population):
             result += f'Solution #{idx + 1}:\n{solution}\n\n'
         return result
-
-
-# rectangle = Rectangle(100, 100)
-# sheets = [Sheet(40, 60, 500), Sheet(50, 50, 1000), Sheet(22, 22, 400), Sheet(70, 40, 2000), Sheet(50, 30, 400)]
-# solver = Solver(rectangle, sheets)
-
-
-
-# print(solver.genetic_algorithm())
-
-# first_generation = solver.create_initial_population()
-# print(f'First Generation:\n{solver.print_population(first_generation)}\n')
-
-# print(f'Best solution: {solver.update_best_solution(first_generation)}')
-
-# intermediate_generation = solver.roulette_wheel_selection(first_generation)
-# second_generation = solver.crossover(intermediate_generation)
-# print(f'Second Generation:\n{solver.print_population([second_generation])}\n')
-
-# bests_solutions = solver.bests_solution_reproduction(first_generation)
-# print(f'Best solutions:\n{solver.print_population(bests_solutions)}')

@@ -10,6 +10,6 @@ if __name__ == "__main__":
     for line in lines[1:]:
         [width, height, demand] = line.split(' ')
         sheets.append(Sheet(int(width), int(height), int(demand)))
-    
+
     solver = Solver(rectangle, sheets)
     solver.genetic_algorithm()
