@@ -119,4 +119,3 @@ def maxrects_bssf(rectangle, sheets, unlimited_bins=False):
             except KeyError:
                 p[b,s] = 0
     return bins, p
-

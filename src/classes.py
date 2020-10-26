@@ -75,6 +75,9 @@ class Bin(FixedRectangle):
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
+    def __hash__(self):
+        return random.randint(0, 100000000000000000000000000000000000000000000000000000000000000000)
+
     def __repr__(self):
         return f'<Bin> width: {self.width}, height: {self.height}, cuts: {self.cuts}, free area: {self.free_area}'
 

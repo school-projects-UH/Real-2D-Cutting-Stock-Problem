@@ -1,9 +1,11 @@
 import math
 import random
-from classes import *
-from bin_pack import maxrects_bssf
-from lp_solver import solve_LP
 from random import randint
+
+from bin_pack import maxrects_bssf
+from classes import *
+from lp_solver import solve_LP
+
 
 def _pick_two_randoms(top):
     if top == 1:
@@ -170,16 +172,16 @@ class Solver():
 
     def crossover(self, Population):
         def select_patterns(parent):
-            patterns = [(bin.free_space, bin) for bin in parent.bins]
+            patterns = [(bin.free_area, bin) for bin in parent.bins]
             patterns.sort()
 
             # select a number between the [25%, 50%] of the patterns (patterns_len must be >= 4 since 0.25 * 4 = 1)
             count_to_select = len(patterns) >= 4 and \
                                 random.randint(0.25 * len(patterns), 0.5 * len(patterns)) or \
                                 random.randint(0, len(patterns) - 1)
-            
+
             return [bin for _, bin in patterns[:count_to_select]]
-        
+
         P = list(Population)
         parent1 = P[random.randint(0, len(P)-1)]
         P.remove(parent1)
@@ -189,30 +191,36 @@ class Solver():
         set_patterns2 = select_patterns(parent2)
 
         all_selected_patterns = list(set(set_patterns1 + set_patterns2))
-        covered_sheets = set([sheet for sheet in bin.cuts for bin in all_selected_patterns])
 
-        sheets_to_process = [Sheet(s.width, s.heigth, s in covered_sheets and 0 or 1) for s in self.sheets]
-        placement, _ = maxrects_bssf(self.rectangle, sheets_to_process)
-        
+        covered_sheets = []
+        for bin in all_selected_patterns:
+            for sheet in bin.cuts:
+                covered_sheets.append(sheets)
+
+        sheets_to_process = [Sheet(s.width, s.height, s in covered_sheets and 0 or 1) for s in self.sheets]
+        placement, _ = maxrects_bssf(self.rectangle, sheets_to_process, unlimited_bins=True)
+
         bins = all_selected_patterns + placement
         sheets_per_patterns = { }
-        sheets_idx = { s:i for i,s in enumerate(self.sheets) }
+        sheets_idx = { (s.width, s.height):i for i,s in enumerate(self.sheets) }
+
+        for bin in range(len(bins)):
+            for sheet_idx in range(len(self.sheets)):
+                sheets_per_patterns[bin, sheet_idx] = 0
 
         for j, bin in enumerate(bins):
-            for s in bin.cuts:
-                i = sheets_idx[s]
-                sheets_per_patterns[j,i] = (j,i) not in sheets_per_patterns and 1 or sheets_per_patterns[j,i]+1
-        
-        off_spring = Solution(bins, sheets_per_patterns)
+            for cut in bin.cuts:
+                i = sheets_idx[cut.width, cut.height] if not cut.rotated else sheets_idx[cut.height, cut.width]
+                sheets_per_patterns[j,i] = sheets_per_patterns[j,i]+1
 
-        # Call Hillclimb
+        fitness, prints_per_pattern = solve_LP(bins, sheets_per_patterns, self.sheets)
+        off_spring = Solution(bins, sheets_per_patterns, prints_per_pattern, fitness)
+        return self.hill_climbing(off_spring, self.hill_climbing_neighbors)
 
     def mutation(self, population):
         parent = population[randint(0, len(population)-1)]
-        print(f"Parent solution:\n{parent}")
         offspring = self.random_walk(parent)
         offspring = self.hill_climbing(offspring, self.hill_climbing_neighbors)
-        print(f"Offspring:\n{offspring}")
         return offspring
 
 
@@ -238,3 +246,13 @@ class Solver():
 
     def genetic_algorithm(self):
         pass
+
+rectangle = Rectangle(100, 100)
+sheets = [Sheet(40, 60, 500), Sheet(50, 50, 1000), Sheet(22, 22, 400), Sheet(70, 40, 2000), Sheet(50, 30, 400)]
+solver = Solver(rectangle, sheets)
+
+first_generation = solver.create_initial_population()
+print(f'First Generation:\n{first_generation}\n---------------------------------------------------------\n')
+
+second_generation = solver.crossover(first_generation)
+print(f'Second Generation:\n{second_generation}\n')
