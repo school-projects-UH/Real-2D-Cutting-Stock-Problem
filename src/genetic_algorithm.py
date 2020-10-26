@@ -151,7 +151,7 @@ class Solver():
         total_fit = float(sum(fitness))
         relative_fitness = [f / total_fit for f in fitness]
         probabilities = [sum(relative_fitness[:i+1]) for i in range(len(relative_fitness))]
- 
+
         chosen = []
         for _ in range(self.roulette_pop):
             r = random.random()
@@ -241,13 +241,20 @@ class Solver():
     def genetic_algorithm(self):
         pass
 
+    def print_population(self, population):
+        result = ''
+        for idx, solution in enumerate(population):
+            result += f'Solution #{idx}:\n{solution}\n'
+        return result
+
+
 rectangle = Rectangle(100, 100)
 sheets = [Sheet(40, 60, 500), Sheet(50, 50, 1000), Sheet(22, 22, 400), Sheet(70, 40, 2000), Sheet(50, 30, 400)]
 solver = Solver(rectangle, sheets)
 
 
 first_generation = solver.create_initial_population()
-print(f'First Generation:\n{first_generation}\n')
+print(f'First Generation:\n{solver.print_population(first_generation)}\n')
 intermediate_generation = solver.roulette_wheel_selection(first_generation)
 second_generation = solver.crossover(intermediate_generation)
-print(f'Second Generation:\n{second_generation}\n')
+print(f'Second Generation:\n{solver.print_population([second_generation])}\n')

@@ -54,7 +54,7 @@ class FixedRectangle(Rectangle):
         return self.__dict__ == other.__dict__
 
     def __repr__(self):
-        return f'\n<FixedRectangle> width: {self.width}, height: {self.height}, position: {self.bottom_left}, rotated: {self.rotated}'
+        return f'{self.position}: {self.width} X {self.height}'
 
     def __hash__(self):
         return int.from_bytes(hashlib.sha256(json.dumps(self.__dict__).encode()).digest(), byteorder=sys.byteorder)
@@ -79,7 +79,11 @@ class Bin(FixedRectangle):
         return random.randint(0, 100000000000000000000000000000000000000000000000000000000000000000)
 
     def __repr__(self):
-        return f'<Bin> width: {self.width}, height: {self.height}, cuts: {self.cuts}, free area: {self.free_area}'
+        result = ''
+        for cut in self.cuts:
+            result += str(cut) + '  '
+        result += f'\nfree space: {self.free_area}   '
+        return result
 
 
 class Solution:
@@ -92,7 +96,7 @@ class Solution:
     def __repr__(self):
         result = ''
         for idx,bin in enumerate(self.bins):
-            result += bin.__repr__()
-            result += f'No. of prints: ' + str(self.prints_per_pattern[f'x{idx}'])
-        result += f'fitness: {self.fitness}'
+            result += str(bin)
+            result += f'No. of prints: ' + str(self.prints_per_pattern[f'x{idx}']) + '\n\n'
+        result += f'fitness: {self.fitness}\n\n'
         return result
