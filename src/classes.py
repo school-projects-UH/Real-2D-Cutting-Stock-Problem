@@ -10,10 +10,10 @@ class Rectangle:
         self.height = height
 
     def __repr__(self):
-        return f'<Rectangle> width: {self.width}, height: {self.height}'
+        return f'{self.width} X {self.height}\n'
     
     def __eq__(self, other):
-        return isinstance(other, Rectangle) and self.width == other.other and self.height == other.height
+        return isinstance(other, Rectangle) and self.width == other.width and self.height == other.height
     
     def __hash__(self):
         return hash((self.width, self.height))
@@ -26,7 +26,7 @@ class Sheet(Rectangle):
         self.demand = demand
 
     def __repr__(self):
-        return f'<Sheet> width: {self.width}, height: {self.height}, demand: {self.demand}'
+        return f'{self.width} X {self.height}: {self.demand}\n'
 
 
 '''An sheet placed on a rectangle'''
@@ -75,6 +75,9 @@ class Bin(FixedRectangle):
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
+    def __gt__(self, other):
+        return self.free_area > other.free_area
+
     def __hash__(self):
         return random.randint(0, 100000000000000000000000000000000000000000000000000000000000000000)
 
@@ -101,5 +104,5 @@ class Solution:
         for idx,bin in enumerate(self.bins):
             result += str(bin)
             result += f'No. of prints: ' + str(self.prints_per_pattern[f'x{idx}']) + '\n\n'
-        result += f'fitness: {self.fitness}\n\n'
+        result += f'fitness: {self.fitness}\n'
         return result

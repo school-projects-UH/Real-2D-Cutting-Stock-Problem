@@ -22,7 +22,7 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    def __init__(self, rectangle, sheets, pop_size=15, random_walk_steps=30, hill_climbing_neighbors=10, roulette_pop = 10, no_best_solutions=8, no_generations=20, prob_crossover=0.75):
+    def __init__(self, rectangle, sheets, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 30, no_best_solutions=10, no_generations=30, prob_crossover=0.75):
         self.total_sheets = len(sheets)
         self.rectangle = rectangle
         self.sheets = sheets
@@ -40,6 +40,13 @@ class Solver():
         self.no_best_solutions = no_best_solutions
         self.no_generations = no_generations
         self.prob_crossover=prob_crossover
+
+        self.output = open("output.txt", "w")
+        self.output.write(f"Input data:\nMain sheet: {rectangle}")
+        self.output.write("Orders:\n")
+        for sheet in self.sheets:
+            self.output.write(str(sheet))
+        self.output.write("\n\n")
 
     def compute_amount_and_fitness(self):
         pass
@@ -198,7 +205,7 @@ class Solver():
         covered_sheets = []
         for bin in all_selected_patterns:
             for sheet in bin.cuts:
-                covered_sheets.append(sheets)
+                covered_sheets.append(sheet)
 
         sheets_to_process = [Sheet(s.width, s.height, s in covered_sheets and 0 or 1) for s in self.sheets]
         placement, _ = maxrects_bssf(self.rectangle, sheets_to_process, unlimited_bins=True)
@@ -248,10 +255,14 @@ class Solver():
         pass
 
     def genetic_algorithm(self):
+        self.trace = open("trace.txt", "w")
         current_generation = self.create_initial_population()
+        self.trace.write(f"Initial Generation:\n{self.print_population(current_generation)}")
         best_known = self.update_best_solution(current_generation)
+        self.trace.write(f"Best known solution: {best_known}")
 
         for k in range(self.no_generations):
+
             intermediate_generation = self.roulette_wheel_selection(current_generation)
             current_generation = self.bests_solution_reproduction(current_generation)
             for i in range(len(current_generation), self.pop_size):
@@ -260,25 +271,32 @@ class Solver():
                 else:
                     current_generation.append(self.mutation(intermediate_generation))
 
-        best_known = self.update_best_solution(current_generation)
+            best_known = self.update_best_solution(current_generation)
+            print(f"Generation #{k}")
+            self.trace.write(f"Generation #{k+1}:\n{self.print_population(current_generation)}")
+            self.trace.write(f"Best known solution:\n{best_known}\n")
+            self.trace.write("----------------------------------------------------------------------------------------------\n\n")
+
         best_known = self.hill_climbing(best_known)
+
+        self.output.write(f"Output:\n{best_known}")
         # delete overproduction ???
         return best_known
 
     def print_population(self, population):
         result = ''
         for idx, solution in enumerate(population):
-            result += f'Solution #{idx}:\n{solution}\n'
+            result += f'Solution #{idx + 1}:\n{solution}\n\n'
         return result
 
 
-rectangle = Rectangle(100, 100)
-sheets = [Sheet(40, 60, 500), Sheet(50, 50, 1000), Sheet(22, 22, 400), Sheet(70, 40, 2000), Sheet(50, 30, 400)]
-solver = Solver(rectangle, sheets)
+# rectangle = Rectangle(100, 100)
+# sheets = [Sheet(40, 60, 500), Sheet(50, 50, 1000), Sheet(22, 22, 400), Sheet(70, 40, 2000), Sheet(50, 30, 400)]
+# solver = Solver(rectangle, sheets)
 
 
 
-print(solver.genetic_algorithm())
+# print(solver.genetic_algorithm())
 
 # first_generation = solver.create_initial_population()
 # print(f'First Generation:\n{solver.print_population(first_generation)}\n')
