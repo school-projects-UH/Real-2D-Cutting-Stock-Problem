@@ -90,4 +90,9 @@ class Solution:
         self.fitness = fitness
 
     def __repr__(self):
-        return f"<Solution>:\nBins:\n{self.bins}\nSheets Per Pattern:\n{self.sheets_per_pattern}\nPrints per Pattern:\n{self.prints_per_pattern}\nFitness: {self.fitness}\n\n"
+        result = ''
+        for idx,bin in enumerate(self.bins):
+            result += bin.__repr__()
+            result += f'No. of prints: ' + str(self.prints_per_pattern[f'x{idx}'])
+        result += f'fitness: {self.fitness}'
+        return result

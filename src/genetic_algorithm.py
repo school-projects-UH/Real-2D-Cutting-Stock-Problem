@@ -49,19 +49,15 @@ class Solver():
                 current_solution = new_solution
         return current_solution
 
-
     '''Adds one sheet i in the pattern j'''
     def add(self, solution):
         pattern = random.randint(0,len(solution.bins)-1)
         sheet = random.randint(0, self.total_sheets - 1)
         sheets_per_pattern = dict(solution.sheets_per_pattern)
         sheets_per_pattern[pattern, sheet] += 1
-
         if sheets_per_pattern[pattern,sheet] >= self.ub_sheet[sheet]:
             return None
-
         return sheets_per_pattern
-
 
     ''' Removes one sheet i from the pattern j'''
     def remove(self, solution):
@@ -71,9 +67,7 @@ class Solver():
         sheets_per_pattern[pattern, sheet] -= 1
         if sheets_per_pattern[pattern,sheet] < 0 or sum([sheets_per_pattern[_pattern, _sheet] for _pattern, _sheet in sheets_per_pattern if _sheet == sheet]) == 0:
             return None
-
         return sheets_per_pattern
-
 
     '''Moves one sheet from a pattern to another one'''
     def move(self, solution):
@@ -251,8 +245,9 @@ rectangle = Rectangle(100, 100)
 sheets = [Sheet(40, 60, 500), Sheet(50, 50, 1000), Sheet(22, 22, 400), Sheet(70, 40, 2000), Sheet(50, 30, 400)]
 solver = Solver(rectangle, sheets)
 
-first_generation = solver.create_initial_population()
-print(f'First Generation:\n{first_generation}\n---------------------------------------------------------\n')
 
-second_generation = solver.crossover(first_generation)
+first_generation = solver.create_initial_population()
+print(f'First Generation:\n{first_generation}\n')
+intermediate_generation = solver.roulette_wheel_selection(first_generation)
+second_generation = solver.crossover(intermediate_generation)
 print(f'Second Generation:\n{second_generation}\n')
