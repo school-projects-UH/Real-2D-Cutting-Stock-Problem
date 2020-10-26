@@ -209,21 +209,21 @@ class Solver():
 
         fitness, prints_per_pattern = solve_LP(bins, sheets_per_patterns, self.sheets)
         off_spring = Solution(bins, sheets_per_patterns, prints_per_pattern, fitness)
-        return self.hill_climbing(off_spring, self.hill_climbing_neighbors)
+        return self.hill_climbing(off_spring)
 
     def mutation(self, population):
         parent = population[randint(0, len(population)-1)]
         offspring = self.random_walk(parent)
-        offspring = self.hill_climbing(offspring, self.hill_climbing_neighbors)
+        offspring = self.hill_climbing(offspring)
         return offspring
 
 
-    def hill_climbing(self, solution, no_neighbors):
+    def hill_climbing(self, solution):
         current_solution = solution
 
         while True:
             best_neighbor = current_solution
-            for _ in range(no_neighbors):
+            for _ in range(self.hill_climbing_neighbors):
                 new_neighbor = self.choose_neighbor(current_solution)
                 if new_neighbor != None and new_neighbor.fitness < best_neighbor.fitness:
                     best_neighbor = new_neighbor
