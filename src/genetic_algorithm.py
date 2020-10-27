@@ -46,6 +46,7 @@ class Solver():
         self.output.write("Orders:\n")
         for sheet in self.sheets:
             self.output.write(str(sheet))
+        self.output.write(f"\nParameters:\nPopulation size: {self.pop_size}\nNo. generations: {self.no_generations}\nRandom walk steps: {self.random_walk_steps}\nHill climbing neighbors: {self.hill_climbing_neighbors}\nNo. best solutions: {self.no_best_solutions}\nRoulette population size: {self.roulette_pop}\nCrossover probability: {self.prob_crossover}")
         self.output.write("\n\n")
 
     def compute_amount_and_fitness(self):
@@ -190,7 +191,7 @@ class Solver():
             r = random.random()
             for (i, pair) in enumerate(solutions):
                 if r <= probabilities[i]:
-                    _ , solution = pair    
+                    _ , solution = pair
                     chosen.append(solution)
                     break
         return chosen
