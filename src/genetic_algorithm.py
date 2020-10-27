@@ -175,17 +175,22 @@ class Solver():
                 best_solution = solution
         return best_solution
 
-    def roulette_wheel_selection(self, population):
-        fitness = [solution.fitness for solution in population]
-        total_fit = float(sum(fitness))
+    def roulette_wheel_rank_based_selection(self, population):
+        solutions = [(solution.fitness, solution) for solution in population]
+        solutions.sort()
+        n = len(population)
+        fitness = [i for i in range(n,0,-1)]
+        # Use the gauss formula to get the sum of all ranks (sum of integers 1 to N).
+        total_fit = n * (n + 1) / 2
         relative_fitness = [f / total_fit for f in fitness]
         probabilities = [sum(relative_fitness[:i+1]) for i in range(len(relative_fitness))]
 
         chosen = []
         for _ in range(self.roulette_pop):
             r = random.random()
-            for (i, solution) in enumerate(population):
+            for (i, pair) in enumerate(solutions):
                 if r <= probabilities[i]:
+                    _ , solution = pair    
                     chosen.append(solution)
                     break
         return chosen
@@ -275,7 +280,7 @@ class Solver():
 
         for k in range(self.no_generations):
 
-            intermediate_generation = self.roulette_wheel_selection(current_generation)
+            intermediate_generation = self.roulette_wheel_rank_based_selection(current_generation)
             current_generation = self.bests_solution_reproduction(current_generation)
             for i in range(len(current_generation), self.pop_size):
                 if random.random() < self.prob_crossover:
