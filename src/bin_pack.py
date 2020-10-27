@@ -111,11 +111,4 @@ def maxrects_bssf(rectangle, sheets, unlimited_bins=False):
                         free_rectangles.remove(fi)
                         break
 
-    # p[i,j] = 0 if there is no sheet j on pattern(bin) i
-    for b in range(len(bins)):
-        for s in range(len(sheets)):
-            try:
-                p[b,s]
-            except KeyError:
-                p[b,s] = 0
     return bins, p

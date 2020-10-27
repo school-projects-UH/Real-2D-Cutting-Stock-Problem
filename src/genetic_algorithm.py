@@ -64,7 +64,10 @@ class Solver():
         pattern = random.randint(0,len(solution.bins)-1)
         sheet = random.randint(0, self.total_sheets - 1)
         sheets_per_pattern = dict(solution.sheets_per_pattern)
-        sheets_per_pattern[pattern, sheet] += 1
+        try:
+            sheets_per_pattern[pattern, sheet] += 1
+        except KeyError:
+            sheets_per_pattern[pattern, sheet] = 1
         if sheets_per_pattern[pattern,sheet] >= self.ub_sheet[sheet]:
             return None
         return sheets_per_pattern
@@ -74,9 +77,14 @@ class Solver():
         pattern = random.randint(0,len(solution.bins)-1)
         sheet = random.randint(0, self.total_sheets - 1)
         sheets_per_pattern = dict(solution.sheets_per_pattern)
-        sheets_per_pattern[pattern, sheet] -= 1
-        if sheets_per_pattern[pattern,sheet] < 0 or sum([sheets_per_pattern[_pattern, _sheet] for _pattern, _sheet in sheets_per_pattern if _sheet == sheet]) == 0:
+        try:
+            sheets_per_pattern[pattern, sheet] -= 1
+        except KeyError:
             return None
+
+        if sheets_per_pattern[pattern, sheet] < 0 or sum([sheets_per_pattern[_pattern, _sheet] for _pattern, _sheet in sheets_per_pattern if _sheet == sheet]) == 0:
+            return None
+
         return sheets_per_pattern
 
     '''Moves one sheet from a pattern to another one'''
@@ -84,13 +92,17 @@ class Solver():
         pattern_source, pattern_destiny = _pick_two_randoms(len(solution.bins))
         sheet = random.randint(0, self.total_sheets - 1)
         sheets_per_pattern = dict(solution.sheets_per_pattern)
-
-        sheets_per_pattern[pattern_source, sheet] -= 1
-        if sheets_per_pattern[pattern_source,sheet] < 0:
+        try:
+            sheets_per_pattern[pattern_source, sheet] -= 1
+        except KeyError:
             return None
+        try:
+            sheets_per_pattern[pattern_destiny, sheet] += 1
+        except KeyError:
+            sheets_per_pattern[pattern_destiny, sheet] = 1
 
-        sheets_per_pattern[pattern_destiny, sheet] += 1
-        if sheets_per_pattern[pattern_destiny,sheet] >= self.ub_sheet[sheet]:
+        if  sheets_per_pattern[pattern_source, sheet] < 0 or \
+            sheets_per_pattern[pattern_destiny,sheet] >= self.ub_sheet[sheet]:
             return None
 
         return sheets_per_pattern
@@ -101,21 +113,26 @@ class Solver():
         sheet_one, sheet_two = _pick_two_randoms(self.total_sheets)
 
         sheets_per_pattern = dict(solution.sheets_per_pattern)
-
-        sheets_per_pattern[pattern_one, sheet_one] -= 1
-        if sheets_per_pattern[pattern_one, sheet_one] < 0:
+        try:
+            sheets_per_pattern[pattern_one, sheet_one] -= 1
+            sheets_per_pattern[pattern_two, sheet_two] -= 1
+        except KeyError:
             return None
 
-        sheets_per_pattern[pattern_one, sheet_two] += 1
-        if sheets_per_pattern[pattern_one, sheet_two] >= self.ub_sheet[sheet_two]:
-            return None
+        try:
+            sheets_per_pattern[pattern_one, sheet_two] += 1
+        except KeyError:
+            sheets_per_pattern[pattern_one, sheet_two] = 1
 
-        sheets_per_pattern[pattern_two, sheet_two] -= 1
-        if sheets_per_pattern[pattern_two, sheet_two] < 0:
-            return None
+        try:
+            sheets_per_pattern[pattern_two, sheet_one] += 1
+        except KeyError:
+            sheets_per_pattern[pattern_two, sheet_one] = 1
 
-        sheets_per_pattern[pattern_two, sheet_one] += 1
-        if sheets_per_pattern[pattern_two, sheet_one] >= self.ub_sheet[sheet_one]:
+        if sheets_per_pattern[pattern_one, sheet_one] < 0 or \
+            sheets_per_pattern[pattern_two, sheet_two] < 0 or \
+            sheets_per_pattern[pattern_one, sheet_two] >= self.ub_sheet[sheet_two] or \
+            sheets_per_pattern[pattern_two, sheet_one] >= self.ub_sheet[sheet_one]:
             return None
 
         return sheets_per_pattern
@@ -131,7 +148,7 @@ class Solver():
         bins = []
         # Check the feasibility of the new solution
         for i in range(len(solution.bins)):
-            sheets = [Sheet(s.width, s.height, sheets_per_pattern[i, j]) for j,s in enumerate(self.sheets)]
+            sheets = [Sheet(s.width, s.height, sheets_per_pattern[i, j]) for (j,s) in enumerate(self.sheets) if (i,j) in sheets_per_pattern]
             placement, _ = maxrects_bssf(self.rectangle, sheets)
             if placement == []:
                 return None
@@ -140,7 +157,6 @@ class Solver():
         fitness, prints_per_pattern = solve_LP(bins, sheets_per_pattern, self.sheets)
         neighbor = Solution(bins, sheets_per_pattern, prints_per_pattern, fitness)
         return neighbor
-
 
     def create_initial_population(self):
         initial_sheets = [Sheet(s.width, s.height, 1) for s in self.sheets]
@@ -191,11 +207,8 @@ class Solver():
 
             return [bin for _, bin in patterns[:count_to_select]]
 
-        P = list(Population)
-        parent1 = P[random.randint(0, len(P)-1)]
-        P.remove(parent1)
-        parent2 = P[random.randint(0, len(P)-1)]
-
+        r1, r2 = _pick_two_randoms(len(Population) - 1)
+        parent1, parent2 = Population[r1], Population[r2]
         set_patterns1 = select_patterns(parent1)
         set_patterns2 = select_patterns(parent2)
 
@@ -213,14 +226,13 @@ class Solver():
         sheets_per_patterns = { }
         sheets_idx = { (s.width, s.height):i for i,s in enumerate(self.sheets) }
 
-        for bin in range(len(bins)):
-            for sheet_idx in range(len(self.sheets)):
-                sheets_per_patterns[bin, sheet_idx] = 0
-
         for j, bin in enumerate(bins):
             for cut in bin.cuts:
                 i = sheets_idx[cut.width, cut.height] if not cut.rotated else sheets_idx[cut.height, cut.width]
-                sheets_per_patterns[j,i] = sheets_per_patterns[j,i]+1
+                try:
+                    sheets_per_patterns[j,i] += 1
+                except KeyError:
+                    sheets_per_patterns[j,i] = 1
 
         fitness, prints_per_pattern = solve_LP(bins, sheets_per_patterns, self.sheets)
         off_spring = Solution(bins, sheets_per_patterns, prints_per_pattern, fitness)
@@ -292,15 +304,14 @@ class Solver():
     def clean_solution(self, solution):
         updated_prints_per_pattern = {}
         counter = 0
+        updated_bins = []
         for i, bin in enumerate(solution.bins):
             if solution.prints_per_pattern[f'x{i}'] != 0:
                 updated_prints_per_pattern[f'x{counter}'] = solution.prints_per_pattern[f'x{i}']
+                updated_bins.append(bin) #!!!! reference
                 counter += 1
-        for (i, no_prints) in solution.prints_per_pattern.items():
-            if no_prints == 0:
-                solution.bins.pop(int(i[1:]))
+        solution.bins = updated_bins
         solution.prints_per_pattern = updated_prints_per_pattern
-
 
     def print_population(self, population):
         result = ''
