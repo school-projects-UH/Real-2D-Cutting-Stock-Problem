@@ -1,10 +1,10 @@
 import math
 import random
 from random import randint
-from sys import argv
-from bin_pack import maxrects_bssf
-from classes import *
-from lp_solver import solve_LP
+
+from src.bin_pack import maxrects_bssf
+from src.classes import *
+from src.lp_solver import solve_LP
 import time
 
 def _pick_two_randoms(top):
@@ -22,7 +22,7 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    def __init__(self, rectangle, sheets, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 30, no_best_solutions=10, no_generations=30, prob_crossover=0.75):
+    def __init__(self, rectangle, sheets, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=30, prob_crossover=0.75):
         self.total_sheets = len(sheets)
         self.rectangle = rectangle
         self.sheets = sheets
@@ -273,11 +273,11 @@ class Solver():
 
     def genetic_algorithm(self):
         start_time = time.time()
-        self.trace = open("trace.txt", "w")
+        #self.trace = open("trace.txt", "w")
         current_generation = self.create_initial_population()
-        self.trace.write(f"Initial Generation:\n{self.print_population(current_generation)}")
+        #self.trace.write(f"Initial Generation:\n{self.print_population(current_generation)}")
         best_known = self.update_best_solution(current_generation)
-        self.trace.write(f"Best known solution: {best_known}")
+        #self.trace.write(f"Best known solution: {best_known}")
 
         for k in range(self.no_generations):
 
@@ -291,9 +291,9 @@ class Solver():
 
             best_known = self.update_best_solution(current_generation)
             print(f"Generation #{k+1}")
-            self.trace.write(f"Generation #{k+1}:\n{self.print_population(current_generation)}")
-            self.trace.write(f"Best known solution:\n{best_known}\n")
-            self.trace.write("----------------------------------------------------------------------------------------------\n\n")
+            #self.trace.write(f"Generation #{k+1}:\n{self.print_population(current_generation)}")
+            #self.trace.write(f"Best known solution:\n{best_known}\n")
+            #self.trace.write("----------------------------------------------------------------------------------------------\n\n")
 
         best_known = self.hill_climbing(best_known)
         self.clean_solution(best_known)

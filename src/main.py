@@ -4,14 +4,14 @@ from sys import argv
 
 if __name__ == "__main__":
 
-    input_file = open(f"{argv[1]}", "r")
+    input_file = open(f"input.txt", "r")
     lines = input_file.readlines()
-    [rectangle_widht, rectangle_height] = lines[0].split(' ')
-    rectangle = Rectangle(int(rectangle_widht), int(rectangle_height))
+    [rectangle_width, rectangle_height] = lines[0].split(' ')
+    rectangle = Rectangle(int(rectangle_width), int(rectangle_height))
     sheets = []
     for line in lines[1:]:
         [width, height, demand] = line.split(' ')
         sheets.append(Sheet(int(width), int(height), int(demand)))
 
-    solver = Solver(rectangle, sheets, pop_size=25, no_generations=30, hill_climbing_neighbors=25, roulette_pop=20, no_best_solutions=5)
+    solver = Solver(rectangle, sheets, pop_size=40, no_generations=30, hill_climbing_neighbors=20, roulette_pop=25, no_best_solutions=6)
     solver.genetic_algorithm()
