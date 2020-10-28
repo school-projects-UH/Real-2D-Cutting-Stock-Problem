@@ -1,7 +1,7 @@
 import math
 import random
 from random import randint
-
+from sys import argv
 from bin_pack import maxrects_bssf
 from classes import *
 from lp_solver import solve_LP
@@ -41,7 +41,7 @@ class Solver():
         self.no_generations = no_generations
         self.prob_crossover=prob_crossover
 
-        self.output = open("output.txt", "w")
+        self.output = open(f"{argv[2]}", "w")
         self.output.write(f"Input data:\nMain sheet: {rectangle}")
         self.output.write("Orders:\n")
         for sheet in self.sheets:
