@@ -22,12 +22,13 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    def __init__(self, rectangle, sheets, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=30, prob_crossover=0.75):
+    def __init__(self, rectangle, sheets, output, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=30, prob_crossover=0.75):
         self.total_sheets = len(sheets)
         self.rectangle = rectangle
         self.sheets = sheets
 
-        self.lb_patterns = math.ceil(sum([s.width * s.height for s in sheets]) / (rectangle.width * rectangle.height)) #lower bound of the number of patterns
+        self.lb_patterns = math.ceil(sum(
+            [s.width * s.height for s in sheets]) / (rectangle.width * rectangle.height)) #lower bound of the number of patterns
         self.ub_sheet = {}  # the number of sheets i which can be placed on one pattern
 
         for i, sheet in enumerate(sheets):
@@ -41,7 +42,7 @@ class Solver():
         self.no_generations = no_generations
         self.prob_crossover=prob_crossover
 
-        self.output = open(f"{argv[2]}", "w")
+        self.output = open(f"{output}", "w")
         self.output.write(f"Input data:\nMain sheet: {rectangle}")
         self.output.write("Orders:\n")
         for sheet in self.sheets:
@@ -154,8 +155,10 @@ class Solver():
             if placement == []:
                 return None
             bins += placement
-
-        fitness, prints_per_pattern = solve_LP(bins, sheets_per_pattern, self.sheets)
+        try:
+            fitness, prints_per_pattern = solve_LP(bins, sheets_per_pattern, self.sheets)
+        except:
+            return self.choose_neighbor(solution)
         neighbor = Solution(bins, sheets_per_pattern, prints_per_pattern, fitness)
         return neighbor
 
@@ -304,7 +307,7 @@ class Solver():
         end_time = time.time()
         exec_time = end_time - start_time
         self.output.write(f"Time:{exec_time} seconds")
-
+        self.output.close()
         return best_known
 
     def clean_solution(self, solution):

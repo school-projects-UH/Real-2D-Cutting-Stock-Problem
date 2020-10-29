@@ -1,7 +1,5 @@
-try:
-    from .classes import Rectangle, FixedRectangle, Bin, Sheet
-except:
-    from classes import Rectangle, FixedRectangle, Bin, Sheet
+from src.classes import Rectangle, FixedRectangle, Bin, Sheet
+
 
 # Returns a tuple (i, j, need_to_rotate) where i is the index of the bin and j is the index of the free_rectangle that best fits
 def find_best_fit(rectangle, bins):
