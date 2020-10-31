@@ -27,5 +27,7 @@ def solve_LP(bins, sheets_per_pattern, sheets):
     # Solve the optimization problem
     model.solve(solver=PULP_CBC_CMD(msg=0))
 
-    fitness = model.objective.value() != None or 0
+    fitness = model.objective.value()
+    if fitness == None:
+        fitness = 0
     return fitness, {variable.name: variable.varValue for variable in model.variables()}
