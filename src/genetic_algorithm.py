@@ -50,6 +50,8 @@ class Solver():
         self.output.write(f"\nParameters:\nPopulation size: {self.pop_size}\nNo. generations: {self.no_generations}\nRandom walk steps: {self.random_walk_steps}\nHill climbing neighbors: {self.hill_climbing_neighbors}\nNo. best solutions: {self.no_best_solutions}\nRoulette population size: {self.roulette_pop}\nCrossover probability: {self.prob_crossover}")
         self.output.write("\n\n")
 
+        random.seed(time.time())
+
     def compute_amount_and_fitness(self):
         pass
 
@@ -140,7 +142,10 @@ class Solver():
         return sheets_per_pattern
 
     def choose_neighbor(self, solution):
-        operator = [self.add, self.remove, self.move, self.swap][randint(0, 3)]
+        operators = [self.add, self.remove, self.move, self.swap]
+        if (len(solution.bins) == 1):
+            operators = [self.add, self.remove]
+        operator = operators[randint(0, len(operators) - 1)]
         sheets_per_pattern = operator(solution)
 
         # if the operator could not be applied
@@ -276,11 +281,11 @@ class Solver():
 
     def genetic_algorithm(self):
         start_time = time.time()
-        #self.trace = open("trace.txt", "w")
+        # self.trace = open("trace.txt", "w")
         current_generation = self.create_initial_population()
-        #self.trace.write(f"Initial Generation:\n{self.print_population(current_generation)}")
+        # self.trace.write(f"Initial Generation:\n{self.print_population(current_generation)}")
         best_known = self.update_best_solution(current_generation)
-        #self.trace.write(f"Best known solution: {best_known}")
+        # self.trace.write(f"Best known solution: {best_known}")
 
         for k in range(self.no_generations):
 
