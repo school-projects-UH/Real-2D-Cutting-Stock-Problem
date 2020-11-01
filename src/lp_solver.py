@@ -10,6 +10,7 @@ def solve_LP(bins, sheets_per_pattern, sheets):
     '''
     waste = [b.free_area for b in bins]
     demands = [s.demand for s in sheets]
+    areas = [s.width * s.height for s in sheets]
     m, n = len(waste), len(demands)
     model = LpProblem(name="cuts", sense=LpMinimize)
 
@@ -19,10 +20,16 @@ def solve_LP(bins, sheets_per_pattern, sheets):
     for (j, i), sheets in sheets_per_pattern.items():
         p[j][i] = sheets
 
+    def overProduction(j):
+        return lpSum(p[i][j] * x[i] * areas[j] for i in range(m)) - demands[j] * areas[j]
+
+    def total_overProduction():
+        return lpSum(overProduction(j) for j in range(n))
+
     for i, di in enumerate(demands):
         model += (lpSum(pj[i] * x[j] for j, pj in enumerate(p)) >= di, f'constrain-{i}')
 
-    model += lpSum(x[j] * waste[j] for j in range(m))
+    model += lpSum([lpSum(x[j] * waste[j] for j in range(m)), total_overProduction()])
 
     # Solve the optimization problem
     model.solve(solver=PULP_CBC_CMD(msg=0))
