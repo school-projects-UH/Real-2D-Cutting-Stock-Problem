@@ -3,8 +3,9 @@ from src.classes import Rectangle, Sheet
 from sys import argv
 
 if __name__ == "__main__":
-    input_file = open(f"input.txt", "r")
-    lines = input_file.readlines()
+    with open(f"{argv[1]}", "r") as input_file:
+        lines = input_file.readlines()
+
     [rectangle_width, rectangle_height] = lines[0].split(' ')
     rectangle = Rectangle(int(rectangle_width), int(rectangle_height))
     sheets = []
@@ -12,5 +13,5 @@ if __name__ == "__main__":
         [width, height, demand] = line.split(' ')
         sheets.append(Sheet(int(width), int(height), int(demand)))
 
-    solver = Solver(rectangle, sheets, output="output.txt")
-    solver.genetic_algorithm()
+    solver = Solver()
+    solver.solve(rectangle, sheets, output=f"{argv[2]}")

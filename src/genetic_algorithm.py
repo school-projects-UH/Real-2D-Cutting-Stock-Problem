@@ -3,7 +3,7 @@ import random
 from random import randint
 
 from src.bin_pack import maxrects_bssf
-from src.classes import *
+from src.classes import Solution, Sheet
 from src.lp_solver import solve_LP
 import time
 
@@ -22,7 +22,16 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    def __init__(self, rectangle, sheets, output, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=30, prob_crossover=0.75):
+    def __init__(self, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=30, prob_crossover=0.75):
+        self.pop_size = pop_size
+        self.random_walk_steps = random_walk_steps
+        self.hill_climbing_neighbors = hill_climbing_neighbors
+        self.roulette_pop = roulette_pop
+        self.no_best_solutions = no_best_solutions
+        self.no_generations = no_generations
+        self.prob_crossover=prob_crossover
+
+    def solve(self, rectangle, sheets,  output=None):
         self.total_sheets = len(sheets)
         self.rectangle = rectangle
         self.sheets = sheets
@@ -34,26 +43,23 @@ class Solver():
         for i, sheet in enumerate(sheets):
             self.ub_sheet[i] = math.floor((rectangle.width * rectangle.height) / (sheet.width * sheet.height))
 
-        self.pop_size = pop_size
-        self.random_walk_steps = random_walk_steps
-        self.hill_climbing_neighbors = hill_climbing_neighbors
-        self.roulette_pop = roulette_pop
-        self.no_best_solutions = no_best_solutions
-        self.no_generations = no_generations
-        self.prob_crossover=prob_crossover
+        start_time = time.time()
+        solution = self.genetic_algorithm()
+        end_time = time.time()
+        exec_time = end_time - start_time
 
-        self.output = open(f"{output}", "w")
-        self.output.write(f"Input data:\nMain sheet: {rectangle}")
-        self.output.write("Orders:\n")
-        for sheet in self.sheets:
-            self.output.write(str(sheet))
-        self.output.write(f"\nParameters:\nPopulation size: {self.pop_size}\nNo. generations: {self.no_generations}\nRandom walk steps: {self.random_walk_steps}\nHill climbing neighbors: {self.hill_climbing_neighbors}\nNo. best solutions: {self.no_best_solutions}\nRoulette population size: {self.roulette_pop}\nCrossover probability: {self.prob_crossover}")
-        self.output.write("\n\n")
+        if output != None:
+            with open(output, "w") as output_file:
+                output_file.write(f"Input data:\nMain sheet: {rectangle}")
+                output_file.write("Orders:\n")
+                for sheet in self.sheets:
+                    output_file.write(str(sheet))
+                output_file.write(f"\nParameters:\nPopulation size: {self.pop_size}\nNo. generations: {self.no_generations}\nRandom walk steps: {self.random_walk_steps}\nHill climbing neighbors: {self.hill_climbing_neighbors}\nNo. best solutions: {self.no_best_solutions}\nRoulette population size: {self.roulette_pop}\nCrossover probability: {self.prob_crossover}")
+                output_file.write("\n\n")
+                output_file.write(f"Output:\n{solution}")
+                output_file.write(f"Time:{exec_time} seconds")
 
-        random.seed(time.time())
-
-    def compute_amount_and_fitness(self):
-        pass
+        return solution
 
     def random_walk(self, initial_solution):
         current_solution = initial_solution
@@ -276,13 +282,10 @@ class Solver():
 
         return current_solution
 
-    def delete_overproduction(self):
-        pass
-
     def genetic_algorithm(self):
-        start_time = time.time()
         # self.trace = open("trace.txt", "w")
         current_generation = self.create_initial_population()
+        # print(f"Generation #0-----------------------------------------------------")
         # self.trace.write(f"Initial Generation:\n{self.print_population(current_generation)}")
         best_known = self.update_best_solution(current_generation)
         # self.trace.write(f"Best known solution: {best_known}")
@@ -298,21 +301,13 @@ class Solver():
                     current_generation.append(self.mutation(intermediate_generation))
 
             best_known = self.update_best_solution(current_generation)
-            print(f"Generation #{k+1}")
+            # print(f"Generation #{k+1}-----------------------------------------------------")
             #self.trace.write(f"Generation #{k+1}:\n{self.print_population(current_generation)}")
             #self.trace.write(f"Best known solution:\n{best_known}\n")
             #self.trace.write("----------------------------------------------------------------------------------------------\n\n")
 
         best_known = self.hill_climbing(best_known)
         self.clean_solution(best_known)
-        self.output.write(f"Output:\n{best_known}")
-
-        # delete overproduction ???
-
-        end_time = time.time()
-        exec_time = end_time - start_time
-        self.output.write(f"Time:{exec_time} seconds")
-        self.output.close()
         return best_known
 
     def clean_solution(self, solution):
@@ -322,7 +317,7 @@ class Solver():
         for i, bin in enumerate(solution.bins):
             if solution.prints_per_pattern[f'x{i}'] != 0:
                 updated_prints_per_pattern[f'x{counter}'] = solution.prints_per_pattern[f'x{i}']
-                updated_bins.append(bin) #!!!! reference
+                updated_bins.append(bin)
                 counter += 1
         solution.bins = updated_bins
         solution.prints_per_pattern = updated_prints_per_pattern
