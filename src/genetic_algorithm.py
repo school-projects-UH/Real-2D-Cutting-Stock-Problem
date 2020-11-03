@@ -22,7 +22,9 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    def __init__(self, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=30, prob_crossover=0.75):
+
+    def solve(self, rectangle, sheets,  output=None, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=30, prob_crossover=0.75):
+
         self.pop_size = pop_size
         self.random_walk_steps = random_walk_steps
         self.hill_climbing_neighbors = hill_climbing_neighbors
@@ -31,7 +33,6 @@ class Solver():
         self.no_generations = no_generations
         self.prob_crossover=prob_crossover
 
-    def solve(self, rectangle, sheets,  output=None):
         self.total_sheets = len(sheets)
         self.rectangle = rectangle
         self.sheets = sheets
