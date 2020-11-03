@@ -68,7 +68,7 @@ class Bin(FixedRectangle):
         self.free_area = width * height
         self.free_rectangles = [FixedRectangle(width, height, position=(0, height))]
 
-    def add_cut(self, sheet, i):
+    def add_cut(self, sheet):
         self.cuts.append(sheet)
         self.free_area -= sheet.width * sheet.height
 
