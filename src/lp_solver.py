@@ -1,5 +1,5 @@
 from cvxopt import matrix, solvers, glpk
-
+import math
 def solve_LP(bins, sheets_per_pattern, sheets):
     w = [b.free_area for b in bins]
     d = [s.demand for s in sheets]
@@ -13,7 +13,14 @@ def solve_LP(bins, sheets_per_pattern, sheets):
     A = matrix([[float(-p[j][i]) for i in range(n)] + [k==j and -1 or 0 for k in range(m)] for j in range(m)])
     b = matrix([float(-di) for di in d] + [0 for i in range(m)])
 
-    (_, x) = glpk.ilp(c, A, b, I={i for i in range(len(c))})
-    fitness = sum([c[i] * x[i] for i in range(len(x))]) - sum([d[i]*a[i] for i in range(n)])
-    x = {f"x{i}":x[i] for i in range(len(x))}
+    # Prevent GLPK from outputing info (comment these lines to see GLPK's output info)
+    solvers.options['glpk'] = {'msg_lev': 'GLP_MSG_OFF'}  # cvxopt 1.1.8
+    solvers.options['msg_lev'] = 'GLP_MSG_OFF'  # cvxopt 1.1.7
+    solvers.options['LPX_K_MSGLEV'] = 0  # previous versions
+
+    # (_, x) = glpk.ilp(c, A, b, I={i for i in range(len(c))})
+    sol = solvers.lp(c, A, b, solver='glpk')
+    # fitness = sol['primal objective'] - sum([d[i]*a[i] for i in range(n)])
+    x = {f"x{i}":math.ceil(x) for i,x in enumerate(sol['x'])}
+    fitness = sum([c[i] * x[f'x{i}'] for i in range(len(x.keys()))]) - sum([d[i]*a[i] for i in range(n)])
     return fitness, x

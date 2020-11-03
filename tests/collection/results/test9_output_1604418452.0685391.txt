@@ -1,0 +1,26 @@
+Input data:
+Main sheet: 200 X 125
+Orders:
+45 X 60: 10000
+23 X 14: 9000
+140 X 34: 450
+100 X 100: 20000
+
+Parameters:
+Population size: 60
+No. generations: 30
+Random walk steps: 100
+Hill climbing neighbors: 25
+No. best solutions: 10
+Roulette population size: 45
+Crossover probability: 0.75
+
+Output:
+(0, 125): 140 X 34  (0, 91): 140 X 34  (0, 57): 140 X 34  
+free space: 10720   No. of prints: 150
+
+(0, 125): 45 X 60  (0, 65): 45 X 60  (45, 65): 45 X 60  (45, 125): 45 X 60  (90, 125): 14 X 23  (104, 125): 23 X 14  (127, 125): 23 X 14  (90, 102): 100 X 100  
+free space: 3234   No. of prints: 20000
+
+fitness: 271710000.0
+Time:130.4708867073059 seconds
