@@ -24,30 +24,18 @@ def maxrect_split(rectangle: FixedRectangle, free_rectangle: FixedRectangle):
     new_free_rectangles = set()
 
     if rectangle.up > free_rectangle.up and rectangle.up < free_rectangle.down and rectangle.left < free_rectangle.right and rectangle.right > free_rectangle.left:
-        new_free_rectangles.add(FixedRectangle(
-            width=free_rectangle.width,
-            height=rectangle.up - free_rectangle.up,
-            position=(free_rectangle.left, rectangle.up)))
+        new_free_rectangles.add((free_rectangle.width, rectangle.up - free_rectangle.up, (free_rectangle.left, rectangle.up)))
 
     if rectangle.right < free_rectangle.right and rectangle.right > free_rectangle.left and rectangle.up < free_rectangle.down and rectangle.down > free_rectangle.up:
-        new_free_rectangles.add(FixedRectangle(
-            width=free_rectangle.right - rectangle.right,
-            height=free_rectangle.height,
-            position=(rectangle.right, free_rectangle.down)))
+        new_free_rectangles.add((free_rectangle.right - rectangle.right, free_rectangle.height, (rectangle.right, free_rectangle.down)))
 
     if rectangle.down < free_rectangle.down and rectangle.down > free_rectangle.up and rectangle.left < free_rectangle.right and rectangle.right > free_rectangle.left:
-        new_free_rectangles.add(FixedRectangle(
-            width=free_rectangle.width,
-            height=free_rectangle.down - rectangle.down,
-            position=(free_rectangle.left, free_rectangle.down)))
+        new_free_rectangles.add((free_rectangle.width, free_rectangle.down - rectangle.down, (free_rectangle.left, free_rectangle.down)))
 
     if rectangle.left > free_rectangle.left and rectangle.left < free_rectangle.right and rectangle.down > free_rectangle.up and rectangle.up < free_rectangle.down:
-        new_free_rectangles.add(FixedRectangle(
-            width=rectangle.left - free_rectangle.left,
-            height=free_rectangle.height,
-            position=(free_rectangle.left, free_rectangle.down)))
+        new_free_rectangles.add((rectangle.left - free_rectangle.left, free_rectangle.height, (free_rectangle.left, free_rectangle.down)))
 
-    return list(new_free_rectangles)
+    return [FixedRectangle(width=w, height=h, position=pos) for (w, h, pos) in new_free_rectangles]
 
 # not used
 def is_contained(point, rectangle):
