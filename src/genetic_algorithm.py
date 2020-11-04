@@ -2,9 +2,9 @@ import math
 import random
 from random import randint
 
-from src.bin_pack import maxrects_bssf
-from src.classes import Solution, Sheet, Bin, FixedRectangle
-from src.lp_solver import solve_LP
+from bin_pack import maxrects_bssf
+from classes import Solution, Sheet, Bin, FixedRectangle
+from lp_solver import solve_LP
 import time
 
 def _pick_two_randoms(top):
@@ -22,8 +22,9 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-
-    def solve(self, rectangle, sheets,  output=None, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=30, prob_crossover=0.75):
+    #no_gen = 30
+    def solve(self, rectangle, sheets, output=None, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=2, prob_crossover=0.75):
+        self.stopped = False
 
         self.pop_size = pop_size
         self.random_walk_steps = random_walk_steps
@@ -299,6 +300,8 @@ class Solver():
         # self.trace.write(f"Best known solution: {best_known}")
 
         for k in range(self.no_generations):
+            if self.stopped:
+                return best_known
 
             intermediate_generation = self.roulette_wheel_rank_based_selection(current_generation)
             current_generation = self.bests_solution_reproduction(current_generation)

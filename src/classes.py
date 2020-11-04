@@ -49,7 +49,7 @@ class FixedRectangle(Rectangle):
         self.bottom_right = position[0] + self.width, position[1]
 
     def __repr__(self):
-        return f'{self.position}: {self.width} X {self.height}'
+        return f'topleft {self.top_left} , position {self.position}: {self.width} X {self.height}'
 
 
 class Bin(FixedRectangle):

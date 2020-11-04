@@ -1,4 +1,4 @@
-from src.classes import Rectangle, FixedRectangle, Bin, Sheet
+from classes import Rectangle, FixedRectangle, Bin, Sheet
 
 # Returns a tuple (r, i, j, need_to_rotate) where r is the index of the sheet we are going to place, i is the index of the bin and j is the index of the free_rectangle that best fits
 def find_best_fit(sheets, bins):
