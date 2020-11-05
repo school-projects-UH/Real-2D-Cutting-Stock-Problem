@@ -11,12 +11,10 @@ class Rectangle:
 
     def __repr__(self):
         return f'{self.width} X {self.height}\n'
-    
+
     def __eq__(self, other):
         return isinstance(other, Rectangle) and self.width == other.width and self.height == other.height
-    
-    def __hash__(self):
-        return hash((self.width, self.height))
+
 
 
 '''A type of rectangular sheet requested by the client'''
@@ -50,14 +48,8 @@ class FixedRectangle(Rectangle):
         self.top_right = position[0] + self.width, position[1] - self.height
         self.bottom_right = position[0] + self.width, position[1]
 
-    def __eq__(self , other):
-        return self.__dict__ == other.__dict__
-
     def __repr__(self):
         return f'{self.position}: {self.width} X {self.height}'
-
-    def __hash__(self):
-        return int.from_bytes(hashlib.sha256(json.dumps(self.__dict__).encode()).digest(), byteorder=sys.byteorder)
 
 
 class Bin(FixedRectangle):
@@ -71,15 +63,6 @@ class Bin(FixedRectangle):
     def add_cut(self, sheet):
         self.cuts.append(sheet)
         self.free_area -= sheet.width * sheet.height
-
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
-
-    def __gt__(self, other):
-        return self.free_area > other.free_area
-
-    def __hash__(self):
-        return random.randint(0, 100000000000000000000000000000000000000000000000000000000000000000)
 
     def __repr__(self):
         result = ''

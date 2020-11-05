@@ -3,7 +3,7 @@ import random
 from random import randint
 
 from src.bin_pack import maxrects_bssf
-from src.classes import Solution, Sheet
+from src.classes import Solution, Sheet, Bin, FixedRectangle
 from src.lp_solver import solve_LP
 import time
 
@@ -226,21 +226,28 @@ class Solver():
                                 random.randint(math.ceil(0.25 * len(patterns)),math.floor(0.5 * len(patterns))) or \
                                 random.randint(0, len(patterns) - 1)
 
-            return [bin for _, bin in patterns[:count_to_select]]
+            return {frozenset((r.width, r.height, r.position, r.rotated) for r in bin.cuts) for _, bin in patterns[:count_to_select]}
 
         r1, r2 = _pick_two_randoms(len(Population) - 1)
         parent1, parent2 = Population[r1], Population[r2]
         set_patterns1 = select_patterns(parent1)
         set_patterns2 = select_patterns(parent2)
 
-        all_selected_patterns = list(set(set_patterns1 + set_patterns2))
+        all_selected_patterns = []
+        covered_sheets = set()
+        for fz in set_patterns1 | set_patterns2:
+            b = Bin(self.rectangle.width, self.rectangle.height)
+            for w, h, pos, r in fz:
+                if r:
+                    b.cuts.append(FixedRectangle(h, w, pos, r))
+                    covered_sheets.add((h, w))
+                else:
+                    b.cuts.append(FixedRectangle(w, h, pos, r))
+                    covered_sheets.add((w, h))
+            all_selected_patterns.append(b)
 
-        covered_sheets = []
-        for bin in all_selected_patterns:
-            for sheet in bin.cuts:
-                covered_sheets.append(sheet)
-
-        sheets_to_process = [Sheet(s.width, s.height, s in covered_sheets and 0 or 1) for s in self.sheets]
+        sheets_to_process = {(s.width, s.height) for s in self.sheets} - covered_sheets
+        sheets_to_process = [Sheet(w, h, 1) for (w,h) in sheets_to_process]
         placement, _ = maxrects_bssf(self.rectangle, sheets_to_process, unlimited_bins=True)
 
         bins = all_selected_patterns + placement
