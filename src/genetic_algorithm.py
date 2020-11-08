@@ -22,7 +22,7 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    def solve(self, rectangle, sheets, output=None, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=30, prob_crossover=0.75):
+    def solve(self, rectangle, sheets, output=None, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=30, prob_crossover=0.75, ret_time=True):
         self.stopped = False
 
         self.pop_size = pop_size
@@ -60,7 +60,10 @@ class Solver():
                 output_file.write(f"Output:\n{solution}")
                 output_file.write(f"Time:{exec_time} seconds")
 
-        return solution
+        if ret_time:
+            return solution, exec_time
+        else:
+            return solution
 
     def random_walk(self, initial_solution):
         current_solution = initial_solution
@@ -322,7 +325,9 @@ class Solver():
             current_generation = self.bests_solution_reproduction(current_generation)
             for i in range(len(current_generation), self.pop_size):
                 if random.random() < self.prob_crossover:
-                    current_generation.append(self.crossover(intermediate_generation))
+                    current_generation.appe
+                    
+                    nd(self.crossover(intermediate_generation))
                 else:
                     current_generation.append(self.mutation(intermediate_generation))
 
