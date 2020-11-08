@@ -54,9 +54,11 @@ class MainWindow(QMainWindow):
 
         rect_hlabel = QLabel("Altura:")
         rect_hbox = QSpinBox()
+        rect_hbox.setMinimum(1)
         rect_hbox.setMaximum(1000000)
         rect_wlabel = QLabel("Ancho:")
         rect_wbox = QSpinBox()
+        rect_wbox.setMinimum(1)
         rect_wbox.setMaximum(1000000)
         rect_dim_hbox = QHBoxLayout()
         rect_dim_hbox.addWidget(rect_hlabel)
@@ -75,13 +77,15 @@ class MainWindow(QMainWindow):
         for _ in range(amount):
             hlabel = QLabel("Altura:")
             hbox = QSpinBox()
+            hbox.setMinimum(1)
             hbox.setMaximum(1000000)
             wlabel = QLabel("Ancho:")
             wbox = QSpinBox()
+            wbox.setMinimum(1)
             wbox.setMaximum(1000000)
             dlabel = QLabel("Demanda:")
             dbox = QSpinBox()
-            dbox.setMaximum(1000000)
+            dbox.setMaximum(100000000)
             rect_dim_hbox = QHBoxLayout()
             rect_dim_hbox.addWidget(hlabel)
             rect_dim_hbox.addWidget(hbox)
@@ -136,6 +140,7 @@ class SolverWindow(QWidget):
     def __init__(self, rect_dim, sheet_dims, parent):
         super().__init__()
         self.parent = parent
+        self.rectangle = rect_dim
         self.thread = Worker(rect_dim, sheet_dims)
         self.setGeometry(640, 100, 300, 150)
         self.initialize_ui()
@@ -157,6 +162,13 @@ class SolverWindow(QWidget):
 
     def show_solution(self, solution):
         if not self.thread.solver.stopped:
+            self.windows = []
+            total = len(solution.bins)
+            i = 0
+            for bin, k in zip(solution.bins, solution.prints_per_pattern):
+                self.windows.append(PatternWindow(self, self.rectangle, i, bin, solution.prints_per_pattern[k], total))
+                i += 1
+            self.windows[0].show() 
             print(solution)
         else:
             print("Stopped")
@@ -166,13 +178,17 @@ class SolverWindow(QWidget):
     def cancel(self):
         self.thread.interrupt()
         self.close()
-        self.parent.w = None 
+        self.parent.w = None
 
-class PatternWindow(QWidget):
-    def __init__(self, rect_dim, sheet_dims):
-        super().__init__()
-        h,w = rect_dim
-        self.setGeometry(640, 100, w*6, h*6)
+    def closeEvent(self,event):
+        self.thread.interrupt()
+
+class Canvas(QLabel):
+    def __init__(self, parent, bin):
+        super().__init__(parent)
+        self.parent = parent
+        self.bin = bin
+        self.setFixedSize(parent.width * 6,parent.height * 6)
 
         # Create a few pen colors
         self.black = '#000000'
@@ -181,7 +197,6 @@ class PatternWindow(QWidget):
         self.purple = '#6512F0'
         self.red = '#E00C0C'
         self.orange = '#FF930A'
-        
 
     def paintEvent(self, event):
         painter = QPainter()
@@ -191,38 +206,68 @@ class PatternWindow(QWidget):
         painter.setRenderHint(QPainter.Antialiasing)
         self.drawRectangles(painter)
 
-    def drawRectangles(self,painter):
-        pen = QPen(QColor(self.black))
-        brush = QBrush(QColor(self.black))
-        painter.setPen(pen)
-        #rect(x,y,w,h)
-        painter.drawRect(0, 0, 30, 40)
+    def drawRectangles(self, painter):
+        for cut in self.bin.cuts:
+            x, y = cut.top_left   
+            pen = QPen(QColor(self.black))
+            # pen.setStyle(Qt.DashLine)
+            painter.setPen(pen)
+            #rect(x,y,w,h)
+           
+            painter.drawRect(x, y, cut.width, cut.height)
 
-        pen = QPen(QColor(self.blue))
-        brush = QBrush(QColor(self.blue))
-        painter.setPen(pen)
-        painter.drawRect(0, 40, 40, 30)
+            text = f'{cut.width}x{cut.height}'
+            pen = QPen(QColor(self.red))
+            painter.setFont(QFont("Helvetica", 2))
+            painter.setPen(pen)
+            painter.drawText(x + cut.width//3, y + cut.height//2, text)
 
-        pen = QPen(QColor(self.green))
-        brush = QBrush(QColor(self.green))
-        painter.setPen(pen)
-        painter.drawRect(30, 0, 30, 40)
-
-        pen = QPen(QColor(self.purple))
-        brush = QBrush(QColor(self.black))
-        painter.setPen(pen)
-        painter.drawRect(40, 40, 25, 25)
-
-        pen = QPen(QColor(self.red))
-        brush = QBrush(QColor(self.black))
-        painter.setPen(pen)
-        painter.drawRect(65, 0, 25, 25)
-
-        pen = QPen(QColor(self.orange))
-        brush = QBrush(QColor(self.black))
-        painter.setPen(pen)
-        painter.drawRect(65, 25, 25, 25)
         painter.end()
+
+
+class PatternWindow(QWidget):
+    def __init__(self, parent, rectangle,id,bin,k,n):
+        super().__init__()
+        w, h = rectangle
+        self.width = w
+        self.height = h
+        self.id = id
+        self.bin = bin
+        self.k = k
+        self.n = n
+        self.parent = parent
+        self.initialize_ui()
+
+
+    def initialize_ui(self):
+        label = QLabel(f'Patrón de Corte {self.id + 1} de {self.n}')
+        amount = QLabel(f'Cantidad necesaria de repeticiones del patrón: {self.k}')
+        prev_button = QPushButton('Anterior', self)
+        if self.id == 0:
+            prev_button.setEnabled(False)
+        prev_button.clicked.connect(lambda: self.show_prev())
+        next_button = QPushButton('Siguiente', self)
+        if self.id == self.n - 1:
+            next_button.setEnabled(False)
+        next_button.clicked.connect(lambda: self.show_next())
+        vbox = QFormLayout()
+        hbox = QHBoxLayout()
+        hbox.addWidget(prev_button)
+        hbox.addWidget(label)
+        hbox.addWidget(next_button)
+        canvas = Canvas(self, self.bin)
+        vbox.addRow(hbox)
+        vbox.addRow(canvas)
+        vbox.addRow(amount)
+        self.setLayout(vbox)   
+
+    def show_next(self):
+        self.parent.windows[self.id + 1].show()
+        self.close()
+
+    def show_prev(self):
+        self.parent.windows[self.id - 1].show()
+        self.close()
 
 
 # Run program

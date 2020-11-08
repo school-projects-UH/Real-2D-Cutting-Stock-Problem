@@ -22,8 +22,7 @@ def _pick_two_randoms(top):
 
 
 class Solver():
-    #no_gen = 30
-    def solve(self, rectangle, sheets, output=None, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=2, prob_crossover=0.75):
+    def solve(self, rectangle, sheets, output=None, pop_size=60, random_walk_steps=100, hill_climbing_neighbors=25, roulette_pop = 45, no_best_solutions=10, no_generations=30, prob_crossover=0.75):
         self.stopped = False
 
         self.pop_size = pop_size
