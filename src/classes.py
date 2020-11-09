@@ -48,8 +48,19 @@ class FixedRectangle(Rectangle):
         self.top_right = position[0] + self.width, position[1] - self.height
         self.bottom_right = position[0] + self.width, position[1]
 
+    @staticmethod
+    def create_from_tuple(self, info):
+        width, height, pos, rotated = info
+        if rotated:
+            return FixedRectangle(height, width, pos, rotated=True)
+        return FixedRectangle(width, height, pos)
+
+    def as_tuple(self):
+        return (self.width, self.height, self.position, self.rotated)
+
     def __repr__(self):
-        return f'topleft {self.top_left} , position {self.position}: {self.width} X {self.height}'
+        # return f'topleft {self.top_left} , position {self.position}: {self.width} X {self.height}'
+        return f'{self.position}: {self.width} X {self.height}'
 
 
 class Bin(FixedRectangle):
