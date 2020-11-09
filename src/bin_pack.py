@@ -1,6 +1,7 @@
 from classes import Rectangle, FixedRectangle, Bin, Sheet
+from random import random
 
-# Returns a tuple (r, i, j, need_to_rotate) where r is the index of the sheet we are going to place, i is the index of the bin and j is the index of the free_rectangle that best fits
+# Returns a tuple (i, j, need_to_rotate) where i is the index of the bin and j is the index of the free_rectangle that best fits
 def find_best_fit(rectangle, bins):
     best_fit = (1000000, -1, -1, False)
 
@@ -19,15 +20,16 @@ def find_best_fit(rectangle, bins):
 
     return tuple(best_fit[1:])
 
-
 def split(rectangle, free_rectangle):
     result = []
     if free_rectangle.width < free_rectangle.height:
+        # split horizontally
         if rectangle.height < free_rectangle.height:
             result.append(FixedRectangle(width=free_rectangle.width, height=free_rectangle.height - rectangle.height, position=rectangle.top_left))
         if rectangle.width < free_rectangle.width:
             result.append(FixedRectangle(width=free_rectangle.width - rectangle.width, height=rectangle.height, position=rectangle.bottom_right))
     else:
+        # split vertically
         if rectangle.width < free_rectangle.width:
             result.append(FixedRectangle(width=free_rectangle.width - rectangle.width, height=free_rectangle.height, position=rectangle.bottom_right))
         if rectangle.height < free_rectangle.height:
@@ -40,6 +42,7 @@ def maxrects_bssf(rectangle, sheets, unlimited_bins=False):
     p = {}  # p[(i,j)] = number of images of type j on pattern(bin) i
 
     sheets_list = sorted(sheets, key=lambda sheet: (min(sheet.width, sheet.height), max(sheet.width, sheet.height)), reverse=True)
+    use_rectangle_merge = random() < 0.75
 
     for i, sheet in enumerate(sheets_list):
         for _ in range(sheet.demand):
@@ -75,7 +78,34 @@ def maxrects_bssf(rectangle, sheets, unlimited_bins=False):
             free_rectangles.pop(fr_idx)
             free_rectangles += split(new_cut, free_rect_to_split)
 
-    return bins, p
+            if use_rectangle_merge:
+                free_rectangles = {fr for fr in free_rectangles}
+                while True:
+                    changed = False
 
-bins, _ = maxrects_bssf(Rectangle(100, 70), [Sheet(25, 25, 2), Sheet(30, 40, 4)], unlimited_bins=True)
-print(bins)
+                    for fi in free_rectangles:
+                        for fj in free_rectangles:
+                            if fi == fj: continue
+                            if fi.up == fj.up and fi.down == fj.down and min(fi.right, fj.right) == max(fi.left, fj.left):
+
+                                free_rectangles.remove(fi)
+                                free_rectangles.remove(fj)
+                                free_rectangles.add(FixedRectangle(width=fi.width + fj.width, height=fi.height, position=(min(fi.left, fj.left), fi.down)))
+                                changed = True
+                            elif fi.left == fj.left and fi.right == fj.right and min(fi.down, fj.down) == max(fi.up, fj.up):
+
+                                free_rectangles.remove(fi)
+                                free_rectangles.remove(fj)
+                                free_rectangles.add(FixedRectangle(width=fi.width, height=fi.height + fj.height, position=(fi.left, max(fi.down, fj.down))))
+                                changed = True
+                            if changed:
+                                break
+                        if changed:
+                            break
+
+                    if not changed:
+                        break
+
+                current_bin.free_rectangles = [fr for fr in free_rectangles]
+
+    return bins, p

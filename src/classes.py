@@ -61,6 +61,12 @@ class FixedRectangle(Rectangle):
     def __repr__(self):
         # return f'topleft {self.top_left} , position {self.position}: {self.width} X {self.height}'
         return f'{self.position}: {self.width} X {self.height}'
+    
+    def __eq__(self, other):
+        return self.as_tuple() == other.as_tuple()
+    
+    def __hash__(self):
+        return hash(self.as_tuple())
 
 
 class Bin(FixedRectangle):
