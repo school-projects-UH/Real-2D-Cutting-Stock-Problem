@@ -39,7 +39,9 @@ def maxrects_bssf(rectangle, sheets, unlimited_bins=False):
     bins = [Bin(width=rectangle.width, height=rectangle.height)]
     p = {}  # p[(i,j)] = number of images of type j on pattern(bin) i
 
-    for i, sheet in enumerate(sheets):
+    sheets_list = sorted(sheets, key=lambda sheet: (min(sheet.width, sheet.height), max(sheet.width, sheet.height)), reverse=True)
+
+    for i, sheet in enumerate(sheets_list):
         for _ in range(sheet.demand):
             # Find globally the best choice: the rectangle wich best fits on a free_rectangle of any bin
             bin_idx, fr_idx, need_to_rotate = find_best_fit(sheet, bins)
