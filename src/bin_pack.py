@@ -36,7 +36,7 @@ def split(rectangle, free_rectangle):
             result.append(FixedRectangle(width=rectangle.width, height=free_rectangle.height - rectangle.height, position=rectangle.top_left))
     return result
 
-def maxrects_bssf(rectangle, sheets, unlimited_bins=False):
+def pack_rectangles(rectangle, sheets, unlimited_bins=False):
     # start with an empty bin
     bins = [Bin(width=rectangle.width, height=rectangle.height)]
     p = {}  # p[(i,j)] = number of images of type j on pattern(bin) i
