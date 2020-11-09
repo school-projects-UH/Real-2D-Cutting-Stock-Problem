@@ -49,7 +49,7 @@ class FixedRectangle(Rectangle):
         self.bottom_right = position[0] + self.width, position[1]
 
     @staticmethod
-    def create_from_tuple(self, info):
+    def create_from_tuple(info):
         width, height, pos, rotated = info
         if rotated:
             return FixedRectangle(height, width, pos, rotated=True)
