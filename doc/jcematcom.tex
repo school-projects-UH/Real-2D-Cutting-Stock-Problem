@@ -1,0 +1,473 @@
+%===================================================================================
+% JORNADA CIENTÍFICA ESTUDIANTIL - MATCOM, UH
+%===================================================================================
+% Esta plantilla ha sido diseñada para ser usada en los artículos de la
+% Jornada Científica Estudiantil, MatCom.
+%
+% Por favor, siga las instrucciones de esta plantilla y rellene en las secciones
+% correspondientes.
+%
+% NOTA: Necesitará el archivo 'jcematcom.sty' en la misma carpeta donde esté este
+%       archivo para poder utilizar esta plantila.
+%===================================================================================
+
+
+
+%===================================================================================
+% PREÁMBULO
+%-----------------------------------------------------------------------------------
+\documentclass[a4paper,10pt,twocolumn]{article}
+
+%===================================================================================
+% Paquetes
+%-----------------------------------------------------------------------------------
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{jcematcom}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage[pdftex]{hyperref}
+%-----------------------------------------------------------------------------------
+% Configuración
+%-----------------------------------------------------------------------------------
+\hypersetup{colorlinks,%
+	    citecolor=black,%
+	    filecolor=black,%
+	    linkcolor=black,%
+	    urlcolor=blue}
+
+%===================================================================================
+
+
+
+%===================================================================================
+% Presentacion
+%-----------------------------------------------------------------------------------
+% Título
+%-----------------------------------------------------------------------------------
+\title{Título}
+
+%-----------------------------------------------------------------------------------
+% Autores
+%-----------------------------------------------------------------------------------
+\author{\\
+\name Dalianys Pérez Pereira \email \href{mailto:a.uno@lab.matcom.uh.cu}{a.uno@lab.matcom.uh.cu}
+	\\ \addr Grupo C411 \AND
+\name Dayany Alfaro González \email \href{mailto:a.dos@lab.matcom.uh.cu}{a.dos@lab.matcom.uh.cu}
+  \\ \addr Grupo C411 \AND
+\name Gilberto González Rodríguez \email \href{mailto:a.dos@lab.matcom.uh.cu}{a.dos@lab.matcom.uh.cu}
+\\ \addr Grupo C411 \AND
+\name Antonio Jesús Otaño Barrera \email \href{mailto:a.dos@lab.matcom.uh.cu}{a.dos@lab.matcom.uh.cu}
+\\ \addr Grupo C411}
+
+%-----------------------------------------------------------------------------------
+% Tutores
+%-----------------------------------------------------------------------------------
+%\tutors{\\
+%Dr. Tutor Uno, \emph{Centro} \\
+%Lic. Tutor Dos, \emph{Centro}}
+
+%-----------------------------------------------------------------------------------
+% Headings
+%-----------------------------------------------------------------------------------
+%\jcematcomheading{\the\year}{1-\pageref{end}}{A. Uno, A. Dos}
+
+%-----------------------------------------------------------------------------------
+%\ShortHeadings{Autores}
+%===================================================================================
+
+
+
+%===================================================================================
+% DOCUMENTO
+%-----------------------------------------------------------------------------------
+\begin{document}
+
+%-----------------------------------------------------------------------------------
+% NO BORRAR ESTA LINEA!
+%-----------------------------------------------------------------------------------
+\twocolumn[
+%-----------------------------------------------------------------------------------
+
+\maketitle
+
+%===================================================================================
+% Resumen y Abstract
+%-----------------------------------------------------------------------------------
+\selectlanguage{spanish} % Para producir el documento en Español
+
+%-----------------------------------------------------------------------------------
+% Resumen en Español
+%-----------------------------------------------------------------------------------
+\begin{abstract}
+
+	El Resumen en Español debe constar de $100$ a $200$ palabras y presentar de forma
+	clara y concisa el contenido fundamental del artículo.
+
+\end{abstract}
+
+%-----------------------------------------------------------------------------------
+% English Abstract
+%-----------------------------------------------------------------------------------
+\vspace{0.5cm}
+
+\begin{enabstract}
+
+  The English Abstract must have have $100$ to $200$ words, and present in a clear
+  and concise form the essentials of the article content.
+
+\end{enabstract}
+
+%-----------------------------------------------------------------------------------
+% Palabras clave
+%-----------------------------------------------------------------------------------
+\begin{keywords}
+	Separadas,
+	Por,
+	Comas.
+\end{keywords}
+
+%-----------------------------------------------------------------------------------
+% Temas
+%-----------------------------------------------------------------------------------
+\begin{topics}
+	Tema, Subtema.
+\end{topics}
+
+
+%-----------------------------------------------------------------------------------
+% NO BORRAR ESTAS LINEAS!
+%-----------------------------------------------------------------------------------
+\vspace{0.8cm}
+]
+%-----------------------------------------------------------------------------------
+
+
+%===================================================================================
+
+%===================================================================================
+% Introducción
+%-----------------------------------------------------------------------------------
+\section{Introducción}\label{sec:intro}
+%-----------------------------------------------------------------------------------
+El problema de patrones de corte de piezas rectangulares pertenece a
+la familia de problemas de corte y empaquetamiento y sus
+aplicaciones se pueden observar en industrias de perfiles
+metálicos, corte de maderas, papel, plástico o vidrio en
+donde los componentes rectangulares tienen que ser
+cortados de grandes hojas de material. Para estas industrias es de gran importancia realizar
+este proceso de corte de una manera eficiente buscando
+minimizar el desperdicio y los demás costos asociados
+al proceso, teniendo en cuenta las restricciones técnicas
+y de demanda. 
+
+
+
+El problema de patrones de corte es un problema de gran
+complejidad tanto por las características y variables
+que involucra como por las técnicas que se utilizan
+para abordarlo, es una temática en constante evolución
+y muchos investigadores han desarrollado diversos
+modelos para resolverlo. El interés en este problema
+puede ser sustentado por su aplicación práctica y el
+reto que representa pues, en general,
+es computacionalmente difícil de resolver ya que es un
+problema de tipo NP-completo, dado que los patrones de
+empaquetamiento incrementan exponencialmente con el
+número de rectángulos que deben ser empaquetados. 
+ 
+Este trabajo tiene como objetivo resolver un problema de corte en dos dimensiones, asociado a la industria del papel, presente en una empresa ubicada en la provinicia Pinar del Río, Cuba. Se propone el  diseño e implementación de un algoritmo que permita determinar qué patrones de corte deben usarse para cortar un conjunto de hojas de forma que se satisfaga una demanda (de hojas más pequeñas) solicitada por el usuario de forma que el desperdicio resultante de los cortes sea el menor posible. En este caso se permite la rotación de las piezas a colocar y se requiere que los cortes sean de tipo guillotina, es decir, que  el corte vaya de un extremo a otro del rectángulo original. 
+
+[Texto explicando lo que aborda cada sección]
+
+%===================================================================================
+
+\section{Antecedentes y Enfoques de Solución}
+El Problema de patrones de corte (CSP, por sus siglas
+en inglés) fue formulado por primera vez en 1939
+por el economista ruso Kantorovich.
+
+Han surgido numerosas investigaciones que abordan
+diferentes problemas según el tipo de dimensión (1D y
+2D) y desde diversos enfoques tales como los métodos
+exactos, heurísticos y meta heurísticos, pero aún no
+existe un método global establecido para dar solución
+a este tipo de problemas, debido a la complejidad
+asociada. 
+
+\subsection{Programación Lineal Entera}
+
+Casi todos los procedimientos basados en la
+programación lineal para resolver el problema de
+patrones de corte se remontan a Gilmore y Gomory,
+\cite{1}, para lo cual, proponen la relajación de la restricción
+de integridad para la solución de problemas de
+programación lineal logrando minimizar el desperdicio
+a través de la generación de columnas evitando el
+conocimiento explícito o enumeración de todos los
+patrones desde el principio, ya que bajo este esquema
+las columnas (patrones) son generadas cuando se
+requieran \cite{2}. La idea consiste en utilizar el método
+simplex revisado para resolver el problema de la entrada
+del patrón de corte siguiente a la base mediante la
+resolución de un problema de la mochila asociado. Este
+método es denominado en la literatura como \textit{delayed
+column generation technique}, y permite resolver este
+tipo de problemas en un tiempo computacional mucho
+menor \cite{3}.
+
+
+\subsection{Procedimientos Heurísticos Secuenciales}
+Los procedimientos heurísticos secuenciales pertenecen
+a la clase de heurísticas de búsqueda local. La solución
+se construye mediante la generación de patrones uno
+a uno hasta que todos los requerimientos de demanda
+se hayan satisfecho, donde los patrones inicialmente
+seleccionados deben tener un nivel de desperdicio
+bajo, un nivel de utilización alto y dejar una serie de requerimientos para poder combinar bien los patrones
+futuros, evitando así incurrir posteriormente en
+desperdicios excesivos \cite{3}. La ventaja principal de este método es que puede controlar otros factores aparte del desperdicio y elimina
+el problema del redondeo al trabajar sólo con valores
+enteros.
+
+\subsection{Procedimientos Heurísticos Híbridos }
+Este procedimiento consiste en combinar los dos
+procedimientos descritos anteriormente, de tal forma
+que se utilice el procedimiento heurístico secuencial
+para generar una solución, la cual es guardada y
+utilizada como base inicial en el procedimiento de
+programación lineal. Posteriormente, el desperdicio es
+reducido si es posible a través iteraciones adicionales,
+tal y como lo realiza \cite{41}. 
+
+Independientemente de la forma como
+se combinen estos dos métodos, lo más importante
+del éxito de la unión entre el procedimiento heurístico
+secuencial y el redondeo de problemas de programación
+lineal es la selección del criterio apropiado para resolver
+el problema \cite{29}.
+
+\subsection{ Metaheurísticas }
+Ante el problema que presenta la búsqueda local y
+las heurísticas constructivas de quedar atrapadas en
+óptimos locales, surgen las metaheurísticas a mediados
+de 1970 pues tienen la capacidad de guiar la búsqueda
+local para que se escape de los óptimos locales. Muchos
+de estos algoritmos se han utilizado para resolver
+el problema de patrones de corte, entre los cuales
+se destaca \textit{Tabu Search} (TS), \textit{Greedy Randomized
+Adaptive Search Procedure} (GRASP) \cite{42}, Algoritmos
+genéticos \cite{43,46} y \textit{Ant Colony Optimization} (ACO) \cite{47,48}, entre otros algoritmos evolucionarios \cite{51}.
+
+%===================================================================================
+% Desarrollo
+%-----------------------------------------------------------------------------------
+\section{Definición del Problema}
+
+\section{Propuesta de Solución}
+
+\section{Desarrollo}\label{sec:dev}
+%-----------------------------------------------------------------------------------
+  En esta sección (o secciones) incluya el contenido fundamental del artículo.
+  No es necesario tener una sección nombrada \emph{Desarrollo}, por el contrario,
+  nombre las secciones según el contenido que tratan.
+
+%-----------------------------------------------------------------------------------
+	\subsection{Organización del Documento}\label{sub:results}
+%-----------------------------------------------------------------------------------
+		Puede agregar secciones y subsecciones según sea necesario para organizar
+		de manera más coherente su artículo. Tenga en cuenta que un documento más
+		plano es más fácil de navegar y entender, pero las subsecciones relacionadas
+		deberían estar agrupadas en una sección común.
+
+		Los nombres de las secciones deben ir en mayúsculas, excepto para las
+		preposiciones, conjunciones, y otros vocablos auxiliares.
+
+		Empiece un nuevo párrafo cada vez que vaya a comenzar una idea nueva.
+
+%-----------------------------------------------------------------------------------
+	\subsection{Listas y Descripciones}\label{sub:lists}
+%-----------------------------------------------------------------------------------
+		Para producir listas enumeradas, use el siguiente estilo:
+
+%-----------------------------------------------------------------------------------
+		\begin{enumerate}
+			\item Primer Elemento
+			\item Segundo Elemento
+			%
+			\begin {enumerate}
+				\item {Segundo Elemento - Subitem Uno}
+				\item {Segundo Elemento - Subitem Dos}
+			\end {enumerate}
+			%
+		\end{enumerate}
+
+%-----------------------------------------------------------------------------------
+		Para producir descripciones, use el siguiente estilo:
+
+%-----------------------------------------------------------------------------------
+		\begin{description}
+			\item [Primer Elemento] con su respectiva descripción.
+			\item [Segundo Elemento] también con su respectiva descripción.
+		\end{description}
+
+%-----------------------------------------------------------------------------------
+	\subsection{Figuras}\label{sub:figures}
+%-----------------------------------------------------------------------------------
+		Para producir cuerpos flotantes (figuras ó tablas), asegúrese de numerar
+		y etiquetar correctamente cada figura. Las referencias a las figuras deben
+		estar también correctamente etiquetadas. Por ejemplo, en la Fig. \ref{fig:ex}
+		se muestra\ldots.
+
+		\begin{figure}[htb]%
+		\begin{center}
+			\emph{Aquí va el contenido de la figura \ldots}
+		\end{center}
+		\caption{Figura de ejemplo \label{fig:ex}}%
+		\end{figure}
+
+%-----------------------------------------------------------------------------------
+	\subsection{Código Fuente}\label{sub:listings}
+%-----------------------------------------------------------------------------------
+		Para producir código fuente, envuélvalo en una figura flotante y
+		etiquételo correctamente. Por ejemplo, en la Fig. \ref{fig:code}
+		se muestra un código bastante conocido\ldots.
+
+		% Configuración de Listings
+		\lstset{keywordstyle=\color{blue}, basicstyle=\small}
+
+		\begin{figure}[htb]%
+			\begin{lstlisting}[language=c]%
+
+    int main(int argc, char** argv)
+    {
+        // Imprimiendo "Hola Mundo".
+        printf("Hello, World");
+    }
+
+			\end{lstlisting}
+		\caption{Código fuente de ejemplo.\label{fig:code}}
+		\end{figure}
+
+%-----------------------------------------------------------------------------------
+	\subsection{Referencias}
+%-----------------------------------------------------------------------------------
+  	Las referencias deben estar agrupadas en una sección al final del artículo,
+  	y las citas numeradas correctamente, por ejemplo \cite{knuth} ó \cite{goedel}.
+  	Incluya toda la información importante de cada referencia, incluídos autor,
+  	título, y notas de la edición. En caso de citar sitios web, además
+  	de la URL, incluya la fecha en que fue consultado, como en \cite{wiki}.
+
+%===================================================================================
+
+
+
+%===================================================================================
+% Conclusiones
+%-----------------------------------------------------------------------------------
+\section{Conclusiones}\label{sec:conc}
+
+  En esta sección puede incluir las conclusiones de su investigación y las ideas
+  sobre la continuidad del trabajo, en el caso que aplique.
+
+%===================================================================================
+
+
+
+%===================================================================================
+% Recomendaciones
+%-----------------------------------------------------------------------------------
+\section{Recomendaciones}\label{sec:rec}
+
+  En esta sección puede incluir recomendaciones sobre posibles formas de continuar
+  la investigación u otros temas relacionados.
+
+%===================================================================================
+
+
+
+%===================================================================================
+% Bibliografía
+%-----------------------------------------------------------------------------------
+\begin{thebibliography}{99}
+%-----------------------------------------------------------------------------------
+	\bibitem{1} P. Gilmore, and R. Gomory, “A linear programming
+	approach to the Cutting Stock Problem-Part II,”
+	Operations Research, 11(6), 863-888, 1963.
+	
+	\bibitem{2} H. Hideki, and M.J. Pinto, “An integrated cutting
+	stock and sequencing problem,” European Journal of
+	Operational Research (183), 1353–1370, 2007.
+	
+	\bibitem{3}J. Karelahti, “Solving the cutting stock problem in
+	the steel industry”. Department of Engineering Physics
+	and Mathematics. Helsinki University of Technology,
+	2-5, 2002.
+	
+	\bibitem{41}  Cui, Y.-P., Tang, T.-B. Parallelized sequential value correction procedure for the one-dimensional cutting
+	stock problem with multiple stock lengths. Engineering
+	Optimization, 46 (10), 1352-1368, 2014.
+	
+	\bibitem{29} R. Haessler, and P. Sweeney, “Cutting stock
+	problems and solution procedures,” European Journal
+	of Operational Research, 54, 141-150, 1991.
+	
+	\bibitem{42} MirHassani, S.A., Jalaeian Bashirzadeh, A. A
+	GRASP meta-heuristic for two-dimensional irregular
+	cutting stock problem. International Journal of
+	Advanced Manufacturing Technology, 81 (1-4), 455-
+	464, 2105.
+	
+	\bibitem{43}  Wenshu, L., Dan, M., Jinzhuo, W. Study on cutting
+	stock optimization for decayed wood board based
+	on genetic algorithm. Open Automation and Control
+	Systems Journal, 7 (1), 284-289, 2015.
+	
+	\bibitem{46}  Lu, H.-C.a , Huang, Y.-H.b. An efficient genetic
+	algorithm with a corner space algorithm for a cutting
+	stock problem in the TFT-LCD industry. European
+	Journal of Operational Research, 246 (1), 51-65, 2015.
+	
+	\bibitem{47}Lu, Q., Zhou, X. GPU parallel ant colony algorithm
+	for the dynamic one-dimensional cutting stock problem
+	based on the on-line detection. Yi Qi Yi Biao Xue Bao/
+	Chinese Journal of Scientific Instrument, 36 (8), pp.
+	1774-1782, 2015.
+	
+	\bibitem{48}  Díaz, D., Valledor, P., Areces, P., Rodil, J., Suárez, M.
+	An ACO Algorithm to Solve an Extended Cutting Stock
+	Problem for Scrap Minimization in a Bar Mill. Lecture
+	Notes in Computer Science (including subseries Lecture
+	Notes in Artificial Intelligence and Lecture Notes in
+	Bioinformatics), 8667, 13-24, 2014.
+	
+	\bibitem{51} Ben Lagha, G.a , Dahmani, N.b , Krichen, S.a.
+	Particle swarm optimization approach for resolving the
+	cutting stock problem. 2014 International Conference
+	on Advanced Logistics and Transport, 2014.
+	
+	
+	
+	\bibitem{knuth} Donald E. Knuth. \emph{The Art of Computer Programming}.
+		Volume 1: Fundamental Algorithms (3rd~edition), 1997.
+		Addison-Wesley Professional.
+
+	\bibitem{goedel} Kurt Göedel. \emph{Über formal unentscheidbare Sätze der
+		Principia Mathematica und verwandter Systeme, I}.
+		Monatshefte für Mathematik und Physik 38.
+
+	\bibitem{wiki} Wikipedia. URL: \href{http://en.wikipedia.org}
+	  {http://en.wikipedia.org}.
+		Consultado en \today.
+
+%-----------------------------------------------------------------------------------
+\end{thebibliography}
+
+%-----------------------------------------------------------------------------------
+
+\label{end}
+
+\end{document}
+
+%===================================================================================
