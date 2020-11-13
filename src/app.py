@@ -85,6 +85,7 @@ class MainWindow(QMainWindow):
             wbox.setMaximum(1000000)
             dlabel = QLabel("Demanda:")
             dbox = QSpinBox()
+            dbox.setMinimum(1)
             dbox.setMaximum(100000000)
             rect_dim_hbox = QHBoxLayout()
             rect_dim_hbox.addWidget(hlabel)
@@ -144,6 +145,7 @@ class SolverWindow(QWidget):
         self.thread = Worker(rect_dim, sheet_dims)
         self.setGeometry(640, 100, 300, 150)
         self.initialize_ui()
+        self.setFixedSize(self.size())
         self.update()
         self.thread.start()
         self.thread.output['PyQt_PyObject'].connect(self.show_solution)
@@ -207,18 +209,25 @@ class Canvas(QLabel):
         self.drawRectangles(painter)
 
     def drawRectangles(self, painter):
+        pen = QPen(QColor(self.black))
+        brush = QBrush(QColor(self.black))
+        painter.setPen(pen)
+        painter.setBrush(brush) 
+        painter.drawRect(0, 0, self.parent.width, self.parent.height)
         for cut in self.bin.cuts:
             x, y = cut.top_left   
             pen = QPen(QColor(self.black))
+
             # pen.setStyle(Qt.DashLine)
             painter.setPen(pen)
+            painter.setBrush(Qt.white)
             #rect(x,y,w,h)
            
             painter.drawRect(x, y, cut.width, cut.height)
 
             text = f'{cut.width}x{cut.height}'
             pen = QPen(QColor(self.red))
-            painter.setFont(QFont("Helvetica", 2))
+            painter.setFont(QFont("Helvetica", cut.width//10))
             painter.setPen(pen)
             painter.drawText(x + cut.width//3, y + cut.height//2, text)
 
@@ -237,6 +246,7 @@ class PatternWindow(QWidget):
         self.n = n
         self.parent = parent
         self.initialize_ui()
+        self.setFixedSize(self.size().width(), self.size().height() + 20)
 
 
     def initialize_ui(self):
@@ -250,16 +260,18 @@ class PatternWindow(QWidget):
         if self.id == self.n - 1:
             next_button.setEnabled(False)
         next_button.clicked.connect(lambda: self.show_next())
-        vbox = QFormLayout()
+        form = QFormLayout()
         hbox = QHBoxLayout()
         hbox.addWidget(prev_button)
         hbox.addWidget(label)
         hbox.addWidget(next_button)
+        vbox = QVBoxLayout()
+        vbox.addWidget(amount)
         canvas = Canvas(self, self.bin)
-        vbox.addRow(hbox)
-        vbox.addRow(canvas)
-        vbox.addRow(amount)
-        self.setLayout(vbox)   
+        form.addRow(hbox)
+        form.addRow(canvas)
+        form.addRow(vbox)
+        self.setLayout(form)   
 
     def show_next(self):
         self.parent.windows[self.id + 1].show()
