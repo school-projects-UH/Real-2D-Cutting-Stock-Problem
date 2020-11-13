@@ -2,7 +2,7 @@ import math
 import random
 from random import randint
 
-from bin_pack import maxrects_bssf
+from bin_pack import pack_rectangles
 from classes import Solution, Sheet, Bin, FixedRectangle
 from lp_solver import solve_LP
 import time
@@ -163,7 +163,7 @@ class Solver():
         # Check the feasibility of the new solution
         for i in range(len(solution.bins)):
             sheets = [Sheet(s.width, s.height, sheets_per_pattern[i, j]) for (j,s) in enumerate(self.sheets) if (i,j) in sheets_per_pattern]
-            placement, _ = maxrects_bssf(self.rectangle, sheets)
+            placement, _ = pack_rectangles(self.rectangle, sheets)
             if placement == []:
                 return None
             bins += placement
@@ -176,7 +176,7 @@ class Solver():
 
     def create_initial_population(self):
         initial_sheets = [Sheet(s.width, s.height, 1) for s in self.sheets]
-        placement, sheets_per_pattern = maxrects_bssf(self.rectangle, initial_sheets, unlimited_bins=True)
+        placement, sheets_per_pattern = pack_rectangles(self.rectangle, initial_sheets, unlimited_bins=True)
         fitness, prints_per_pattern = solve_LP(placement, sheets_per_pattern, self.sheets)
         initial_solution = Solution(placement, sheets_per_pattern, prints_per_pattern, fitness)
         initial_population = []
@@ -248,7 +248,7 @@ class Solver():
 
         sheets_to_process = {(s.width, s.height) for s in self.sheets} - covered_sheets
         sheets_to_process = [Sheet(w, h, 1) for (w,h) in sheets_to_process]
-        placement, _ = maxrects_bssf(self.rectangle, sheets_to_process, unlimited_bins=True)
+        placement, _ = pack_rectangles(self.rectangle, sheets_to_process, unlimited_bins=True)
 
         bins = all_selected_patterns + placement
         sheets_per_patterns = { }
