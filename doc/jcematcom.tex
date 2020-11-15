@@ -46,7 +46,8 @@
 %-----------------------------------------------------------------------------------
 % Título
 %-----------------------------------------------------------------------------------
-\title{Título}
+\title{Modelos de Optimización II \\
+	Al desperdicio, ¡ni un tantico así!}
 
 %-----------------------------------------------------------------------------------
 % Autores
@@ -54,7 +55,7 @@
 \author{\\
 \name Dalianys Pérez Pereira \email \href{mailto:a.uno@lab.matcom.uh.cu}{a.uno@lab.matcom.uh.cu}
 	\\ \addr Grupo C411 \AND
-\name Dayany Alfaro González \email \href{mailto:a.dos@lab.matcom.uh.cu}{a.dos@lab.matcom.uh.cu}
+\name Dayany Alfaro González \email \href{mailto:d.alfaro@matcom.uh.cu}{d.alfaro@matcom.uh.cu}
   \\ \addr Grupo C411 \AND
 \name Gilberto González Rodríguez \email \href{mailto:a.dos@lab.matcom.uh.cu}{a.dos@lab.matcom.uh.cu}
 \\ \addr Grupo C411 \AND
@@ -264,8 +265,52 @@ genéticos \cite{43,46} y \textit{Ant Colony Optimization} (ACO) \cite{47,48}, e
 % Desarrollo
 %-----------------------------------------------------------------------------------
 \section{Definición del Problema}
+Sea $I$ el conjunto de $n$ hojas, una hoja $i$ está definida por su ancho $w_i$, su altura $h_i$ y su demanda $d_i$. Sea $J$ el conjunto de $m$ patrones de corte con las mismas dimensiones $H \times W$, el número $m$ es desconocido. Sea $p_{ji}$ el número de hojas $i$ presentes en el patrón $j$, se tiene que $p_j = (p_{j1},...,p_{jn})$. Sea $\pi_j$ una configuración de las hojas del patrón $j$, la cual incluye información acerca de la posición exacta de las hojas y si se encuentran rotadas o no. Por tanto, un patrón $j$ va a estar definido por $(p_j,\pi_j)$. Sea $x_j$ el número de veces que es necesario aplicar el patrón de corte $j$, se tiene que las variables de decisión son: $m, p_j, x_j$ y $\pi_j$ $\forall j \in J$.  
+
+El objetivo que se persigue es minimizar el desperdicio de papel:
+$$ f(m,x_1,...,x_m) = c_j x_j $$
+donde $c_j$ es el área no usada del patrón $j$.
+
+Para satisfacer la demanda $d_i$ solicitada para cada hoja $i$ van a aparecer $n$ restricciones:
+$$\sum_{j \in J}p_{ji}x_j \geq  d_i \ \  \forall i \in I$$
+
+Es necesario también tener en cuenta la sobreproducción a la hora de analizar el espacio desperdiciado dado que cuando una solución sobrecumple la demanda se tiene que esas hojas sobreproducidas también van a ser desechadas. Por tanto para tener lo anterior en consideración hay modificar la función objetivo. Sea $a_i$ el área total de la hoja $i$ se tiene que:
+ $$sobreProd = \sum_{i \in I} sobreProd_i $$ 
+donde $sobreProd_i = (\sum_{j \in J} p_{ji}x_ja_i)  -  d_ia_i$ va a ser el número de hojas $i$ sobreproducidas.
+La nueva función objetivo sería la siguiente:
+$$ f(m,x_1,...,x_m) = c_j x_j + sobreProd$$
+
+Esta función objetivo y las $n$ restricciones presentadas antes definen un problema de programación lineal entero. Una solución va a estar compuesta por $((p_1,\pi_1),...,(p_m,\pi_m))$ y $(x_1,...,x_m)$ que es la solución de dicho problema lineal entero.
+
 
 \section{Propuesta de Solución}
+La solución que se propone en este trabajo es una adaptación de la solución brindada por \cite{4}. El problema de patrones de cortes va a ser dividido en los siguientes 3 subproblemas de optimización:
+\begin{enumerate}
+	\item El problema de programación lineal descrito en la sección anterior, el cual consiste en hallar $(x_1,...,x_m)$.
+	\item Un problema de empaquetamiento en 2 dimensiones (2D Bin Packing) que consiste en encontrar las configuraciones $(\pi_1,...,\pi_m)$ de las hojas en los $m$ patrones.
+	\item Un problema combinatorio que consiste en hallar los adecuados $(p_1,...,p_m)$. Para resolverlo se utiliza un algoritmo genético, el cual a su vez se va a apoyar en los subproblemas anteriores. 
+\end{enumerate}
+
+\subsection{Problema de Programación Lineal}
+\subsection{2D Bin Packing}
+
+\subsection{Algoritmo Genético}
+
+Los algoritmos genéticos son llamados así porque se inspiran en la evolución biológica y su base genético-molecular. Estos algoritmos hacen evolucionar una población de individuos sometiéndola a acciones aleatorias semejantes a las que actúan en la evolución biológica (mutaciones y recombinaciones genéticas), así como también a una selección de acuerdo con algún criterio, en función del cual se decide cuáles son los individuos más adaptados, que sobreviven, y cuáles los menos aptos, que son descartados.\cite{5}
+
+El funcionamiento de un algoritmo genético básico se puede resumir en los pasos siguientes:
+\begin{itemize}
+	\item \textbf{Inicialización}: Se genera aleatoriamente la población inicial, que está constituida por un conjunto de cromosomas los cuales representan las posibles soluciones del problema. En caso de no hacerlo aleatoriamente, es importante garantizar que dentro de la población inicial, se tenga la diversidad estructural de estas soluciones para tener una representación de la mayor parte de la población posible o al menos evitar la convergencia prematura.
+	\item \textbf{Evaluación}: A cada uno de los cromosomas de esta población se aplicará la función de aptitud para saber cómo de "buena" es la solución que se está codificando.
+	\item \textbf{Condición de término}: El AG se deberá detener cuando se alcance la solución óptima, pero esta generalmente se desconoce, por lo que se deben utilizar otros criterios de detención. Normalmente se usan dos criterios: correr el AG un número máximo de iteraciones (generaciones) o detenerlo cuando no haya cambios en la población. Mientras no se cumpla la condición de término se hace lo siguiente:
+	\begin{itemize}
+		\item \textbf{Selección}: Después de saber la aptitud de cada cromosoma se procede a elegir los cromosomas que serán cruzados en la siguiente generación. Los cromosomas con mejor aptitud tienen mayor probabilidad de ser seleccionados.
+		\item \textbf{Recombinación o cruzamiento}: La recombinación es el principal operador genético, representa la reproducción sexual, opera sobre dos cromosomas a la vez para generar dos descendientes donde se combinan las características de ambos cromosomas padres.
+		\item \textbf{Mutación}: Modifica al azar parte del cromosoma de los individuos, y permite alcanzar zonas del espacio de búsqueda que no estaban cubiertas por los individuos de la población actual.
+		\item \textbf{Reemplazo}: Una vez aplicados los operadores genéticos, se seleccionan los mejores individuos para conformar la población de la generación siguiente. \cite{5}
+	\end{itemize}
+\end{itemize}
+
 
 \section{Desarrollo}\label{sec:dev}
 %-----------------------------------------------------------------------------------
@@ -405,6 +450,12 @@ genéticos \cite{43,46} y \textit{Ant Colony Optimization} (ACO) \cite{47,48}, e
 	and Mathematics. Helsinki University of Technology,
 	2-5, 2002.
 	
+	\bibitem{4} Stéphane Bonnevay, Philippe Aubertin, and Gérald Gavin, "A Genetic Algorithm to Solve a Real 2-D Cutting Stock
+	Problem with Setup Cost in the Paper Industry". Genetic and Evolutionary Computation Conference,2015
+	
+	
+	
+	
 	\bibitem{41}  Cui, Y.-P., Tang, T.-B. Parallelized sequential value correction procedure for the one-dimensional cutting
 	stock problem with multiple stock lengths. Engineering
 	Optimization, 46 (10), 1352-1368, 2014.
@@ -447,7 +498,9 @@ genéticos \cite{43,46} y \textit{Ant Colony Optimization} (ACO) \cite{47,48}, e
 	cutting stock problem. 2014 International Conference
 	on Advanced Logistics and Transport, 2014.
 	
-	
+	\bibitem{5} Wikipedia. URL: \href{https://es.wikipedia.org/wiki/Algoritmo\_genetico}
+	{https://es.wikipedia.org/wiki/Algoritmo\_genetico}.
+	Consultado el 15 de Noviembre, 2020.
 	
 	\bibitem{knuth} Donald E. Knuth. \emph{The Art of Computer Programming}.
 		Volume 1: Fundamental Algorithms (3rd~edition), 1997.
