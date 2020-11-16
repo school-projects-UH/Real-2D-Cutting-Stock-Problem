@@ -268,19 +268,28 @@ genéticos \cite{43,46} y \textit{Ant Colony Optimization} (ACO) \cite{47,48}, e
 Sea $I$ el conjunto de $n$ hojas, una hoja $i$ está definida por su ancho $w_i$, su altura $h_i$ y su demanda $d_i$. Sea $J$ el conjunto de $m$ patrones de corte con las mismas dimensiones $H \times W$, el número $m$ es desconocido. Sea $p_{ji}$ el número de hojas $i$ presentes en el patrón $j$, se tiene que $p_j = (p_{j1},...,p_{jn})$. Sea $\pi_j$ una configuración de las hojas del patrón $j$, la cual incluye información acerca de la posición exacta de las hojas y si se encuentran rotadas o no. Por tanto, un patrón $j$ va a estar definido por $(p_j,\pi_j)$. Sea $x_j$ el número de veces que es necesario aplicar el patrón de corte $j$, se tiene que las variables de decisión son: $m, p_j, x_j$ y $\pi_j$ $\forall j \in J$.  
 
 El objetivo que se persigue es minimizar el desperdicio de papel:
-$$ f(m,x_1,...,x_m) = c_j x_j $$
+\begin{equation}
+f = \sum_{j \in J}c_j x_j
+\label{eq1}
+\end{equation}
 donde $c_j$ es el área no usada del patrón $j$.
 
 Para satisfacer la demanda $d_i$ solicitada para cada hoja $i$ van a aparecer $n$ restricciones:
-$$\sum_{j \in J}p_{ji}x_j \geq  d_i \ \  \forall i \in I$$
+\begin{equation}
+\sum_{j \in J}p_{ji}x_j \geq  d_i \ \  \forall i \in I
+\label{eq2}
+\end{equation}
 
-Es necesario también tener en cuenta la sobreproducción a la hora de analizar el espacio desperdiciado dado que cuando una solución sobrecumple la demanda se tiene que esas hojas sobreproducidas también van a ser desechadas. Por tanto para tener lo anterior en consideración hay modificar la función objetivo. Sea $a_i$ el área total de la hoja $i$ se tiene que:
+Es necesario también tener en cuenta la sobreproducción a la hora de analizar el espacio desperdiciado dado que cuando una solución sobrecumple la demanda se tiene que esas hojas sobreproducidas también van a ser desechadas. Por tanto para tener lo anterior en consideración hay modificar la función objetivo que se muestra en la ecuación \eqref{eq1}. Sea $a_i$ el área total de la hoja $i$ se tiene que:
  $$sobreProd = \sum_{i \in I} sobreProd_i $$ 
 donde $sobreProd_i = (\sum_{j \in J} p_{ji}x_ja_i)  -  d_ia_i$ va a ser el número de hojas $i$ sobreproducidas.
 La nueva función objetivo sería la siguiente:
-$$ f(m,x_1,...,x_m) = c_j x_j + sobreProd$$
+\begin{equation}
+f = \sum_{j \in J}c_j x_j + sobreProd
+\label{eq3}
+\end{equation}
 
-Esta función objetivo y las $n$ restricciones presentadas antes definen un problema de programación lineal entero. Una solución va a estar compuesta por $((p_1,\pi_1),...,(p_m,\pi_m))$ y $(x_1,...,x_m)$ que es la solución de dicho problema lineal entero.
+Esta función objetivo y las $n$ restricciones presentadas antes definen un problema de programación lineal entero. Sea $S$ el conjunto de todas las posibles soluciones, una solución $s \in S$ va a estar formada por $((p_1,\pi_1),...,(p_m,\pi_m))$ y $(x_1,...,x_m)$ que es la solución de dicho problema lineal entero.
 
 
 \section{Propuesta de Solución}
@@ -292,7 +301,31 @@ La solución que se propone en este trabajo es una adaptación de la solución b
 \end{enumerate}
 
 \subsection{Problema de Programación Lineal}
+Como ha sido explicado en la Sección 3 es necesario resolver un problema de programación lineal entero donde se quiere minimizar la función que se muestra en la ecuación \eqref{eq3} sujeta a las restricciones en la ecuación \eqref{eq2}.
+
+La eficiencia al resolver este subproblema resulta crucial debido a que va ser necesario resolverlo múltiples veces para evaluar y saber cuan buenas son las soluciones al problema de patrones de corte que se van obteniendo. Por esto se resuelve el problema relajado correspondiente por lo que la solución obtenida $({x_1}^*,...,{x_m}^*)$ se redondea de forma que el número de veces que es necesario aplicar el patrón de corte $x_j = \lceil {x_j}^* \rceil \ \ \forall j \in J$.
+
 \subsection{2D Bin Packing}
+El problema 2D Bin Packing se puede enunciar de la siguiente manera: Dada una lista de rectángulos $(R_1,...,R_n)$ determinar la forma de colocarlos todos sin que se solapen y usando el menor número posible de contenedores rectangulares (\textit{bins}). En este caso los rectángulos serían las hojas que se demandan y un \textit{bin} sería la hoja a picar. Como resultado se obtendría una lista de patrones $\pi = (\pi_1,...,\pi_k)$.
+
+Existen diversas alternativas para resolver este problema \cite{11}. En este caso se propone la variante \textit{Guillotine}, que como su nombre indica cumple la restricción de cortes tipo guillotina. Este algoritmo en todo momento mantiene actualizada una lista "rectángulos libres" que representan el área disponible en el rectángulo principal(\textit{bin}). Estos rectángulos libres cumplen que son disjuntos tomados dos a dos, es decir $F_i \cap F_j = \emptyset \ \ \forall i\neq j $ y el área libre total del \textit{bin} se puede definir como $\bigcup\limits_{i=1}^{m} F_{i}$ donde $F = \{F_1,...,F_m\}$ es la lista de rectángulos libres. El algoritmo comienza con un único rectángulo libre, lo cual se representa como $F = \{F_1 = (W \times H)\}$. En cada iteración del algoritmo se selecciona un rectángulo libre $F_i$ donde coloca el rectángulo $R = (w \times h)$ en la esquina inferior izquierda, por tanto $F_i$ se sustituye por dos nuevos rectángulos $F',F''$ que cumplen que $F' \cap F'' = \emptyset$ y $F' \cup F'' \cup R = F_i$. Este procedimiento continúa hasta que se hayan colocado todos los rectángulos.
+
+En la implementación del algoritmo \textit{Guillotine} se usaron las siguientes heurísticas:
+\begin{itemize}
+	\item \textbf{BSSF:} \textit{Best Short Side Fit}\\
+	A la hora de escoger un rectángulo libre de $F = \{F_1,...,F_m\}$ para colocar el rectángulo $R = (w \times h)$ se selecciona el $F_i = (w_i \times h_i)$ tal que $min(w_i-w,h_i-h)$ tiene el menor valor. 
+	\item \textbf{BFF:} \textit{Bin First Fit}\\
+	Como se pueden tener varios \textit{bins} abiertos a la vez se decide colocar $R = (w \times h)$ en el primer \textit{bin} en el que quepa.
+	\item \textbf{SAS:} \textit{Shorter Axis Split}\\
+	Cuando se va a sustituir $F_i$ por $F',F''$ se realiza un corte paralelo al lado más pequeño de $F_i$.
+	\item \textbf{DESCSS:} Sort by Shorter Side First in Descending Order\\
+	Ordenar la entrada $(R_1,...,R_n)$ de acuerdo al siguiente criterio:
+	$$R_i < R_j \Longleftrightarrow min(w_i,h_i) < min (w_j,h_j)$$ 
+	\item \textbf{RM:} \textit{Rectangle Merge}\\
+	La principal limitante del algoritmo es que a causa de mantener una lista de rectángulos libres disjuntos es posible que no permita colocar un rectángulo aún cuando hay suficiente área libre para ello. Una manera en la que se puede mejorar el algorito es después de colocar un rectángulo encontrar todos los pares de rectángulos libre vecinos que pueden ser mezclados en uno solo y mezclarlos. Repetir este procedimiento mientras exista al menos un par de rectángulos libres $F_i, F_j$ que cumplan dicha condición.
+\end{itemize}
+
+
 
 \subsection{Algoritmo Genético}
 
@@ -453,8 +486,9 @@ El funcionamiento de un algoritmo genético básico se puede resumir en los paso
 	\bibitem{4} Stéphane Bonnevay, Philippe Aubertin, and Gérald Gavin, "A Genetic Algorithm to Solve a Real 2-D Cutting Stock
 	Problem with Setup Cost in the Paper Industry". Genetic and Evolutionary Computation Conference,2015
 	
-	
-	
+	\bibitem{11} J. Jylanki. A thousand ways to pack the bin - a
+	practical approach to two-dimensional rectangle bin
+	packing. research report, 2010.
 	
 	\bibitem{41}  Cui, Y.-P., Tang, T.-B. Parallelized sequential value correction procedure for the one-dimensional cutting
 	stock problem with multiple stock lengths. Engineering
