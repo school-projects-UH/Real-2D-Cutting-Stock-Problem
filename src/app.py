@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QPushButton, QSpinBox, QHBoxLayout, QVBoxLayout, QFormLayout
-from PyQt5.QtGui import QPainter, QPainterPath, QColor, QBrush, QPen,QFont, QPolygon, QLinearGradient
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QPushButton, QSpinBox, QHBoxLayout, QVBoxLayout, QFormLayout, QMessageBox
+from PyQt5.QtGui import QPainter, QPainterPath, QColor, QBrush, QPen,QFont
 from PyQt5.QtCore import Qt, QPoint, QRect, QThread, pyqtSignal
 from pyqtspinner.spinner import WaitingSpinner
 from classes import Rectangle, Sheet, Solution
@@ -111,10 +111,18 @@ class MainWindow(QMainWindow):
         self.update()
 
 
-    def show_new_window(self,rect_dim, sheet_dims):
-        if self.w is None:
-            self.w = SolverWindow(rect_dim, sheet_dims,self)
-            self.w.show()
+    def show_new_window(self, rect_dim, sheet_dims):
+        error = False
+        for sheet in sheet_dims:
+            w, h, _ = sheet
+            if w.value() > rect_dim[0] or h.value() > rect_dim[1]:
+                error = True
+        if error:
+            QMessageBox.warning(self, "Error", "Las dimensiones a cortar no pueden ser mayores que la hoja principal.", QMessageBox.Ok, QMessageBox.Ok)
+        elif self.w is None:
+                self.w = SolverWindow(rect_dim, sheet_dims,self)
+                self.w.show()
+
 
 class Worker(QThread):
     output = pyqtSignal(Solution)
