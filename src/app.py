@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QPushButton, QSpinBox, QHBoxLayout, QVBoxLayout, QFormLayout, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QPushButton, QSpinBox, QHBoxLayout, QVBoxLayout, QFormLayout, QMessageBox, QAction
 from PyQt5.QtGui import QPainter, QPainterPath, QColor, QBrush, QPen,QFont
 from PyQt5.QtCore import Qt, QPoint, QRect, QThread, pyqtSignal
 from pyqtspinner.spinner import WaitingSpinner
@@ -17,9 +17,10 @@ class MainWindow(QMainWindow):
     def initializeUI(self):
         self.w = None
         self.setGeometry(100, 100, 100, 100)
-        self.setWindowTitle('App')
+        self.setWindowTitle('Asistente de Cortes')
         self.window = QWidget() 
         self.formWidgets()
+        self.createMenu()
         self.setCentralWidget(self.window)
         self.show()
 
@@ -28,21 +29,37 @@ class MainWindow(QMainWindow):
         QApplication.exit( EXIT_CODE_REBOOT )
 
     def formWidgets(self):
-        total_label = QLabel("Entra la cantidad de tipos diferentes de hojas")
+        total_label = QLabel("Entre la cantidad de tipos diferentes de hojas : ")
         total = QSpinBox()
         total.setMinimum(1)
         total_button = QPushButton('Aceptar', self)
         total_button.clicked.connect(lambda: self.showDemandForm(total.value(),[total_label,total,total_button]))
-
+        vbox = QVBoxLayout()
         total_hbox = QHBoxLayout()
         total_hbox.addWidget(total_label)
         total_hbox.addWidget(total)
         total_hbox.addWidget(total_button)
 
+        vbox.addSpacing(15)
+        vbox.addItem(total_hbox)
         app_form_layout = QFormLayout()
-        app_form_layout.addRow(total_hbox)
+        app_form_layout.addRow(vbox)
 
         self.window.setLayout(app_form_layout)
+
+    def createMenu(self):
+        # Create actions for file menu
+        exit_act = QAction('Instrucciones', self)
+        exit_act.setShortcut('F1')
+        exit_act.triggered.connect(self.show_help)
+        # Create menubar
+        menu_bar = self.menuBar()
+        # Create file menu and add actions
+        file_menu = menu_bar.addMenu('Ayuda')
+        file_menu.addAction(exit_act)
+
+    def show_help(self):
+        pass
 
     def showDemandForm(self, amount, to_remove):
 
@@ -50,7 +67,7 @@ class MainWindow(QMainWindow):
             w.setParent(None)
         self.window.layout().takeAt(0).setParent(None)
 
-        rect_label = QLabel("Entra la dimensión de la hoja a picar")
+        rect_label = QLabel("Entre la dimensión de la hoja a picar: ")
 
         rect_hlabel = QLabel("Altura:")
         rect_hbox = QSpinBox()
@@ -63,14 +80,15 @@ class MainWindow(QMainWindow):
         rect_dim_hbox = QHBoxLayout()
         rect_dim_hbox.addWidget(rect_hlabel)
         rect_dim_hbox.addWidget(rect_hbox)
-        rect_dim_hbox.addSpacing(40)
+        rect_dim_hbox.addSpacing(20)
         rect_dim_hbox.addWidget(rect_wlabel)
         rect_dim_hbox.addWidget(rect_wbox)
+        rect_dim_hbox.addSpacing(190)
 
         self.window.layout().addRow(rect_label)
         self.window.layout().addRow(rect_dim_hbox)
 
-        rect_label = QLabel("Entra las dimensiones de la hojas y su demanda")
+        rect_label = QLabel("Entre las dimensiones de las hojas y la demanda: ")
         self.window.layout().addRow(rect_label)
         layout_list = []
 
@@ -90,16 +108,16 @@ class MainWindow(QMainWindow):
             rect_dim_hbox = QHBoxLayout()
             rect_dim_hbox.addWidget(hlabel)
             rect_dim_hbox.addWidget(hbox)
-            rect_dim_hbox.addSpacing(40)
+            rect_dim_hbox.addSpacing(20)
             rect_dim_hbox.addWidget(wlabel)
             rect_dim_hbox.addWidget(wbox)
-            rect_dim_hbox.addSpacing(40)
+            rect_dim_hbox.addSpacing(20)
             rect_dim_hbox.addWidget(dlabel)
             rect_dim_hbox.addWidget(dbox)
             self.window.layout().addRow(rect_dim_hbox)
             layout_list.append((wbox,hbox,dbox))
 
-        back_button = QPushButton('Atras', self)
+        back_button = QPushButton('Atrás', self)
         back_button.clicked.connect(lambda: self.restart())
         start_button = QPushButton('Aceptar', self)
         start_button.clicked.connect(lambda: self.show_new_window((rect_wbox.value(),rect_hbox.value()), layout_list))
@@ -152,6 +170,7 @@ class SolverWindow(QWidget):
         self.rectangle = rect_dim
         self.thread = Worker(rect_dim, sheet_dims)
         self.setGeometry(640, 100, 300, 150)
+        self.setWindowTitle('')
         self.initialize_ui()
         self.setFixedSize(self.size())
         self.update()
@@ -198,7 +217,7 @@ class Canvas(QLabel):
         super().__init__(parent)
         self.parent = parent
         self.bin = bin
-        self.setFixedSize(parent.width * 6,parent.height * 6)
+        self.setFixedSize(parent.width * 6, parent.height * 6)
 
         # Create a few pen colors
         self.black = '#000000'
@@ -246,6 +265,7 @@ class PatternWindow(QWidget):
     def __init__(self, parent, rectangle,id,bin,k,n):
         super().__init__()
         w, h = rectangle
+        self.setWindowTitle('')
         self.width = w
         self.height = h
         self.id = id
@@ -254,7 +274,7 @@ class PatternWindow(QWidget):
         self.n = n
         self.parent = parent
         self.initialize_ui()
-        self.setFixedSize(self.size().width(), self.size().height() + 20)
+        # self.setFixedSize(self.size().width(), self.size().height() + 20)
 
 
     def initialize_ui(self):
