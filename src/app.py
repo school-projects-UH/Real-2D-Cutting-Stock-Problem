@@ -170,7 +170,7 @@ class SolverWindow(QWidget):
         self.rectangle = rect_dim
         self.thread = Worker(rect_dim, sheet_dims)
         self.setGeometry(640, 100, 300, 150)
-        self.setWindowTitle('')
+        self.setWindowTitle(' ')
         self.initialize_ui()
         self.setFixedSize(self.size())
         self.update()
@@ -265,7 +265,7 @@ class PatternWindow(QWidget):
     def __init__(self, parent, rectangle,id,bin,k,n):
         super().__init__()
         w, h = rectangle
-        self.setWindowTitle('')
+        self.setWindowTitle('Patrones de Corte')
         self.width = w
         self.height = h
         self.id = id
