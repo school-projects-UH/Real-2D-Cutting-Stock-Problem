@@ -133,7 +133,7 @@ class MainWindow(QMainWindow):
         error = False
         for sheet in sheet_dims:
             w, h, _ = sheet
-            if w.value() > rect_dim[0] or h.value() > rect_dim[1]:
+            if w.value() > rect_dim[0] and h.value() > rect_dim[1]:
                 error = True
         if error:
             QMessageBox.warning(self, "Error", "Las dimensiones a cortar no pueden ser mayores que la hoja principal.", QMessageBox.Ok, QMessageBox.Ok)
