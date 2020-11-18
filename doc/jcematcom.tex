@@ -28,6 +28,13 @@
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage[pdftex]{hyperref}
+
+\usepackage{algorithm}
+%\usepackage{algorithmic}
+
+\usepackage{algpseudocode}
+
+%\usepackage[]{algorithm2e}
 %-----------------------------------------------------------------------------------
 % Configuración
 %-----------------------------------------------------------------------------------
@@ -328,6 +335,51 @@ En la implementación del algoritmo \textit{Guillotine} se usaron las siguientes
 	\item \textbf{RM:} \textit{Rectangle Merge}\\
 	La principal limitante del algoritmo es que a causa de mantener una lista de rectángulos libres disjuntos es posible que no permita colocar un rectángulo aún cuando hay suficiente área libre para ello. Una manera en la que se puede mejorar el algorito es después de colocar un rectángulo encontrar todos los pares de rectángulos libre vecinos que pueden ser mezclados en uno solo y mezclarlos. Repetir este procedimiento mientras exista al menos un par de rectángulos libres $F_i, F_j$ que cumplan dicha condición.
 \end{itemize}
+
+\algrenewcommand\algorithmicrequire{\textbf{Input:}}
+\algrenewcommand\algorithmicensure{\textbf{Inicialización:}}
+\begin{algorithm}
+\caption{Guillotine-BSSF-BFF-SAS-DESCSS-RM}\label{guillotine}
+\begin{algorithmic}[1]
+	\Require $R = \{ R_1 = (w_1 \times h_1), ..., R_n = (w_n \times h_n) \}$ $ M = (W \times H)$ \Comment Dimensión de la hoja principal
+	\State $F = \{(W \times H)\}$
+	\State Ordenar R de acuerdo al criterio DESCSS
+	\ForAll {$R_k = (w_k \times h_k) \in R$}
+		\State Elegir rectángulo libre $F_i$ y bin $B_j$ donde colocar $R_k$
+		\If {$F_i$, $B_j$ no existen}
+			\State Abrir nuevo bin $B$
+			\State $F = F \cup \{(W \times H)\}$
+			\State $F_i = (W \times H)$
+			\State $B_j = B$ 
+		\EndIf
+		\State Decidir orientación del rectángulo
+		\State Colocar rectángulo en la esquina inferior izquierda de $F_i$
+		\State Dividir espacio sobrante de $F_i$ en $F'$ y $F''$
+		\State $F = F \cup \{F', F''\} \setminus F_i $
+		\While {Existan rectángulos $F_a$ y $F_b$ que se puedan mezclar}
+			\State Mezclar $F_a$ y $F_b$ en $F^*$
+			\State $F = F \cup F^* \setminus \{F_a, F_b\}  $
+		\EndWhile
+	\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+%\begin{algorithm}
+%	\KwData{this text}
+%	\KwResult{how to write algorithm with \LaTeX2e }
+%	initialization\;
+%	\While{not at end of this document}{
+%		read current\;
+%		\eIf{understand}{
+%			go to next section\;
+%			current section becomes this one\;
+%		}{
+%			go back to the beginning of current section\;
+%		}
+%	}
+%	\caption{How to write algorithms}
+%\end{algorithm}
+
 
 \subsection{Algoritmo Genético}
 
