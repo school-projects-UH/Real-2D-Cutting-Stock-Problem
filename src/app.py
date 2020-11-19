@@ -254,9 +254,16 @@ class Canvas(QLabel):
 
             text = f'{cut.width}x{cut.height}'
             pen = QPen(QColor(self.red))
-            painter.setFont(QFont("Helvetica", cut.width//10))
-            painter.setPen(pen)
-            painter.drawText(x + cut.width//3, y + cut.height//2, text)
+            if cut.width > cut.height:
+                painter.setFont(QFont("Helvetica", cut.width//10))
+                painter.setPen(pen)
+                painter.drawText(x + cut.width // 3, y + cut.height // 2, text)
+            else:
+                painter.setFont(QFont("Helvetica", cut.height//10))
+                painter.setPen(pen)
+                painter.rotate(90)
+                painter.drawText( y + cut.height // 3 ,-x - cut.width // 2 , text)
+                painter.rotate(-90)
 
         painter.end()
 
