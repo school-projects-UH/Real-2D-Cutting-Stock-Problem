@@ -179,13 +179,13 @@ para abordarlo, es una temática en constante evolución
 y muchos investigadores han desarrollado diversos
 modelos para resolverlo. El interés en este problema
 puede ser sustentado por su aplicación práctica y el
-reto que representa pues, en general,
+reto que representa, pues, en general,
 es computacionalmente difícil de resolver ya que es un
 problema de tipo NP-completo, dado que los patrones de
 empaquetamiento incrementan exponencialmente con el
 número de rectángulos que deben ser empaquetados. 
  
-Este trabajo tiene como objetivo resolver un problema de corte en dos dimensiones, asociado a la industria del papel, presente en una empresa ubicada en la provinicia Pinar del Río, Cuba. Se propone el  diseño e implementación de un algoritmo que permita determinar qué patrones de corte deben usarse para cortar un conjunto de hojas de forma que se satisfaga una demanda (de hojas más pequeñas) solicitada por el usuario de forma que el desperdicio resultante de los cortes sea el menor posible. En este caso se permite la rotación de las piezas a colocar y se requiere que los cortes sean de tipo guillotina, es decir, que  el corte vaya de un extremo a otro del rectángulo original. 
+Este trabajo tiene como objetivo resolver un problema de corte en dos dimensiones, asociado a la industria del papel, presente en la empresa Geocuba ubicada en la provinicia Pinar del Río, Cuba. Se propone el  diseño e implementación de un algoritmo que permita determinar qué patrones de corte deben usarse para cortar un conjunto de hojas de forma que se satisfaga una demanda (de hojas más pequeñas) solicitada por el usuario de forma que el desperdicio resultante de los cortes sea el menor posible. En este caso se permite la rotación de las piezas a colocar y se requiere que los cortes sean de tipo guillotina, es decir, que  el corte, ya sea horizontal o vertical, vaya de un extremo a otro de la hoja a picar y que a su vez produzca dos nuevas hojas que satisfagan este tipo de corte. 
 
 La solución propuesta está implementada haciendo uso de Python como lenguaje. Además se brinda como parte de la solución una aplicación de escritorio con una interfaz de usuario para introducir una instancia del problema en cuestión. 
 
@@ -289,9 +289,9 @@ Para satisfacer la demanda $d_i$ solicitada para cada hoja $i$ van a aparecer $n
 \label{eq2}
 \end{equation}
 
-Es necesario también tener en cuenta la sobreproducción a la hora de analizar el espacio desperdiciado dado que cuando una solución sobrecumple la demanda se tiene que esas hojas sobreproducidas también van a ser desechadas. Por tanto para tener lo anterior en consideración hay modificar la función objetivo que se muestra en la ecuación \eqref{eq1}. Sea $a_i$ el área total de la hoja $i$ se tiene que:
+Es necesario también tener en cuenta la sobreproducción a la hora de analizar el espacio desperdiciado dado que cuando una solución sobrecumple la demanda se tiene que esas hojas sobreproducidas también van a ser desechadas. Por tanto para tener lo anterior en consideración hay que modificar la función objetivo que se muestra en la ecuación \eqref{eq1}. Sea $a_i$ el área total de la hoja $i$ se tiene que:
  $$sobreProd = \sum_{i \in I} sobreProd_i $$ 
-donde $sobreProd_i = (\sum_{j \in J} p_{ji}x_ja_i)  -  d_ia_i$ va a ser el número de hojas $i$ sobreproducidas.
+donde $sobreProd_i = (\sum_{j \in J} p_{ji}x_ja_i)  -  d_ia_i$ va a ser el área total que ocupa la sobreproducción de hoja de tipo $i$ sobreproducidas.
 La nueva función objetivo sería la siguiente:
 \begin{equation}
 f = \sum_{j \in J}c_j x_j + sobreProd
@@ -333,52 +333,41 @@ En la implementación del algoritmo \textit{Guillotine} se usaron las siguientes
 	Ordenar la entrada $(R_1,...,R_n)$ de acuerdo al siguiente criterio:
 	$$R_i < R_j \Longleftrightarrow min(w_i,h_i) < min (w_j,h_j)$$ 
 	\item \textbf{RM:} \textit{Rectangle Merge}\\
-	La principal limitante del algoritmo es que a causa de mantener una lista de rectángulos libres disjuntos es posible que no permita colocar un rectángulo aún cuando hay suficiente área libre para ello. Una manera en la que se puede mejorar el algorito es después de colocar un rectángulo encontrar todos los pares de rectángulos libre vecinos que pueden ser mezclados en uno solo y mezclarlos. Repetir este procedimiento mientras exista al menos un par de rectángulos libres $F_i, F_j$ que cumplan dicha condición.
+	La principal limitante del algoritmo es que a causa de mantener una lista de rectángulos libres disjuntos es posible que no permita colocar un rectángulo aún cuando hay suficiente área libre para ello. Una manera en la que se puede mejorar el algoritmo es después de colocar un rectángulo encontrar todos los pares de rectángulos libre vecinos que pueden ser mezclados en uno solo y mezclarlos. Repetir este procedimiento mientras exista al menos un par de rectángulos libres $F_i, F_j$ que cumplan dicha condición.
+	
+	Se probó el algoritmo tanto con esta heurística como sin ella y de manera general el algoritmo produce mejores salidas aplicando la heurística pero para algunos casos produce una salida peor, por lo que se decidió que a la hora de ejecutar el algoritmo se decide si utilizar o no produciendo un número aleatorio entre 0 y 1. Si ese número es menor que un valor fijo (con 0.75 se obtuvieron buenos resultados) entonces se usa la heurística en esa ejecución del algoritmo. De esta manera se garantiza que se use la heurística en la mayor parte de las ejecuciones del algoritmo pero también permite explorar otras soluciones que solo se obtienen sin usarla y que podrían ser mejores. 
 \end{itemize}
 
+En el Algoritmo \ref{guillotine} se muestra un pseudocódigo de la variante de solución propuesta para este problema, incluidas las heurísticas utilizadas. 
+
+ 
 \algrenewcommand\algorithmicrequire{\textbf{Input:}}
 \algrenewcommand\algorithmicensure{\textbf{Inicialización:}}
 \begin{algorithm}
 \caption{Guillotine-BSSF-BFF-SAS-DESCSS-RM}\label{guillotine}
 \begin{algorithmic}[1]
-	\Require $R = \{ R_1 = (w_1 \times h_1), ..., R_n = (w_n \times h_n) \}$ $ M = (W \times H)$ \Comment Dimensión de la hoja principal
-	\State $F = \{(W \times H)\}$
+	\Require $R \gets \{ R_1 = (w_1 \times h_1), ..., R_n = (w_n \times h_n) \}$ $ M \gets (W \times H)$ \Comment Dimensión de la hoja principal
+	\State $F \gets \{(W \times H)\}$
 	\State Ordenar R de acuerdo al criterio DESCSS
-	\ForAll {$R_k = (w_k \times h_k) \in R$}
+	\ForAll {$R_k \gets (w_k \times h_k) \in R$}
 		\State Elegir rectángulo libre $F_i$ y bin $B_j$ donde colocar $R_k$
 		\If {$F_i$, $B_j$ no existen}
 			\State Abrir nuevo bin $B$
-			\State $F = F \cup \{(W \times H)\}$
-			\State $F_i = (W \times H)$
-			\State $B_j = B$ 
+			\State $F \gets F \cup \{(W \times H)\}$
+			\State $F_i \gets (W \times H)$
+			\State $B_j \gets B$ 
 		\EndIf
 		\State Decidir orientación del rectángulo
 		\State Colocar rectángulo en la esquina inferior izquierda de $F_i$
 		\State Dividir espacio sobrante de $F_i$ en $F'$ y $F''$
-		\State $F = F \cup \{F', F''\} \setminus F_i $
+		\State $F \gets F \cup \{F', F''\} \setminus F_i $
 		\While {Existan rectángulos $F_a$ y $F_b$ que se puedan mezclar}
 			\State Mezclar $F_a$ y $F_b$ en $F^*$
-			\State $F = F \cup F^* \setminus \{F_a, F_b\}  $
+			\State $F \gets F \cup F^* \setminus \{F_a, F_b\}  $
 		\EndWhile
 	\EndFor
 \end{algorithmic}
 \end{algorithm}
-
-%\begin{algorithm}
-%	\KwData{this text}
-%	\KwResult{how to write algorithm with \LaTeX2e }
-%	initialization\;
-%	\While{not at end of this document}{
-%		read current\;
-%		\eIf{understand}{
-%			go to next section\;
-%			current section becomes this one\;
-%		}{
-%			go back to the beginning of current section\;
-%		}
-%	}
-%	\caption{How to write algorithms}
-%\end{algorithm}
 
 
 \subsection{Algoritmo Genético}
@@ -397,6 +386,106 @@ El funcionamiento de un algoritmo genético básico se puede resumir en los paso
 		\item \textbf{Reemplazo}: Una vez aplicados los operadores genéticos, se seleccionan los mejores individuos para conformar la población de la generación siguiente. \cite{5}
 	\end{itemize}
 \end{itemize}
+
+\subsubsection{Inicialización}
+Para explicar el proceso seguido a la hora de crear una poblción inicial para el algoritmo lo primero sería definir qué sería el vecindario de una solución. Sea $s \in S$ una solución formada por la configuración $(\pi_1,...,\pi_m)$ correspondiente a $(p_1,...,p_m)$ y $(x_1,...,x_n)$. Un vecino de $s$ se va a construir usando unos de los siguientes operadores: \textit{añadir, eliminar, mover, intercambiar}. 
+
+Sea $L_{max}(i)$ el máximo número posible de hojas de tipo $i$ en un patrón:
+$$ L_{max}(i) = \lfloor \frac{H \times W}{h_iw_i} \rfloor$$
+
+Aplicar el operador \textit{añadir} a una solución $s \in S$ añade una hoja $i$ a in patrón $j$ lo que se refleja como un aumento de $p_{ij}$ si $p_{ij} < L_{max}(i)$. El operador \textit{eliminar} consiste en quitar una imagen $i$ del patrón $j$ lo cual disminuye $p_{ij}$ si el número total de hojas $i$ en toda la solución $s$ se matiene estrictamente positivo. El operador \textit{mover} mueve una hoja de un patrón a otro y el operador \textit{intercambiar} intercambia dos hojas entre dos patrones diferentes. 
+
+Un vecino de una solución va a ser generado seleccionando aleatoriamente un operador, uno (\textit{añadir,eliminar}) o dos (\textit{mover, intercambiar}) patrones y una (\textit{añadir,eliminar,mover}) o dos (\textit{intercambiar}) hojas en esos patrones. La aplicación de dichos operadores puede dar como resultado una solución no válida porque sea imposible lograr una configuración para las cantidades $p_j$ obtenidas. Para comprobar la validez de la solución obtenida se utilizó una versión del algoritmo \ref{guillotine}, descrito en la Sección 4.2, donde solo va a existir un \textit{bin} disponible y se tratará de construir cada una de las configuraciones solicitadas en la nueva solución, la cual solo pertenecerá a la vecindad de $s$ si este proceso pudo llevarse a cabo exitosamente.      
+
+Para crear la población inicial es necesario generar un conjunto de soluciones válidas. Primero se va a generar una solución $s_0$. Usando el algoritmo \ref{guillotine} solicitando solo una vez cada una de las hojas que se demandan se obtiene las configuraciones $(\pi_1,...,\pi_k)$ y los correspondientes $(p_1,...,p_k)$. Luego resolviendo el problema lineal descrito en la Sección 3 se obtendrían los $(x_1,...,x_n)$ y aplicando la ecuación \ref{eq3} se asocia a $s_0$ su \textit{fitness}, que es el valor que describe cuán bien cumple el objetivo propuesto. 
+
+Para obtener otra solución a partir de $s_0$ se va a seleccionar una solución $s_1$ que pertenezca al vecinadario de $s_0$ y luego se selecciona una solución $s_2$ que pertenezca al vecinadario de $s_1$ y así sucesivamente hasta que se halla realizado un
+número fijo de iteraciones \texttt{NWalk}. Este proceso está encapsulado en la función \textit{RandomWalk(s)}. 
+
+La población inicial va a ser generada aplicando \texttt{NPop} veces la función $RandomWalk(s_0)$. Esto va a constituir la función \textit{CreateInitialPopulation()}.     
+
+\subsubsection{Selección}
+En la etapa de selección se utiliza una combinación de dos métodos: Selección Elitista (\textit{Elitist Selection}) y Selección basada en Rango (\textit{Rank Based Selection}).
+\begin{itemize}
+	\item  \textbf{Selección Elitista:}\\
+	Este método consiste en seleccionar los mejores individuos de una población (aquellos con mejores valores de $fitness$) para que formen parte de la próxima generación. En este caso se seleccionan los primeros \texttt{NBest} individuos.
+	
+	 Este proceso se realiza en la función \textit{ElitistSelection(P)}, donde $P$ es la población de la que se quiere seleccionar los individuos. 
+	
+	
+	\item  \textbf{Selección basada en Rango:}\\
+	Este método se basa en un rango que otorga a cada uno de los individuos de la población de forma que aquel que tenga mejor $fitness$ va a tener rango $n$ mientras que al peor se le otorga rango $1$. La probabilidad de que el individuo $i$ sea seleccionado va a estar dada por la expresión:
+	$$ p(i) = \frac{rango(i)}{\sum_{j = 1}^{n}rango(j) } = \frac{rango(i)}{n*(n+1)/2} $$
+	
+	En el Algoritmo \ref{rank} se presenta el pseudocódigo que describe este método. Este proceso va a estar encapsulado en la función $RankSelection(P)$
+	
+	\algrenewcommand\algorithmicrequire{\textbf{Input:}}
+	\begin{algorithm}
+		\caption{RankSelection}\label{rank}
+		\begin{algorithmic}[1]
+			\Require $P$
+			\State Selección $\gets [\  ]$
+			\For {$k \gets 1, \mathtt{NSel}$}
+				\State $r \gets Random(0,1)$
+				\ForAll {$i \in P$}
+					\If {$r < \sum_{j = 1}^{i}p(j)$}
+						\State Añadir individuo $i$ a Selección
+						\State \textbf{break}
+					\EndIf
+				\EndFor
+			\EndFor \\
+			\Return Selección
+		\end{algorithmic}
+	\end{algorithm}
+	  
+	
+\end{itemize}
+
+\subsubsection{Cruzamiento}
+
+\subsubsection{Mutación}
+
+El operador génetico Mutación, como muestra el pseudocódigo en el Algoritmo 	\ref{mutation}, va a seleccionar aleatoriamente un individuo en la población $P$ para que actúe como padre, o sea, como base para formar una nueva solución. Luego se aplica $RandomWalk(s)$ al padre seleccionado como fue explicado en la Sección 4.3.1 para crear la población inicial. 
+
+\algrenewcommand\algorithmicrequire{\textbf{Input:}}
+\algrenewcommand\algorithmicensure{\textbf{Inicialización:}}
+\begin{algorithm}
+	\caption{Mutation}\label{mutation}
+	\begin{algorithmic}[1]
+		\Require $P$
+		\State Parent $\gets $ Elegir una solución de $P$
+		\State Offspring $\gets RandomWalk($Parent$)$
+		\State $ HillClimbing($Offspring$)$\\
+		\Return Offspring 
+	\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Algoritmo}
+\algrenewcommand\algorithmicrequire{\textbf{Input:}}
+\algrenewcommand\algorithmicensure{\textbf{Inicialización:}}
+\begin{algorithm}
+	\caption{GeneticAlgorithm}\label{genetic}
+	\begin{algorithmic}[1]
+		\State $P_0 \gets CreateInitialPopulation()$
+		\State BestKnown $\gets UpdateBestSolution(P_0)$
+		\For {$k \gets 1, \mathtt{NGen}$}
+		\State$P_{k-1}^* \gets RankSelection(P_{k-1})$
+		\State$P_{k} \gets ElitistSelection(\mathtt{NBest},P_{k-1})$
+			\For {$i \gets \mathtt{NBest}+1, \mathtt{NPop}$}
+				\If {$Random(0,1) < \mathtt{ProbCross}$}
+					\State Añadir $Crossover(P_{k-1}^*)$ a $P_k$
+				\Else
+					\State Añadir $Mutation(P_{k-1}^*)$ a $P_k$
+				\EndIf	
+			\EndFor
+		\State BestKnown $\gets UpdateBestSolution(P_k)$
+		\EndFor
+		\State $ HillClimbing($BestKnown$)$
+		\State $ CleanSolution($BestKnown$)$\\
+		\Return BestKnown
+	\end{algorithmic}
+\end{algorithm}
+
 
 
 \section{Desarrollo}\label{sec:dev}
