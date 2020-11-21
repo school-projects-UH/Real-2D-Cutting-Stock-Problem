@@ -8,6 +8,8 @@ class SolverConfig:
     def __init__(self, name, config={}):
         self.total_fitness = 0
         self.total_time = 0
+        self.worst_time = 0
+        self.worst_fitness = 0
         self.config = config
         self.name = name
 
@@ -23,15 +25,19 @@ class SolverConfig:
         fitness = solution.fitness
         self.total_fitness += fitness
         self.total_time += time
+        self.worst_time = max(time, self.worst_time)
+        self.worst_fitness = max(fitness, self.worst_fitness)
 
 sover_config_list = [{}, {
-    'no_generations': 45 }, {
-    'hill_climbing_neighbors': 40}, {
-    'roulette_pop': 60 }, {
-    'prob_crossover': 0.90 }, {
-    'pop_size': 40 }, {
-    'no_best_solutions': 5}
-    ]
+        'hill_climbing_neighbors': 30,
+        'no_generations': 35,
+        'roulette_pop': 60
+        }, {
+        'hill_climbing_neighbors': 40,
+        'no_generations': 45,
+        'roulette_pop': 60,
+        'pop_size': 45
+        }]
 sover_config_list = [SolverConfig(f'SolverNo{i + 1}', sover_config_list[i]) for i in range(len(sover_config_list))]
 
 no_tests = int(argv[1])
@@ -56,19 +62,29 @@ for i in range(no_tests):
     test_info += '\n'.join([f'{sheet.width} {sheet.height} {sheet.demand}' for sheet in sheets]) + '\n'
     print(test_info)
     with open(f'tests/collection/test{i + 1}.txt', "w") as input_file:
-        input_file.write('\n'.join(test_info.split('\n')[1:]))
+        input_file.write('\n'.join(test_info.split('\n')[1:-1]))
 
     for solver_config in sover_config_list:
         print(f"\nCalling {solver_config.name}...\n")
-        solver_config.call_solver(main_sheet, sheets, output=f'tests/collection/results/testNo{i + 1}_{solver_config.name}')
+        solver_config.call_solver(main_sheet, sheets, output=f'tests/collection/results/testNo{i + 1}_{solver_config.name}.txt')
 
 sorted_by_fitness = sorted(sover_config_list, key=lambda sc: sc.total_fitness)
 sorted_by_time = sorted(sover_config_list, key=lambda sc: sc.total_time)
+sorted_by_worst_fitness = sorted(sover_config_list, key=lambda sc: sc.worst_fitness)
+sorted_by_worst_time = sorted(sover_config_list, key=lambda sc: sc.worst_time)
 
-results_by_fitness = open('tests/collection/results/results_by_fitness', "w")
+results_by_fitness = open('tests/collection/results/results_by_fitness.txt', "w")
 for i, result in enumerate(sorted_by_fitness):
-    results_by_fitness.write(f'{i + 1}- {result.name, result.total_fitness}\n')
+    results_by_fitness.write(f'{i + 1}- {result.name, result.total_fitness / sorted_by_fitness[0].total_fitness}\n')
 
-results_by_time = open('tests/collection/results/results_by_time', "w")
+results_by_time = open('tests/collection/results/results_by_time.txt', "w")
 for i, result in enumerate(sorted_by_time):
     results_by_time.write(f'{i + 1}- {result.name, result.total_time / no_tests}\n')
+
+results_by_worst_fitness = open('tests/collection/results/results_by_worst_fitness.txt', "w")
+for i, result in enumerate(sorted_by_worst_fitness):
+    results_by_worst_fitness.write(f'{i + 1}- {result.name, result.worst_fitness}\n')
+
+results_by_worst_time = open('tests/collection/results/results_by_worst_time.txt', "w")
+for i, result in enumerate(sorted_by_worst_time):
+    results_by_worst_time.write(f'{i + 1}- {result.name, result.worst_time}\n')
