@@ -110,8 +110,7 @@
 %-----------------------------------------------------------------------------------
 \begin{abstract}
 
-	El Resumen en Español debe constar de $100$ a $200$ palabras y presentar de forma
-	clara y concisa el contenido fundamental del artículo.
+Este trabajo tiene como objetivo resolver un problema de corte en dos dimensiones, asociado a la industria del papel, presente en la empresa Geocuba ubicada en la provinicia Pinar del Río, Cuba. Se propone el  diseño e implementación de un algoritmo que permita determinar qué patrones de corte deben usarse para cortar un conjunto de hojas de forma que se satisfaga una demanda (de hojas más pequeñas) solicitada por el usuario de forma que el desperdicio resultante de los cortes sea el menor posible. En este caso se permite la rotación de las piezas a colocar y se requiere que los cortes sean de tipo guillotina. La solución que se propone se basa en un problema de programación lineal, un problema de empaquetamiento y un algoritmo génetico.
 
 \end{abstract}
 
@@ -122,8 +121,7 @@
 
 \begin{enabstract}
 
-  The English Abstract must have have $100$ to $200$ words, and present in a clear
-  and concise form the essentials of the article content.
+This paper aims to solve a two-dimensional cutting stock problem associated with the paper industry, that was presented by the Geocuba company located in Pinar del Río, Cuba. Here are proposed the design and implementation of an algorithm that allows determining which cutting patterns should be used to cut a set of sheets in such a way that a demand (for smaller sheets) requested by the user is satisfied so that the waste resulting from the cuts be the smallest possible. In this case, the rotation of the pieces to be placed is allowed and the cuts are required to be of the guillotine type. The proposed solution is based on a linear programming problem, a bin packing problem, and a genetic algorithm. 
 
 \end{enabstract}
 
@@ -131,17 +129,18 @@
 % Palabras clave
 %-----------------------------------------------------------------------------------
 \begin{keywords}
-	Separadas,
-	Por,
-	Comas.
+	Problema de Patrones de Corte en dos dimensiones,
+	Problema de Empaqauetamiento en dos dimensiones,
+	Algoritmo Genético,
+	Industria del Papel.
 \end{keywords}
 
 %-----------------------------------------------------------------------------------
 % Temas
 %-----------------------------------------------------------------------------------
-\begin{topics}
-	Tema, Subtema.
-\end{topics}
+%\begin{topics}
+%	Tema, Subtema.
+%\end{topics}
 
 
 %-----------------------------------------------------------------------------------
@@ -185,11 +184,11 @@ problema de tipo NP-completo, dado que los patrones de
 empaquetamiento incrementan exponencialmente con el
 número de rectángulos que deben ser empaquetados. 
  
-Este trabajo tiene como objetivo resolver un problema de corte en dos dimensiones, asociado a la industria del papel, presente en la empresa Geocuba ubicada en la provinicia Pinar del Río, Cuba. Se propone el  diseño e implementación de un algoritmo que permita determinar qué patrones de corte deben usarse para cortar un conjunto de hojas de forma que se satisfaga una demanda (de hojas más pequeñas) solicitada por el usuario de forma que el desperdicio resultante de los cortes sea el menor posible. En este caso se permite la rotación de las piezas a colocar y se requiere que los cortes sean de tipo guillotina, es decir, que  el corte, ya sea horizontal o vertical, vaya de un extremo a otro de la hoja a picar y que a su vez produzca dos nuevas hojas que satisfagan este tipo de corte. 
+Este trabajo tiene como objetivo resolver un problema de corte en dos dimensiones, asociado a la industria del papel, presente en la empresa GeoCuba ubicada en la provinicia Pinar del Río, Cuba. Se propone el  diseño e implementación de un algoritmo que permita determinar qué patrones de corte deben usarse para cortar un conjunto de hojas de forma que se satisfaga una demanda (de hojas más pequeñas) solicitada por el usuario de forma que el desperdicio resultante de los cortes sea el menor posible. En este caso se permite la rotación de las piezas a colocar y se requiere que los cortes sean de tipo guillotina, es decir, que  el corte, ya sea horizontal o vertical, vaya de un extremo a otro de la hoja a picar y que a su vez produzca dos nuevas hojas que satisfagan este tipo de corte. 
 
 La solución propuesta está implementada haciendo uso de Python como lenguaje. Además se brinda como parte de la solución una aplicación de escritorio con una interfaz de usuario para introducir una instancia del problema en cuestión. 
 
-[Texto explicando lo que aborda cada sección]
+En la Sección 2 se abordan las principales aproximaciones al problema en cuestión que se han realizado hasta el momento. En la Sección 3 se encuentra la definición formal del problema, mientras que la Sección 4 describe la solución propuesta en este trabajo. La Sección 5 analiza los resultados alcanzados. Por último la Sección 6 aborda detalles acerca de la interfaz visual que se provee para hacer uso de la presente solución.
 
 %===================================================================================
 
@@ -342,7 +341,6 @@ En el Algoritmo \ref{guillotine} se muestra un pseudocódigo de la variante de s
 
  
 \algrenewcommand\algorithmicrequire{\textbf{Input:}}
-\algrenewcommand\algorithmicensure{\textbf{Inicialización:}}
 \begin{algorithm}
 \caption{Guillotine-BSSF-BFF-SAS-DESCSS-RM}\label{guillotine}
 \begin{algorithmic}[1]
@@ -414,10 +412,10 @@ En la etapa de selección se utiliza una combinación de dos métodos: Selecció
 	
 	
 	\item  \textbf{Selección basada en Rango:}\\
-	Este método se basa en un rango que otorga a cada uno de los individuos de la población de forma que aquel que tenga mejor $fitness$ va a tener rango $n$ mientras que al peor se le otorga rango $1$. La probabilidad de que el individuo $i$ sea seleccionado va a estar dada por la expresión:
+	Este método se basa en un rango que otorga a cada uno de los individuos de la población, de forma que aquel que tenga mejor $fitness$ va a tener rango $n$ mientras que al peor se le otorga rango $1$. La probabilidad de que el individuo $i$ sea seleccionado va a estar dada por la expresión:
 	$$ p(i) = \frac{rango(i)}{\sum_{j = 1}^{n}rango(j) } = \frac{rango(i)}{n*(n+1)/2} $$
 	
-	En el Algoritmo \ref{rank} se presenta el pseudocódigo que describe este método. Este proceso va a estar encapsulado en la función $RankSelection(P)$
+	En el Algoritmo \ref{rank} se presenta el pseudocódigo que describe este método. Este proceso va a estar encapsulado en la función $RankSelection(P)$.
 	
 	\algrenewcommand\algorithmicrequire{\textbf{Input:}}
 	\begin{algorithm}
@@ -441,14 +439,41 @@ En la etapa de selección se utiliza una combinación de dos métodos: Selecció
 	
 \end{itemize}
 
+
 \subsubsection{Cruzamiento}
+El cruzamiento es el principal operador genético, el cual va a realizaarse en la función $Crossover(P)$.Se encarga de construir una nueva solución a partir de dos soluciones diferentes que va a escoger de la población $P$. Se escoge un subconjunto de patrones de cada una de las soluciones que serían los padres. El número de patrones escogidos en cada padre va a estar determinado  por un porcentaje del total de patrones del padre que se va a seleccionar aleatoriamente entre 25\% y 50\%. La selección de los patrones va a priorizar aquellos que sean considerados "mejores". La calidad de un patrón va a estar dada por su área libre, la cual mientra menor sea mejor será el patrón. Si existe alguna de las hojas demandadas que no se encuentre en los patrones seleccionados de ambos padres, se construirán nuevos patrones que las incluyan haciendo uso del Algoritmo \ref{guillotine} solicitando una vez cada una de las hojas faltantes. Estos nuevos patrones construidos también van a formar parte de la nueva solución, para la cual a continuación se resolverá el problema de programación lineal descrito en  la Sección 3 y se le asocirán los $(x_1,...,x_n)$ obtenidos así como el valor de $fitness$ correspondiente.
 
-\subsubsection{Mutación}
-
-El operador génetico Mutación, como muestra el pseudocódigo en el Algoritmo 	\ref{mutation}, va a seleccionar aleatoriamente un individuo en la población $P$ para que actúe como padre, o sea, como base para formar una nueva solución. Luego se aplica $RandomWalk(s)$ al padre seleccionado como fue explicado en la Sección 4.3.1 para crear la población inicial. 
+Una vez que se ha obtenido una nueva solución se realiza una mejora de la misma con la función $HillClimbing(s)$. Este proceso va a consistir en buscar una solución $s'$ en el vecindario de $s$, si $s'$ es mejor que que $s$ se repite la búsqueda esta vez en el vecindario de $s'$ y así hasta que la solución vecina no represente una mejora. Para buscar la solución vecina se generan un número fijo de soluciones \texttt{NHill} del vecindario y se selecciona la mejor de estas.     
 
 \algrenewcommand\algorithmicrequire{\textbf{Input:}}
 \algrenewcommand\algorithmicensure{\textbf{Inicialización:}}
+\begin{algorithm}
+	\caption{Crossover}\label{crossover}
+	\begin{algorithmic}[1]
+		\Require $P$
+		\State Offspring $\gets$ \textbf{new} \textit{Solution()}
+		\State Parent1 $\gets $ Elegir una solución de $P$
+		\State Parent2 $\gets $ Elegir otra solución de $P$
+		\State SetPattern1 $\gets $ Elegir una solución de $P$
+		\State SetPattern2 $\gets $ Elegir otra solución de $P$
+		\State Añadir $\{$SetPattern1 $\cup$ SetPattern2 $\}$ a Offspring
+		\State $R \gets $ Hojas $\notin $ $\{$SetPattern1 $\cup$ SetPattern2
+		$\}$
+		\State SetPattern3 $\gets Guillotine(R)$ 
+		\State Añadir SetPattern3 a Offspring
+		\State $ HillClimbing($Offspring$)$\\
+		\Return Offspring 
+	\end{algorithmic}
+\end{algorithm}
+
+
+
+\subsubsection{Mutación}
+
+El operador génetico Mutación, como muestra el pseudocódigo en el Algoritmo 	\ref{mutation}, va a seleccionar aleatoriamente un individuo en la población $P$ para que actúe como padre, o sea, como base para formar una nueva solución. Luego se aplica $RandomWalk(s)$ al padre seleccionado como fue explicado en la Sección 4.3.1 para crear la población inicial. A continuación se va a mejorar la nueva solución obtenida con $HillClimbing$(Offspring) como fue explicado en la Sección 4.3.3.  
+
+
+\algrenewcommand\algorithmicrequire{\textbf{Input:}}
 \begin{algorithm}
 	\caption{Mutation}\label{mutation}
 	\begin{algorithmic}[1]
@@ -460,7 +485,14 @@ El operador génetico Mutación, como muestra el pseudocódigo en el Algoritmo 	
 	\end{algorithmic}
 \end{algorithm}
 
-\subsubsection{Algoritmo}
+
+\subsubsection{Algoritmo Principal}
+El algoritmo genético que se propone para encontrar una solución al problema de patrones de corte se encuentra resumido en el pseudocódigo que se muestra en el Algotritmo \ref{genetic}. Este es una combinación de las funciones descritas en las secciones anteriores. Se tendrán un total de \texttt{NGen} generaciones y cada una de ellas va a estar compuesta por \texttt{NPop} soluciones. La población de la $k$-ésima generación se va a denotar como $P_k$.
+
+El primer paso sería generar la población inicial $P_0$. Como invariante se tiene que \texttt{BestKnown} va a contener la mejor solución encontrada hasta el momento, la cual se actualiza cada vez que se construye una nueva generación con un llamado a la función $UpdateBestSolution(P)$. Esta función va a seleccionar la mejor solución de $P$. Para cada generación se va a realizar un proceso de selección y de reproducción con los cuales se conformará la próxima generación.
+
+Luego de haber explorado las \texttt{Ngen} generaciones se realizará una mejora a la solución \texttt{BestKnown} haciendo uso de $HillClimbing(\mathtt{BestKnown})$. Por último se procede a 
+ 
 \algrenewcommand\algorithmicrequire{\textbf{Input:}}
 \algrenewcommand\algorithmicensure{\textbf{Inicialización:}}
 \begin{algorithm}
@@ -487,104 +519,14 @@ El operador génetico Mutación, como muestra el pseudocódigo en el Algoritmo 	
 \end{algorithm}
 
 
+\subsubsection{Ajuste de Parámetros}
+El algoritmo génetico precisa de varios parámetros para su funcionamiento. Según cúan adecuados sean estos parámetros para el problema en cuestión mejores serán los resultados obtenidos. Por tanto se necesita determinar que valores asignarle a \texttt{NWalk, Ngen, NPop, NBest, NSel, NHill} y \texttt{ProbCross}.
+Para lograr este objetivo se recurrió a la experimentación y observación de los resultados y después de explorar varias combinaciónes de parámetros se encontró que los mejores resultados se alcanzaban con la siguiente configuración: \texttt{NWalk =}, \texttt{Ngen =}, \texttt{NPop =}, \texttt{NBest =}, \texttt{NSel =}, \texttt{NHill =} y \texttt{ProbCross =}.
+\section{Resultados}
 
-\section{Desarrollo}\label{sec:dev}
-%-----------------------------------------------------------------------------------
-  En esta sección (o secciones) incluya el contenido fundamental del artículo.
-  No es necesario tener una sección nombrada \emph{Desarrollo}, por el contrario,
-  nombre las secciones según el contenido que tratan.
+\section{Interfaz Visual}
+Para poder hacer uso de la solución propuesta se provee una aplicación de escritorio desarrollada con \texttt{PyQt5} como herramienta. Esta brinda una interfaz visual amigable al usuario para introducir una instancia del problema a resolver.
 
-%-----------------------------------------------------------------------------------
-	\subsection{Organización del Documento}\label{sub:results}
-%-----------------------------------------------------------------------------------
-		Puede agregar secciones y subsecciones según sea necesario para organizar
-		de manera más coherente su artículo. Tenga en cuenta que un documento más
-		plano es más fácil de navegar y entender, pero las subsecciones relacionadas
-		deberían estar agrupadas en una sección común.
-
-		Los nombres de las secciones deben ir en mayúsculas, excepto para las
-		preposiciones, conjunciones, y otros vocablos auxiliares.
-
-		Empiece un nuevo párrafo cada vez que vaya a comenzar una idea nueva.
-
-%-----------------------------------------------------------------------------------
-	\subsection{Listas y Descripciones}\label{sub:lists}
-%-----------------------------------------------------------------------------------
-		Para producir listas enumeradas, use el siguiente estilo:
-
-%-----------------------------------------------------------------------------------
-		\begin{enumerate}
-			\item Primer Elemento
-			\item Segundo Elemento
-			%
-			\begin {enumerate}
-				\item {Segundo Elemento - Subitem Uno}
-				\item {Segundo Elemento - Subitem Dos}
-			\end {enumerate}
-			%
-		\end{enumerate}
-
-%-----------------------------------------------------------------------------------
-		Para producir descripciones, use el siguiente estilo:
-
-%-----------------------------------------------------------------------------------
-		\begin{description}
-			\item [Primer Elemento] con su respectiva descripción.
-			\item [Segundo Elemento] también con su respectiva descripción.
-		\end{description}
-
-%-----------------------------------------------------------------------------------
-	\subsection{Figuras}\label{sub:figures}
-%-----------------------------------------------------------------------------------
-		Para producir cuerpos flotantes (figuras ó tablas), asegúrese de numerar
-		y etiquetar correctamente cada figura. Las referencias a las figuras deben
-		estar también correctamente etiquetadas. Por ejemplo, en la Fig. \ref{fig:ex}
-		se muestra\ldots.
-
-		\begin{figure}[htb]%
-		\begin{center}
-			\emph{Aquí va el contenido de la figura \ldots}
-		\end{center}
-		\caption{Figura de ejemplo \label{fig:ex}}%
-		\end{figure}
-
-%-----------------------------------------------------------------------------------
-	\subsection{Código Fuente}\label{sub:listings}
-%-----------------------------------------------------------------------------------
-		Para producir código fuente, envuélvalo en una figura flotante y
-		etiquételo correctamente. Por ejemplo, en la Fig. \ref{fig:code}
-		se muestra un código bastante conocido\ldots.
-
-		% Configuración de Listings
-		\lstset{keywordstyle=\color{blue}, basicstyle=\small}
-
-		\begin{figure}[htb]%
-			\begin{lstlisting}[language=c]%
-
-    int main(int argc, char** argv)
-    {
-        // Imprimiendo "Hola Mundo".
-        printf("Hello, World");
-    }
-
-			\end{lstlisting}
-		\caption{Código fuente de ejemplo.\label{fig:code}}
-		\end{figure}
-
-%-----------------------------------------------------------------------------------
-	\subsection{Referencias}
-%-----------------------------------------------------------------------------------
-  	Las referencias deben estar agrupadas en una sección al final del artículo,
-  	y las citas numeradas correctamente, por ejemplo \cite{knuth} ó \cite{goedel}.
-  	Incluya toda la información importante de cada referencia, incluídos autor,
-  	título, y notas de la edición. En caso de citar sitios web, además
-  	de la URL, incluya la fecha en que fue consultado, como en \cite{wiki}.
-
-%===================================================================================
-
-
-
-%===================================================================================
 % Conclusiones
 %-----------------------------------------------------------------------------------
 \section{Conclusiones}\label{sec:conc}
@@ -594,63 +536,39 @@ El operador génetico Mutación, como muestra el pseudocódigo en el Algoritmo 	
 
 %===================================================================================
 
-
-
-%===================================================================================
-% Recomendaciones
-%-----------------------------------------------------------------------------------
-\section{Recomendaciones}\label{sec:rec}
-
-  En esta sección puede incluir recomendaciones sobre posibles formas de continuar
-  la investigación u otros temas relacionados.
-
-%===================================================================================
-
-
-
 %===================================================================================
 % Bibliografía
 %-----------------------------------------------------------------------------------
 \begin{thebibliography}{99}
-%-----------------------------------------------------------------------------------
-	\bibitem{1} P. Gilmore, and R. Gomory, “A linear programming
-	approach to the Cutting Stock Problem-Part II,”
-	Operations Research, 11(6), 863-888, 1963.
-	
-	\bibitem{2} H. Hideki, and M.J. Pinto, “An integrated cutting
-	stock and sequencing problem,” European Journal of
-	Operational Research (183), 1353–1370, 2007.
-	
-	\bibitem{3}J. Karelahti, “Solving the cutting stock problem in
-	the steel industry”. Department of Engineering Physics
-	and Mathematics. Helsinki University of Technology,
-	2-5, 2002.
-	
-	\bibitem{4} Stéphane Bonnevay, Philippe Aubertin, and Gérald Gavin, "A Genetic Algorithm to Solve a Real 2-D Cutting Stock
-	Problem with Setup Cost in the Paper Industry". Genetic and Evolutionary Computation Conference,2015
-	
-	\bibitem{11} J. Jylanki. A thousand ways to pack the bin - a
-	practical approach to two-dimensional rectangle bin
-	packing. research report, 2010.
+%-----------------------------------------------------------------------------------	
+	\bibitem{51} Ben Lagha, G.a , Dahmani, N.b , Krichen, S.a.
+	Particle swarm optimization approach for resolving the
+	cutting stock problem. 2014 International Conference
+	on Advanced Logistics and Transport, 2014.
 	
 	\bibitem{41}  Cui, Y.-P., Tang, T.-B. Parallelized sequential value correction procedure for the one-dimensional cutting
 	stock problem with multiple stock lengths. Engineering
 	Optimization, 46 (10), 1352-1368, 2014.
 	
-	\bibitem{29} R. Haessler, and P. Sweeney, “Cutting stock
-	problems and solution procedures,” European Journal
-	of Operational Research, 54, 141-150, 1991.
+	\bibitem{48}  Díaz, D., Valledor, P., Areces, P., Rodil, J., Suárez, M.
+	An ACO Algorithm to Solve an Extended Cutting Stock
+	Problem for Scrap Minimization in a Bar Mill. Lecture
+	Notes in Computer Science (including subseries Lecture
+	Notes in Artificial Intelligence and Lecture Notes in
+	Bioinformatics), 8667, 13-24, 2014.
 	
-	\bibitem{42} MirHassani, S.A., Jalaeian Bashirzadeh, A. A
-	GRASP meta-heuristic for two-dimensional irregular
-	cutting stock problem. International Journal of
-	Advanced Manufacturing Technology, 81 (1-4), 455-
-	464, 2105.
+	\bibitem{2} H. Hideki, and M.J. Pinto, “An integrated cutting
+	stock and sequencing problem,” European Journal of
+	Operational Research (183), 1353–1370, 2007.
 	
-	\bibitem{43}  Wenshu, L., Dan, M., Jinzhuo, W. Study on cutting
-	stock optimization for decayed wood board based
-	on genetic algorithm. Open Automation and Control
-	Systems Journal, 7 (1), 284-289, 2015.
+	\bibitem{11} J. Jylanki. A thousand ways to pack the bin - a
+	practical approach to two-dimensional rectangle bin
+	packing. research report, 2010.
+	
+	\bibitem{3}J. Karelahti, “Solving the cutting stock problem in
+	the steel industry”. Department of Engineering Physics
+	and Mathematics. Helsinki University of Technology,
+	2-5, 2002.
 	
 	\bibitem{46}  Lu, H.-C.a , Huang, Y.-H.b. An efficient genetic
 	algorithm with a corner space algorithm for a cutting
@@ -663,33 +581,31 @@ El operador génetico Mutación, como muestra el pseudocódigo en el Algoritmo 	
 	Chinese Journal of Scientific Instrument, 36 (8), pp.
 	1774-1782, 2015.
 	
-	\bibitem{48}  Díaz, D., Valledor, P., Areces, P., Rodil, J., Suárez, M.
-	An ACO Algorithm to Solve an Extended Cutting Stock
-	Problem for Scrap Minimization in a Bar Mill. Lecture
-	Notes in Computer Science (including subseries Lecture
-	Notes in Artificial Intelligence and Lecture Notes in
-	Bioinformatics), 8667, 13-24, 2014.
+	\bibitem{42} MirHassani, S.A., Jalaeian Bashirzadeh, A. A
+	GRASP meta-heuristic for two-dimensional irregular
+	cutting stock problem. International Journal of
+	Advanced Manufacturing Technology, 81 (1-4), 455-
+	464, 2105.
 	
-	\bibitem{51} Ben Lagha, G.a , Dahmani, N.b , Krichen, S.a.
-	Particle swarm optimization approach for resolving the
-	cutting stock problem. 2014 International Conference
-	on Advanced Logistics and Transport, 2014.
+	\bibitem{1} P. Gilmore, and R. Gomory, “A linear programming
+	approach to the Cutting Stock Problem-Part II,”
+	Operations Research, 11(6), 863-888, 1963.
+	
+	\bibitem{29} R. Haessler, and P. Sweeney, “Cutting stock
+	problems and solution procedures,” European Journal
+	of Operational Research, 54, 141-150, 1991.
+	
+	\bibitem{4} Stéphane Bonnevay, Philippe Aubertin, and Gérald Gavin, "A Genetic Algorithm to Solve a Real 2-D Cutting Stock
+	Problem with Setup Cost in the Paper Industry". Genetic and Evolutionary Computation Conference,2015
+	
+	\bibitem{43}  Wenshu, L., Dan, M., Jinzhuo, W. Study on cutting
+	stock optimization for decayed wood board based
+	on genetic algorithm. Open Automation and Control
+	Systems Journal, 7 (1), 284-289, 2015.
 	
 	\bibitem{5} Wikipedia. URL: \href{https://es.wikipedia.org/wiki/Algoritmo\_genetico}
-	{https://es.wikipedia.org/wiki/Algoritmo\_genetico}.
-	Consultado el 15 de Noviembre, 2020.
-	
-	\bibitem{knuth} Donald E. Knuth. \emph{The Art of Computer Programming}.
-		Volume 1: Fundamental Algorithms (3rd~edition), 1997.
-		Addison-Wesley Professional.
-
-	\bibitem{goedel} Kurt Göedel. \emph{Über formal unentscheidbare Sätze der
-		Principia Mathematica und verwandter Systeme, I}.
-		Monatshefte für Mathematik und Physik 38.
-
-	\bibitem{wiki} Wikipedia. URL: \href{http://en.wikipedia.org}
-	  {http://en.wikipedia.org}.
-		Consultado en \today.
+	{https://es.wikipedia.org/wiki/ \\Algoritmo\_genetico}.
+	Consultado el 1 de Noviembre, 2020.
 
 %-----------------------------------------------------------------------------------
 \end{thebibliography}
