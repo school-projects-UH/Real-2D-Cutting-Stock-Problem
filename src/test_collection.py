@@ -1,8 +1,9 @@
-from src.genetic_algorithm import Solver
-from src.classes import Rectangle, Sheet
+from genetic_algorithm import Solver
+from classes import Rectangle, Sheet
 import os
 from time import time
-base_path = os.path.curdir + "/tests/collection/"
+
+base_path = os.path.curdir + "/tests/"
 
 solver = Solver()
 

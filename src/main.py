@@ -1,5 +1,5 @@
-from src.genetic_algorithm import Solver
-from src.classes import Rectangle, Sheet
+from genetic_algorithm import Solver
+from classes import Rectangle, Sheet
 from sys import argv
 
 if __name__ == "__main__":
