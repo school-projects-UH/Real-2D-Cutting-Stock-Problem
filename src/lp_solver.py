@@ -1,5 +1,6 @@
 from cvxopt import matrix, solvers, glpk
 import math
+
 def solve_LP(bins, sheets_per_pattern, sheets):
     w = [b.free_area for b in bins]
     d = [s.demand for s in sheets]
