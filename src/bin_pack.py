@@ -1,4 +1,4 @@
-from src.classes import Rectangle, FixedRectangle, Bin, Sheet
+from classes import Rectangle, FixedRectangle, Bin, Sheet
 from random import random
 
 # Returns a tuple (i, j, need_to_rotate) where i is the index of the bin and j is the index of the free_rectangle that best fits

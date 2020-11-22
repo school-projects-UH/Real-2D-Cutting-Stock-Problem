@@ -2,9 +2,9 @@ import math
 import random
 from random import randint
 
-from src.bin_pack import pack_rectangles
-from src.classes import Solution, Sheet, Bin, FixedRectangle
-from src.lp_solver import solve_LP
+from bin_pack import pack_rectangles
+from classes import Solution, Sheet, Bin, FixedRectangle
+from lp_solver import solve_LP
 import time
 
 def _pick_two_randoms(top):

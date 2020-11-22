@@ -1,7 +1,7 @@
 from random import randint, shuffle
 from sys import argv
-from src.classes import Rectangle, Sheet
-from src.genetic_algorithm import Solver
+from classes import Rectangle, Sheet
+from genetic_algorithm import Solver
 
 
 class SolverConfig:
