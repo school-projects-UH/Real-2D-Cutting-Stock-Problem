@@ -1,0 +1,35 @@
+Input data:
+Main sheet: 32 X 102
+Orders:
+35 X 10: 302933
+6 X 40: 536919
+6 X 64: 138178
+30 X 5: 760778
+68 X 24: 543479
+23 X 41: 99820
+14 X 65: 900574
+
+Parameters:
+Population size: 45
+No. generations: 45
+Random walk steps: 100
+Hill climbing neighbors: 40
+No. best solutions: 10
+Roulette population size: 60
+Crossover probability: 0.75
+
+Output:
+(0, 102): 23 X 41  (0, 61): 23 X 41  (23, 102): 6 X 64  (0, 20): 30 X 5  (0, 15): 30 X 5  (0, 10): 30 X 5  (0, 5): 30 X 5  
+free space: 394   No. of prints: 49910
+
+(0, 102): 14 X 65  (14, 102): 14 X 65  (0, 37): 10 X 35  (10, 37): 10 X 35  (20, 37): 10 X 35  
+free space: 394   No. of prints: 435576
+
+(0, 102): 14 X 65  (0, 37): 10 X 35  (10, 37): 10 X 35  (14, 102): 6 X 64  (20, 102): 6 X 64  (26, 102): 6 X 64  (20, 37): 5 X 30  
+free space: 352   No. of prints: 29423
+
+(0, 102): 24 X 68  (24, 102): 6 X 40  (0, 34): 30 X 5  
+free space: 1242   No. of prints: 543479
+
+fitness: 1251903942.0
+Time:46.20068120956421 seconds
