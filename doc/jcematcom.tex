@@ -60,13 +60,13 @@
 % Autores
 %-----------------------------------------------------------------------------------
 \author{\\
-\name Dalianys Pérez Pereira \email \href{mailto:a.uno@lab.matcom.uh.cu}{a.uno@lab.matcom.uh.cu}
+\name Dalianys Pérez Pereira \email \href{mailto:d.perez3@estudiantes.matcom.uh.cu}{d.perez3@estudiantes.matcom.uh.cu}
 	\\ \addr Grupo C411 \AND
-\name Dayany Alfaro González \email \href{mailto:d.alfaro@matcom.uh.cu}{d.alfaro@matcom.uh.cu}
+\name Dayany Alfaro González \email \href{mailto:d.alfaro@estudiantes.matcom.uh.cu}{d.alfaro@estudiantes.matcom.uh.cu}
   \\ \addr Grupo C411 \AND
-\name Gilberto González Rodríguez \email \href{mailto:a.dos@lab.matcom.uh.cu}{a.dos@lab.matcom.uh.cu}
+\name Gilberto González Rodríguez \email \href{mailto:mailto:g.gonzalez@estudiantes.matcom.uh.cu}{g.gonzalez@estudiantes.matcom.uh.cu}
 \\ \addr Grupo C411 \AND
-\name Antonio Jesús Otaño Barrera \email \href{mailto:a.dos@lab.matcom.uh.cu}{a.dos@lab.matcom.uh.cu}
+\name Antonio Jesús Otaño Barrera \email \href{mailto:a.otano@estudiantes.matcom.uh.cu}{a.otano@estudiantes.matcom.uh.cu}
 \\ \addr Grupo C411}
 
 %-----------------------------------------------------------------------------------
@@ -313,7 +313,7 @@ Como ha sido explicado en la Sección 3 es necesario resolver un problema de pro
 
 La eficiencia al resolver este subproblema resulta crucial debido a que va ser necesario resolverlo múltiples veces para evaluar y saber cuan buenas son las soluciones al problema de patrones de corte que se van obteniendo. Por esto se resuelve el problema relajado correspondiente por lo que la solución obtenida $({x_1}^*,...,{x_m}^*)$ se redondea de forma que el número de veces que es necesario aplicar el patrón de corte $x_j = \lceil {x_j}^* \rceil \ \ \forall j \in J$.
 
-Dado que en el presente trabajo se usó Python como lenguaje, para resolver esta fase del problema se exploraron las herramientas que brinda dicho lenguaje para resolver problemas de programación lineal y se decidió hacer uso de la biblioteca \texttt{cvxopt}.
+Dado que en el presente trabajo se usó Python como lenguaje, para resolver esta fase del problema se exploraron las herramientas que brinda dicho lenguaje para resolver problemas de programación lineal y se decidió hacer uso de la biblioteca \texttt{cvxopt} para modelar el problema y \texttt{GLPK} para resolverlo.
 
 \subsection{2D Bin Packing}
 El problema 2D Bin Packing se puede enunciar de la siguiente manera: Dada una lista de rectángulos $(R_1,...,R_n)$ determinar la forma de colocarlos todos sin que se solapen y usando el menor número posible de contenedores rectangulares (\textit{bins}). En este caso los rectángulos serían las hojas que se demandan y un \textit{bin} sería la hoja a picar. Como resultado se obtendría una lista de patrones $\pi = (\pi_1,...,\pi_k)$.
