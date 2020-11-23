@@ -90,7 +90,7 @@ class Bin(FixedRectangle):
 
 
 class Solution:
-    def __init__(self, bins, sheets_per_pattern, prints_per_pattern, fitness):
+    def __init__(self, bins, sheets_per_pattern, prints_per_pattern=None, fitness=None):
         self.bins = bins
         self.sheets_per_pattern = sheets_per_pattern
         self.prints_per_pattern = prints_per_pattern

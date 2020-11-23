@@ -68,6 +68,10 @@ class Solver():
             new_solution = self.choose_neighbor(current_solution)
             if new_solution != None:
                 current_solution = new_solution
+
+        fitness, prints_per_pattern = solve_LP(current_solution.bins, current_solution.sheets_per_pattern, self.sheets)
+        current_solution.fitness = fitness
+        current_solution.prints_per_pattern = prints_per_pattern
         return current_solution
 
     '''Adds one sheet i in the pattern j'''
@@ -167,11 +171,8 @@ class Solver():
             if placement == []:
                 return None
             bins += placement
-        try:
-            fitness, prints_per_pattern = solve_LP(bins, sheets_per_pattern, self.sheets)
-        except:
-            return self.choose_neighbor(solution)
-        neighbor = Solution(bins, sheets_per_pattern, prints_per_pattern, fitness)
+
+        neighbor = Solution(bins, sheets_per_pattern)
         return neighbor
 
     def create_initial_population(self):
@@ -280,8 +281,12 @@ class Solver():
             best_neighbor = current_solution
             for _ in range(self.hill_climbing_neighbors):
                 new_neighbor = self.choose_neighbor(current_solution)
-                if new_neighbor != None and new_neighbor.fitness < best_neighbor.fitness:
-                    best_neighbor = new_neighbor
+                if new_neighbor != None:
+                    fitness, prints_per_pattern = solve_LP(new_neighbor.bins, new_neighbor.sheets_per_pattern, self.sheets)
+                    new_neighbor.fitness = fitness
+                    new_neighbor.prints_per_pattern = prints_per_pattern
+                    if new_neighbor.fitness < best_neighbor.fitness:
+                        best_neighbor = new_neighbor
 
             if best_neighbor.fitness < current_solution.fitness:
                 current_solution = best_neighbor
