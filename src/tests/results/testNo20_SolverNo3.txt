@@ -1,0 +1,25 @@
+Input data:
+Main sheet: 162 X 47
+Orders:
+36 X 45: 933546
+18 X 14: 238456
+41 X 29: 153627
+17 X 25: 931956
+28 X 70: 959915
+18 X 16: 784355
+
+Parameters:
+Population size: 45
+No. generations: 45
+Random walk steps: 100
+Hill climbing neighbors: 40
+No. best solutions: 10
+Roulette population size: 60
+Crossover probability: 0.75
+
+Output:
+(0, 47): 36 X 45  (36, 47): 29 X 41  (65, 47): 70 X 28  (135, 47): 25 X 17  (65, 19): 16 X 18  (81, 19): 16 X 18  (97, 19): 14 X 18  
+free space: 1592   No. of prints: 959915
+
+fitness: 3050285935.0
+Time:21.555087327957153 seconds
