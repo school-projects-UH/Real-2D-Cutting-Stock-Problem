@@ -68,8 +68,14 @@ class Solver():
             new_solution = self.choose_neighbor(current_solution)
             if new_solution != None:
                 current_solution = new_solution
-
-        fitness, prints_per_pattern = solve_LP(current_solution.bins, current_solution.sheets_per_pattern, self.sheets)
+        while True:
+            try:
+                fitness, prints_per_pattern = solve_LP(current_solution.bins, current_solution.sheets_per_pattern, self.sheets)
+                break
+            except:
+                new_solution = self.choose_neighbor(current_solution)
+                if new_solution != None:
+                    current_solution = new_solution
         current_solution.fitness = fitness
         current_solution.prints_per_pattern = prints_per_pattern
         return current_solution
@@ -262,8 +268,10 @@ class Solver():
                     sheets_per_patterns[j,i] += 1
                 except KeyError:
                     sheets_per_patterns[j,i] = 1
-
-        fitness, prints_per_pattern = solve_LP(bins, sheets_per_patterns, self.sheets)
+        try:
+            fitness, prints_per_pattern = solve_LP(bins, sheets_per_patterns, self.sheets)
+        except:
+            return self.crossover(Population)
         off_spring = Solution(bins, sheets_per_patterns, prints_per_pattern, fitness)
         return self.hill_climbing(off_spring)
 
@@ -282,7 +290,10 @@ class Solver():
             for _ in range(self.hill_climbing_neighbors):
                 new_neighbor = self.choose_neighbor(current_solution)
                 if new_neighbor != None:
-                    fitness, prints_per_pattern = solve_LP(new_neighbor.bins, new_neighbor.sheets_per_pattern, self.sheets)
+                    try:
+                        fitness, prints_per_pattern = solve_LP(new_neighbor.bins, new_neighbor.sheets_per_pattern, self.sheets)
+                    except:
+                        continue
                     new_neighbor.fitness = fitness
                     new_neighbor.prints_per_pattern = prints_per_pattern
                     if new_neighbor.fitness < best_neighbor.fitness:
