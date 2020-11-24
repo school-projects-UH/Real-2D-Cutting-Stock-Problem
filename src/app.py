@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QPushButton, QSpinBox, QHBoxLayout, QVBoxLayout, QFormLayout, QMessageBox, QAction
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QPushButton, QSpinBox, QHBoxLayout, QVBoxLayout, QFormLayout, QMessageBox
 from PyQt5.QtGui import QPainter, QPainterPath, QColor, QBrush, QPen,QFont
 from PyQt5.QtCore import Qt, QPoint, QRect, QThread, pyqtSignal
 from pyqtspinner.spinner import WaitingSpinner
@@ -20,7 +20,6 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Asistente de Cortes')
         self.window = QWidget() 
         self.formWidgets()
-        self.createMenu()
         self.setCentralWidget(self.window)
         self.show()
 
@@ -46,17 +45,6 @@ class MainWindow(QMainWindow):
         app_form_layout.addRow(vbox)
 
         self.window.setLayout(app_form_layout)
-
-    def createMenu(self):
-        # Create actions for file menu
-        exit_act = QAction('Instrucciones', self)
-        exit_act.setShortcut('F1')
-        exit_act.triggered.connect(self.show_help)
-        # Create menubar
-        menu_bar = self.menuBar()
-        # Create file menu and add actions
-        file_menu = menu_bar.addMenu('Ayuda')
-        file_menu.addAction(exit_act)
 
     def show_help(self):
         pass
