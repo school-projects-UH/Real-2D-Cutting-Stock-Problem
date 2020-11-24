@@ -1,0 +1,20 @@
+Input data:
+Main sheet: 70 X 58
+Orders:
+36 X 6: 350287
+
+Parameters:
+Population size: 60
+No. generations: 30
+Random walk steps: 100
+Hill climbing neighbors: 25
+No. best solutions: 10
+Roulette population size: 45
+Crossover probability: 0.75
+
+Output:
+(0, 58): 6 X 36  (6, 58): 6 X 36  (12, 58): 36 X 6  (12, 52): 36 X 6  (12, 46): 36 X 6  (12, 40): 36 X 6  (12, 34): 36 X 6  (12, 28): 36 X 6  (0, 22): 36 X 6  (0, 16): 36 X 6  (0, 10): 36 X 6  (48, 58): 6 X 36  (54, 58): 6 X 36  (60, 58): 6 X 36  
+free space: 1036   No. of prints: 25021
+
+fitness: 25923268.0
+Time:132.88989305496216 seconds
