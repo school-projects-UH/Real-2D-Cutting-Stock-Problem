@@ -33,6 +33,7 @@
 %\usepackage{algorithmic}
 
 \usepackage{algpseudocode}
+\usepackage[spanish]{babel}
 
 %\usepackage[]{algorithm2e}
 %-----------------------------------------------------------------------------------
@@ -91,7 +92,7 @@
 % DOCUMENTO
 %-----------------------------------------------------------------------------------
 \begin{document}
-
+\begin{hyphenrules}{nohyphenation}
 %-----------------------------------------------------------------------------------
 % NO BORRAR ESTA LINEA!
 %-----------------------------------------------------------------------------------
@@ -103,6 +104,7 @@
 %===================================================================================
 % Resumen y Abstract
 %-----------------------------------------------------------------------------------
+
 \selectlanguage{spanish} % Para producir el documento en Español
 
 %-----------------------------------------------------------------------------------
@@ -188,11 +190,11 @@ Este trabajo tiene como objetivo resolver un problema de corte en dos dimensione
 
 La solución propuesta está implementada haciendo uso de Python como lenguaje. Además se brinda como parte de la solución una aplicación de escritorio con una interfaz de usuario para introducir una instancia del problema en cuestión. 
 
-En la Sección 2 se abordan las principales aproximaciones al problema en cuestión que se han realizado hasta el momento. En la Sección 3 se encuentra la definición formal del problema, mientras que la Sección 4 describe la solución propuesta en este trabajo. La Sección 5 analiza los resultados alcanzados. Por último la Sección 6 aborda detalles acerca de la interfaz visual que se provee para hacer uso de la presente solución.
+En la Sección \ref{estadodelarte} se abordan las principales aproximaciones al problema en cuestión que se han realizado hasta el momento. En la Sección \ref{def} se encuentra la definición formal del problema, mientras que la Sección \ref{prop} describe la solución propuesta en este trabajo. La Sección \ref{resultados} analiza los resultados alcanzados. Por último la Sección \ref{visual} aborda detalles acerca de la interfaz visual que se provee para hacer uso de la presente solución.
 
 %===================================================================================
 
-\section{Antecedentes y Enfoques de Solución}
+\section{Antecedentes y Enfoques de Solución}\label{estadodelarte}
 El Problema de patrones de corte (CSP, por sus siglas
 en inglés) fue formulado por primera vez en 1939
 por el economista ruso Kantorovich.
@@ -272,7 +274,7 @@ genéticos \cite{43,46} y \textit{Ant Colony Optimization} (ACO) \cite{47,48}, e
 %===================================================================================
 % Desarrollo
 %-----------------------------------------------------------------------------------
-\section{Definición del Problema}
+\section{Definición del Problema}\label{def}
 Sea $I$ el conjunto de $n$ hojas, una hoja $i$ está definida por su ancho $w_i$, su altura $h_i$ y su demanda $d_i$. Sea $J$ el conjunto de $m$ patrones de corte con las mismas dimensiones $H \times W$, el número $m$ es desconocido. Sea $p_{ji}$ el número de hojas $i$ presentes en el patrón $j$, se tiene que $p_j = (p_{j1},...,p_{jn})$. Sea $\pi_j$ una configuración de las hojas del patrón $j$, la cual incluye información acerca de la posición exacta de las hojas y si se encuentran rotadas o no. Por tanto, un patrón $j$ va a estar definido por $(p_j,\pi_j)$. Sea $x_j$ el número de veces que es necesario aplicar el patrón de corte $j$, se tiene que las variables de decisión son: $m, p_j, x_j$ y $\pi_j$ $\forall j \in J$.  
 
 El objetivo que se persigue es minimizar el desperdicio de papel:
@@ -300,7 +302,7 @@ f = \sum_{j \in J}c_j x_j + sobreProd
 Esta función objetivo y las $n$ restricciones presentadas antes definen un problema de programación lineal entero. Sea $S$ el conjunto de todas las posibles soluciones, una solución $s \in S$ va a estar formada por $((p_1,\pi_1),...,(p_m,\pi_m))$ y $(x_1,...,x_m)$ que es la solución de dicho problema lineal entero.
 
 
-\section{Propuesta de Solución}
+\section{Propuesta de Solución}\label{prop}
 La solución que se propone en este trabajo es una adaptación de la solución brindada por \cite{4}. El problema de patrones de cortes va a ser dividido en los siguientes 3 subproblemas de optimización:
 \begin{enumerate}
 	\item El problema de programación lineal descrito en la sección anterior, el cual consiste en hallar $(x_1,...,x_m)$.
@@ -309,13 +311,13 @@ La solución que se propone en este trabajo es una adaptación de la solución b
 \end{enumerate}
 
 \subsection{Problema de Programación Lineal}
-Como ha sido explicado en la Sección 3 es necesario resolver un problema de programación lineal entero donde se quiere minimizar la función que se muestra en la ecuación \eqref{eq3} sujeta a las restricciones en la ecuación \eqref{eq2}.
+Como ha sido explicado en la Sección \ref{def} es necesario resolver un problema de programación lineal entero donde se quiere minimizar la función que se muestra en la ecuación \eqref{eq3} sujeta a las restricciones en la ecuación \eqref{eq2}.
 
 La eficiencia al resolver este subproblema resulta crucial debido a que va ser necesario resolverlo múltiples veces para evaluar y saber cuan buenas son las soluciones al problema de patrones de corte que se van obteniendo. Por esto se resuelve el problema relajado correspondiente por lo que la solución obtenida $({x_1}^*,...,{x_m}^*)$ se redondea de forma que el número de veces que es necesario aplicar el patrón de corte $x_j = \lceil {x_j}^* \rceil \ \ \forall j \in J$.
 
 Dado que en el presente trabajo se usó Python como lenguaje, para resolver esta fase del problema se exploraron las herramientas que brinda dicho lenguaje para resolver problemas de programación lineal y se decidió hacer uso de la biblioteca \texttt{cvxopt} para modelar el problema y \texttt{GLPK} para resolverlo.
 
-\subsection{2D Bin Packing}
+\subsection{2D Bin Packing} \label{binpacking}
 El problema 2D Bin Packing se puede enunciar de la siguiente manera: Dada una lista de rectángulos $(R_1,...,R_n)$ determinar la forma de colocarlos todos sin que se solapen y usando el menor número posible de contenedores rectangulares (\textit{bins}). En este caso los rectángulos serían las hojas que se demandan y un \textit{bin} sería la hoja a picar. Como resultado se obtendría una lista de patrones $\pi = (\pi_1,...,\pi_k)$.
 
 Existen diversas alternativas para resolver este problema \cite{11}. En este caso se propone la variante \textit{Guillotine}, que como su nombre indica cumple la restricción de cortes tipo guillotina. Este algoritmo en todo momento mantiene actualizada una lista "rectángulos libres" que representan el área disponible en el rectángulo principal(\textit{bin}). Estos rectángulos libres cumplen que son disjuntos tomados dos a dos, es decir $F_i \cap F_j = \emptyset \ \ \forall i\neq j $ y el área libre total del \textit{bin} se puede definir como $\bigcup\limits_{i=1}^{m} F_{i}$ donde $F = \{F_1,...,F_m\}$ es la lista de rectángulos libres. El algoritmo comienza con un único rectángulo libre, lo cual se representa como $F = \{F_1 = (W \times H)\}$. En cada iteración del algoritmo se selecciona un rectángulo libre $F_i$ donde coloca el rectángulo $R = (w \times h)$ en la esquina inferior izquierda, por tanto $F_i$ se sustituye por dos nuevos rectángulos $F',F''$ que cumplen que $F' \cap F'' = \emptyset$ y $F' \cup F'' \cup R = F_i$. Este procedimiento continúa hasta que se hayan colocado todos los rectángulos.
@@ -385,7 +387,7 @@ El funcionamiento de un algoritmo genético básico se puede resumir en los paso
 	\end{itemize}
 \end{itemize}
 
-\subsubsection{Inicialización}
+\subsubsection{Inicialización}\label{init}
 Para explicar el proceso seguido a la hora de crear una poblción inicial para el algoritmo lo primero sería definir qué sería el vecindario de una solución. Sea $s \in S$ una solución formada por la configuración $(\pi_1,...,\pi_m)$ correspondiente a $(p_1,...,p_m)$ y $(x_1,...,x_n)$. Un vecino de $s$ se va a construir usando unos de los siguientes operadores: \textit{añadir, eliminar, mover, intercambiar}. 
 
 Sea $L_{max}(i)$ el máximo número posible de hojas de tipo $i$ en un patrón:
@@ -393,9 +395,9 @@ $$ L_{max}(i) = \lfloor \frac{H \times W}{h_iw_i} \rfloor$$
 
 Aplicar el operador \textit{añadir} a una solución $s \in S$ añade una hoja $i$ a in patrón $j$ lo que se refleja como un aumento de $p_{ij}$ si $p_{ij} < L_{max}(i)$. El operador \textit{eliminar} consiste en quitar una imagen $i$ del patrón $j$ lo cual disminuye $p_{ij}$ si el número total de hojas $i$ en toda la solución $s$ se matiene estrictamente positivo. El operador \textit{mover} mueve una hoja de un patrón a otro y el operador \textit{intercambiar} intercambia dos hojas entre dos patrones diferentes. 
 
-Un vecino de una solución va a ser generado seleccionando aleatoriamente un operador, uno (\textit{añadir,eliminar}) o dos (\textit{mover, intercambiar}) patrones y una (\textit{añadir,eliminar,mover}) o dos (\textit{intercambiar}) hojas en esos patrones. La aplicación de dichos operadores puede dar como resultado una solución no válida porque sea imposible lograr una configuración para las cantidades $p_j$ obtenidas. Para comprobar la validez de la solución obtenida se utilizó una versión del algoritmo \ref{guillotine}, descrito en la Sección 4.2, donde solo va a existir un \textit{bin} disponible y se tratará de construir cada una de las configuraciones solicitadas en la nueva solución, la cual solo pertenecerá a la vecindad de $s$ si este proceso pudo llevarse a cabo exitosamente.      
+Un vecino de una solución va a ser generado seleccionando aleatoriamente un operador, uno (\textit{añadir,eliminar}) o dos (\textit{mover, intercambiar}) patrones y una (\textit{añadir,eliminar,mover}) o dos (\textit{intercambiar}) hojas en esos patrones. La aplicación de dichos operadores puede dar como resultado una solución no válida porque sea imposible lograr una configuración para las cantidades $p_j$ obtenidas. Para comprobar la validez de la solución obtenida se utilizó una versión del algoritmo \ref{guillotine}, descrito en la Sección \ref{binpacking}, donde solo va a existir un \textit{bin} disponible y se tratará de construir cada una de las configuraciones solicitadas en la nueva solución, la cual solo pertenecerá a la vecindad de $s$ si este proceso pudo llevarse a cabo exitosamente.      
 
-Para crear la población inicial es necesario generar un conjunto de soluciones válidas. Primero se va a generar una solución $s_0$. Usando el algoritmo \ref{guillotine} solicitando solo una vez cada una de las hojas que se demandan se obtiene las configuraciones $(\pi_1,...,\pi_k)$ y los correspondientes $(p_1,...,p_k)$. Luego resolviendo el problema lineal descrito en la Sección 3 se obtendrían los $(x_1,...,x_n)$ y aplicando la ecuación \ref{eq3} se asocia a $s_0$ su \textit{fitness}, que es el valor que describe cuán bien cumple el objetivo propuesto. 
+Para crear la población inicial es necesario generar un conjunto de soluciones válidas. Primero se va a generar una solución $s_0$. Usando el algoritmo \ref{guillotine} solicitando solo una vez cada una de las hojas que se demandan se obtiene las configuraciones $(\pi_1,...,\pi_k)$ y los correspondientes $(p_1,...,p_k)$. Luego resolviendo el problema lineal descrito en la Sección \ref{def} se obtendrían los $(x_1,...,x_n)$ y aplicando la ecuación \ref{eq3} se asocia a $s_0$ su \textit{fitness}, que es el valor que describe cuán bien cumple el objetivo propuesto. 
 
 Para obtener otra solución a partir de $s_0$ se va a seleccionar una solución $s_1$ que pertenezca al vecinadario de $s_0$ y luego se selecciona una solución $s_2$ que pertenezca al vecinadario de $s_1$ y así sucesivamente hasta que se halla realizado un
 número fijo de iteraciones \texttt{NWalk}. Este proceso está encapsulado en la función \textit{RandomWalk(s)}. 
@@ -440,8 +442,8 @@ En la etapa de selección se utiliza una combinación de dos métodos: Selecció
 \end{itemize}
 
 
-\subsubsection{Cruzamiento}
-El cruzamiento es el principal operador genético, el cual va a realizaarse en la función $Crossover(P)$.Se encarga de construir una nueva solución a partir de dos soluciones diferentes que va a escoger de la población $P$. Se escoge un subconjunto de patrones de cada una de las soluciones que serían los padres. El número de patrones escogidos en cada padre va a estar determinado  por un porcentaje del total de patrones del padre que se va a seleccionar aleatoriamente entre 25\% y 50\%. La selección de los patrones va a priorizar aquellos que sean considerados "mejores". La calidad de un patrón va a estar dada por su área libre, la cual mientra menor sea mejor será el patrón. Si existe alguna de las hojas demandadas que no se encuentre en los patrones seleccionados de ambos padres, se construirán nuevos patrones que las incluyan haciendo uso del Algoritmo \ref{guillotine} solicitando una vez cada una de las hojas faltantes. Estos nuevos patrones construidos también van a formar parte de la nueva solución, para la cual a continuación se resolverá el problema de programación lineal descrito en  la Sección 3 y se le asocirán los $(x_1,...,x_n)$ obtenidos así como el valor de $fitness$ correspondiente.
+\subsubsection{Cruzamiento}\label{cruzamiento}
+El cruzamiento es el principal operador genético, el cual va a realizaarse en la función $Crossover(P)$.Se encarga de construir una nueva solución a partir de dos soluciones diferentes que va a escoger de la población $P$. Se escoge un subconjunto de patrones de cada una de las soluciones que serían los padres. El número de patrones escogidos en cada padre va a estar determinado  por un porcentaje del total de patrones del padre que se va a seleccionar aleatoriamente entre 25\% y 50\%. La selección de los patrones va a priorizar aquellos que sean considerados "mejores". La calidad de un patrón va a estar dada por su área libre, la cual mientra menor sea mejor será el patrón. Si existe alguna de las hojas demandadas que no se encuentre en los patrones seleccionados de ambos padres, se construirán nuevos patrones que las incluyan haciendo uso del Algoritmo \ref{guillotine} solicitando una vez cada una de las hojas faltantes. Estos nuevos patrones construidos también van a formar parte de la nueva solución, para la cual a continuación se resolverá el problema de programación lineal descrito en  la Sección \ref{def} y se le asocirán los $(x_1,...,x_n)$ obtenidos así como el valor de $fitness$ correspondiente.
 
 Una vez que se ha obtenido una nueva solución se realiza una mejora de la misma con la función $HillClimbing(s)$. Este proceso va a consistir en buscar una solución $s'$ en el vecindario de $s$, si $s'$ es mejor que que $s$ se repite la búsqueda esta vez en el vecindario de $s'$ y así hasta que la solución vecina no represente una mejora. Para buscar la solución vecina se generan un número fijo de soluciones \texttt{NHill} del vecindario y se selecciona la mejor de estas.     
 
@@ -470,7 +472,7 @@ Una vez que se ha obtenido una nueva solución se realiza una mejora de la misma
 
 \subsubsection{Mutación}
 
-El operador génetico Mutación, como muestra el pseudocódigo en el Algoritmo 	\ref{mutation}, va a seleccionar aleatoriamente un individuo en la población $P$ para que actúe como padre, o sea, como base para formar una nueva solución. Luego se aplica $RandomWalk(s)$ al padre seleccionado como fue explicado en la Sección 4.3.1 para crear la población inicial. A continuación se va a mejorar la nueva solución obtenida con $HillClimbing$(Offspring) como fue explicado en la Sección 4.3.3.  
+El operador génetico Mutación, como muestra el pseudocódigo en el Algoritmo 	\ref{mutation}, va a seleccionar aleatoriamente un individuo en la población $P$ para que actúe como padre, o sea, como base para formar una nueva solución. Luego se aplica $RandomWalk(s)$ al padre seleccionado como fue explicado en la Sección \ref{init} para crear la población inicial. A continuación se va a mejorar la nueva solución obtenida con $HillClimbing$(Offspring) como fue explicado en la Sección \ref{cruzamiento}.  
 
 
 \algrenewcommand\algorithmicrequire{\textbf{Input:}}
@@ -522,17 +524,15 @@ Luego de haber explorado las \texttt{Ngen} generaciones se realizará una mejora
 \subsubsection{Ajuste de Parámetros}
 El algoritmo génetico precisa de varios parámetros para su funcionamiento. Según cúan adecuados sean estos parámetros para el problema en cuestión mejores serán los resultados obtenidos. Por tanto se necesita determinar que valores asignarle a \texttt{NWalk, Ngen, NPop, NBest, NSel, NHill} y \texttt{ProbCross}.
 Para lograr este objetivo se recurrió a la experimentación y observación de los resultados y después de explorar varias combinaciónes de parámetros se encontró que los mejores resultados se alcanzaban con la siguiente configuración: \texttt{NWalk =}, \texttt{Ngen =}, \texttt{NPop =}, \texttt{NBest =}, \texttt{NSel =}, \texttt{NHill =} y \texttt{ProbCross =}.
-\section{Resultados}
+\section{Resultados}\label{resultados}
 
-\section{Interfaz Visual}
+\section{Interfaz Visual}\label{visual}
 Para poder hacer uso de la solución propuesta se provee una aplicación de escritorio desarrollada con \texttt{PyQt5} como herramienta. Esta brinda una interfaz visual amigable al usuario para introducir una instancia del problema a resolver.
 
 % Conclusiones
 %-----------------------------------------------------------------------------------
 \section{Conclusiones}\label{sec:conc}
-
-  En esta sección puede incluir las conclusiones de su investigación y las ideas
-  sobre la continuidad del trabajo, en el caso que aplique.
+En este proyecto se resolvi\'o un problema de patrones de cortes relacionado a la industria del papel. La solución propuesta se basa en un problema de programación lineal, un problema de empaquetamiento y un algoritmo génetico. Los resultados obtenidos fueron satisfactorios pues se logr\'o automatizar un proceso que se realiza de forma manual. Si se usa la aplicaci\'on propuesta se podr\'ia agilizar potencialmente el trabajo diario en la empresa pues se obtendr\'ian resultados que minimizan el desperdicio en cuesti\'on de pocos minutos.
 
 %===================================================================================
 
@@ -613,7 +613,7 @@ Para poder hacer uso de la solución propuesta se provee una aplicación de escr
 %-----------------------------------------------------------------------------------
 
 \label{end}
-
+\end{hyphenrules}
 \end{document}
 
 %===================================================================================
