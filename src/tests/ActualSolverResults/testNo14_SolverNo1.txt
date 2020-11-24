@@ -1,0 +1,20 @@
+Input data:
+Main sheet: 142 X 54
+Orders:
+11 X 113: 705087
+
+Parameters:
+Population size: 60
+No. generations: 30
+Random walk steps: 100
+Hill climbing neighbors: 25
+No. best solutions: 10
+Roulette population size: 45
+Crossover probability: 0.75
+
+Output:
+(0, 54): 113 X 11  (0, 43): 113 X 11  (0, 32): 113 X 11  (0, 21): 113 X 11  
+free space: 2696   No. of prints: 176272
+
+fitness: 475230555.0
+Time:18.326273441314697 seconds

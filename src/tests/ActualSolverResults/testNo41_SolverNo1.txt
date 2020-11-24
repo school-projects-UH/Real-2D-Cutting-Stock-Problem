@@ -1,0 +1,22 @@
+Input data:
+Main sheet: 140 X 197
+Orders:
+57 X 14: 847579
+74 X 14: 15509
+158 X 22: 952425
+
+Parameters:
+Population size: 60
+No. generations: 30
+Random walk steps: 100
+Hill climbing neighbors: 25
+No. best solutions: 10
+Roulette population size: 45
+Crossover probability: 0.75
+
+Output:
+(0, 197): 22 X 158  (22, 197): 22 X 158  (44, 197): 22 X 158  (66, 197): 22 X 158  (88, 197): 22 X 158  (110, 197): 14 X 74  (124, 197): 14 X 74  (110, 123): 14 X 74  (124, 123): 14 X 57  (0, 39): 57 X 14  (0, 25): 57 X 14  (57, 39): 57 X 14  (57, 25): 57 X 14  
+free space: 3102   No. of prints: 190485
+
+fitness: 1250511634.0
+Time:86.78954815864563 seconds

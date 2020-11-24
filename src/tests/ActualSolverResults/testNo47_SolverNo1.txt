@@ -1,0 +1,31 @@
+Input data:
+Main sheet: 85 X 158
+Orders:
+78 X 31: 319642
+43 X 70: 246063
+23 X 104: 14550
+126 X 28: 248124
+58 X 122: 856646
+80 X 43: 494528
+
+Parameters:
+Population size: 60
+No. generations: 30
+Random walk steps: 100
+Hill climbing neighbors: 25
+No. best solutions: 10
+Roulette population size: 45
+Crossover probability: 0.75
+
+Output:
+(0, 158): 58 X 122  (0, 36): 78 X 31  (58, 158): 23 X 104  
+free space: 1544   No. of prints: 856646
+
+(0, 158): 80 X 43  (0, 115): 80 X 43  (0, 72): 43 X 70  
+free space: 3540   No. of prints: 247264
+
+(0, 158): 28 X 126  (28, 158): 28 X 126  
+free space: 6374   No. of prints: 124062
+
+fitness: 6305131486.0
+Time:10.714822769165039 seconds
