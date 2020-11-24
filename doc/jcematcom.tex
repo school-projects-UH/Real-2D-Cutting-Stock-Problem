@@ -493,7 +493,7 @@ El algoritmo genético que se propone para encontrar una solución al problema d
 
 El primer paso sería generar la población inicial $P_0$. Como invariante se tiene que \texttt{BestKnown} va a contener la mejor solución encontrada hasta el momento, la cual se actualiza cada vez que se construye una nueva generación con un llamado a la función $UpdateBestSolution(P)$. Esta función va a seleccionar la mejor solución de $P$. Para cada generación se va a realizar un proceso de selección y de reproducción con los cuales se conformará la próxima generación.
 
-Luego de haber explorado las \texttt{Ngen} generaciones se realizará una mejora a la solución \texttt{BestKnown} haciendo uso de $HillClimbing(\mathtt{BestKnown})$. Por último se procede a 
+Luego de haber explorado las \texttt{Ngen} generaciones se realizará una mejora a la solución \texttt{BestKnown} haciendo uso de $HillClimbing(\mathtt{BestKnown})$.
  
 \algrenewcommand\algorithmicrequire{\textbf{Input:}}
 \algrenewcommand\algorithmicensure{\textbf{Inicialización:}}
@@ -514,8 +514,7 @@ Luego de haber explorado las \texttt{Ngen} generaciones se realizará una mejora
 			\EndFor
 		\State BestKnown $\gets UpdateBestSolution(P_k)$
 		\EndFor
-		\State $ HillClimbing($BestKnown$)$
-		\State $ CleanSolution($BestKnown$)$\\
+		\State $ HillClimbing($BestKnown$)$\\
 		\Return BestKnown
 	\end{algorithmic}
 \end{algorithm}
