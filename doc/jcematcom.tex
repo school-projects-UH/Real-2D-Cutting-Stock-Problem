@@ -112,7 +112,7 @@
 %-----------------------------------------------------------------------------------
 \begin{abstract}
 
-Este trabajo tiene como objetivo resolver un problema de corte en dos dimensiones, asociado a la industria del papel, presente en la empresa Geocuba ubicada en la provinicia Pinar del Río, Cuba. Se propone el  diseño e implementación de un algoritmo que permita determinar qué patrones de corte deben usarse para cortar un conjunto de hojas de forma que se satisfaga una demanda (de hojas más pequeñas) solicitada por el usuario de forma que el desperdicio resultante de los cortes sea el menor posible. En este caso se permite la rotación de las piezas a colocar y se requiere que los cortes sean de tipo guillotina. La solución que se propone se basa en un problema de programación lineal, un problema de empaquetamiento y un algoritmo génetico.
+Este trabajo tiene como objetivo resolver un problema de corte en dos dimensiones, asociado a la industria del papel, presente en la empresa GeoCuba ubicada en la provinicia Pinar del Río, Cuba. Se propone el  diseño e implementación de un algoritmo que permita determinar qué patrones de corte deben usarse para cortar un conjunto de hojas de forma que se satisfaga una demanda (de hojas más pequeñas) solicitada por el usuario de forma que el desperdicio resultante de los cortes sea el menor posible. En este caso se permite la rotación de las piezas a colocar y se requiere que los cortes sean de tipo guillotina. La solución que se propone se basa en un problema de programación lineal, un problema de empaquetamiento y un algoritmo génetico.
 
 \end{abstract}
 
@@ -123,7 +123,7 @@ Este trabajo tiene como objetivo resolver un problema de corte en dos dimensione
 
 \begin{enabstract}
 
-This paper aims to solve a two-dimensional cutting stock problem associated with the paper industry, that was presented by the Geocuba company located in Pinar del Río, Cuba. Here are proposed the design and implementation of an algorithm that allows determining which cutting patterns should be used to cut a set of sheets in such a way that a demand (for smaller sheets) requested by the user is satisfied so that the waste resulting from the cuts be the smallest possible. In this case, the rotation of the pieces to be placed is allowed and the cuts are required to be of the guillotine type. The proposed solution is based on a linear programming problem, a bin packing problem, and a genetic algorithm. 
+This paper aims to solve a two-dimensional cutting stock problem associated with the paper industry, that was presented by the GeoCuba company located in Pinar del Río, Cuba. Here are proposed the design and implementation of an algorithm that allows determining which cutting patterns should be used to cut a set of sheets in such a way that a demand (for smaller sheets) requested by the user is satisfied so that the waste resulting from the cuts be the smallest possible. In this case, the rotation of the pieces to be placed is allowed and the cuts are required to be of the guillotine type. The proposed solution is based on a linear programming problem, a bin packing problem, and a genetic algorithm. 
 
 \end{enabstract}
 
@@ -190,7 +190,7 @@ Este trabajo tiene como objetivo resolver un problema de corte en dos dimensione
 
 La solución propuesta está implementada haciendo uso de Python como lenguaje. Además se brinda como parte de la solución una aplicación de escritorio con una interfaz de usuario para introducir una instancia del problema en cuestión. 
 
-En la Sección \ref{estadodelarte} se abordan las principales aproximaciones al problema en cuestión que se han realizado hasta el momento. En la Sección \ref{def} se encuentra la definición formal del problema, mientras que la Sección \ref{prop} describe la solución propuesta en este trabajo. La Sección \ref{resultados} analiza los resultados alcanzados. Por último la Sección \ref{visual} aborda detalles acerca de la interfaz visual que se provee para hacer uso de la presente solución.
+En la Sección \ref{estadodelarte} se abordan las principales aproximaciones al problema en cuestión que se han realizado hasta el momento. En la Sección \ref{def} se encuentra la definición formal del problema, mientras que la Sección \ref{prop} describe la solución propuesta en este trabajo. Por último la Sección \ref{visual} aborda detalles acerca de la interfaz visual que se provee para hacer uso de la presente solución.
 
 %===================================================================================
 
@@ -290,7 +290,7 @@ Para satisfacer la demanda $d_i$ solicitada para cada hoja $i$ van a aparecer $n
 \label{eq2}
 \end{equation}
 
-Es necesario también tener en cuenta la sobreproducción a la hora de analizar el espacio desperdiciado dado que cuando una solución sobrecumple la demanda se tiene que esas hojas sobreproducidas también van a ser desechadas. Por tanto para tener lo anterior en consideración hay que modificar la función objetivo que se muestra en la ecuación \eqref{eq1}. Sea $a_i$ el área total de la hoja $i$ se tiene que:
+Es necesario también tener en cuenta la sobreproducción a la hora de analizar el espacio desperdiciado dado que cuando una solución sobrecumple la demanda se tiene que esas hojas sobreproducidas también van a ser desechadas. Por tanto para tener lo anterior en consideración hay que modificar la función objetivo que se muestra en la Ecuación \eqref{eq1}. Sea $a_i$ el área total de la hoja $i$ se tiene que:
  $$sobreProd = \sum_{i \in I} sobreProd_i $$ 
 donde $sobreProd_i = (\sum_{j \in J} p_{ji}x_ja_i)  -  d_ia_i$ va a ser el área total que ocupa la sobreproducción de hoja de tipo $i$ sobreproducidas.
 La nueva función objetivo sería la siguiente:
@@ -311,7 +311,7 @@ La solución que se propone en este trabajo es una adaptación de la solución b
 \end{enumerate}
 
 \subsection{Problema de Programación Lineal}
-Como ha sido explicado en la Sección \ref{def} es necesario resolver un problema de programación lineal entero donde se quiere minimizar la función que se muestra en la ecuación \eqref{eq3} sujeta a las restricciones en la ecuación \eqref{eq2}.
+Como ha sido explicado en la Sección \ref{def} es necesario resolver un problema de programación lineal entero donde se quiere minimizar la función que se muestra en la Ecuación \eqref{eq3} sujeta a las restricciones en la Ecuación \eqref{eq2}.
 
 La eficiencia al resolver este subproblema resulta crucial debido a que va ser necesario resolverlo múltiples veces para evaluar y saber cuan buenas son las soluciones al problema de patrones de corte que se van obteniendo. Por esto se resuelve el problema relajado correspondiente por lo que la solución obtenida $({x_1}^*,...,{x_m}^*)$ se redondea de forma que el número de veces que es necesario aplicar el patrón de corte $x_j = \lceil {x_j}^* \rceil \ \ \forall j \in J$.
 
@@ -397,7 +397,7 @@ Aplicar el operador \textit{añadir} a una solución $s \in S$ añade una hoja $
 
 Un vecino de una solución va a ser generado seleccionando aleatoriamente un operador, uno (\textit{añadir,eliminar}) o dos (\textit{mover, intercambiar}) patrones y una (\textit{añadir,eliminar,mover}) o dos (\textit{intercambiar}) hojas en esos patrones. La aplicación de dichos operadores puede dar como resultado una solución no válida porque sea imposible lograr una configuración para las cantidades $p_j$ obtenidas. Para comprobar la validez de la solución obtenida se utilizó una versión del algoritmo \ref{guillotine}, descrito en la Sección \ref{binpacking}, donde solo va a existir un \textit{bin} disponible y se tratará de construir cada una de las configuraciones solicitadas en la nueva solución, la cual solo pertenecerá a la vecindad de $s$ si este proceso pudo llevarse a cabo exitosamente.      
 
-Para crear la población inicial es necesario generar un conjunto de soluciones válidas. Primero se va a generar una solución $s_0$. Usando el algoritmo \ref{guillotine} solicitando solo una vez cada una de las hojas que se demandan se obtiene las configuraciones $(\pi_1,...,\pi_k)$ y los correspondientes $(p_1,...,p_k)$. Luego resolviendo el problema lineal descrito en la Sección \ref{def} se obtendrían los $(x_1,...,x_n)$ y aplicando la ecuación \ref{eq3} se asocia a $s_0$ su \textit{fitness}, que es el valor que describe cuán bien cumple el objetivo propuesto. 
+Para crear la población inicial es necesario generar un conjunto de soluciones válidas. Primero se va a generar una solución $s_0$. Usando el algoritmo \ref{guillotine} solicitando solo una vez cada una de las hojas que se demandan se obtiene las configuraciones $(\pi_1,...,\pi_k)$ y los correspondientes $(p_1,...,p_k)$. Luego resolviendo el problema lineal descrito en la Sección \ref{def} se obtendrían los $(x_1,...,x_n)$ y aplicando la Ecuación \ref{eq3} se asocia a $s_0$ su \textit{fitness}, que es el valor que describe cuán bien cumple el objetivo propuesto. 
 
 Para obtener otra solución a partir de $s_0$ se va a seleccionar una solución $s_1$ que pertenezca al vecinadario de $s_0$ y luego se selecciona una solución $s_2$ que pertenezca al vecinadario de $s_1$ y así sucesivamente hasta que se halla realizado un
 número fijo de iteraciones \texttt{NWalk}. Este proceso está encapsulado en la función \textit{RandomWalk(s)}. 
@@ -523,16 +523,20 @@ Luego de haber explorado las \texttt{Ngen} generaciones se realizará una mejora
 
 \subsubsection{Ajuste de Parámetros}
 El algoritmo génetico precisa de varios parámetros para su funcionamiento. Según cúan adecuados sean estos parámetros para el problema en cuestión mejores serán los resultados obtenidos. Por tanto se necesita determinar que valores asignarle a \texttt{NWalk, Ngen, NPop, NBest, NSel, NHill} y \texttt{ProbCross}.
-Para lograr este objetivo se recurrió a la experimentación y observación de los resultados y después de explorar varias combinaciónes de parámetros se encontró que los mejores resultados se alcanzaban con la siguiente configuración: \texttt{NWalk =}, \texttt{Ngen =}, \texttt{NPop =}, \texttt{NBest =}, \texttt{NSel =}, \texttt{NHill =} y \texttt{ProbCross =}.
-\section{Resultados}\label{resultados}
+Para lograr este objetivo se recurrió a la experimentación y observación de los resultados y después de explorar varias combinaciónes de parámetros se encontró que los mejores resultados se alcanzaban con la siguiente configuración: \texttt{NWalk =} 100, \texttt{Ngen =} 30, \texttt{NPop =} 60, \texttt{NBest =} 10, \texttt{NSel =} 45, \texttt{NHill =} 25 y \texttt{ProbCross =} 0.75.
+
+Para mostrar el desempe\~no de la configuración de los par\'ametros anterior se resolvieron un total de 50 instancias diferentes del problema, donde se solicitan desde 1 hasta 12 tipo de hojas diferentes y las demandas de estas llegan a alcanzar cantidades cercanas al mill\'on. Como resultados se reporta que el mayor tiempo requerido para hallar la soluci\'on fue de 169 segundos, mientras que el tiempo promedio fue de 25 segundos. Se observ\'o adem\'as que los casos en que m\'as demoraba eran aquellos en los que las dimensiones de la hoja principal eran grandes y las dimensiones de las hojas solicitadas eran peque\~nas.    
 
 \section{Interfaz Visual}\label{visual}
-Para poder hacer uso de la solución propuesta se provee una aplicación de escritorio desarrollada con \texttt{PyQt5} como herramienta. Esta brinda una interfaz visual amigable al usuario para introducir una instancia del problema a resolver.
+Para poder hacer uso de la solución propuesta se provee una aplicación de escritorio desarrollada con \texttt{PyQt5} como herramienta. Esta brinda una interfaz visual al usuario para introducir una instancia del problema a resolver.
 
 % Conclusiones
 %-----------------------------------------------------------------------------------
 \section{Conclusiones}\label{sec:conc}
-En este proyecto se resolvi\'o un problema de patrones de cortes relacionado a la industria del papel. La solución propuesta se basa en un problema de programación lineal, un problema de empaquetamiento y un algoritmo génetico. Los resultados obtenidos fueron satisfactorios pues se logr\'o automatizar un proceso que se realiza de forma manual. Si se usa la aplicaci\'on propuesta se podr\'ia agilizar potencialmente el trabajo diario en la empresa pues se obtendr\'ian resultados que minimizan el desperdicio en cuesti\'on de pocos minutos.
+En este proyecto se resolvi\'o un problema de patrones de cortes relacionado a la industria del papel. La solución propuesta se basa en un problema de programación lineal, un problema de empaquetamiento y un algoritmo génetico. Como trabajo futuro se recomienda tratar de encontrar combinaciones de par\'ametros del algoritmo gen\'etico que proporcionen mejores resultados, as\'i como probar otras estrategias de selecci\'on.  
+
+ Los resultados obtenidos fueron satisfactorios pues se logr\'o automatizar un proceso que se realiza de forma manual. Si se usa la aplicaci\'on propuesta se podr\'ia agilizar potencialmente el trabajo diario en la empresa pues se obtendr\'ian resultados que minimizan el desperdicio en cuesti\'on de pocos minutos. 
+
 
 %===================================================================================
 
