@@ -28,24 +28,19 @@ class SolverConfig:
         self.worst_time = max(time, self.worst_time)
         self.worst_fitness = max(fitness, self.worst_fitness)
 
-sover_config_list = [{},  {
-        'hill_climbing_neighbors': 30,
-        'no_generations': 35,
-        'roulette_pop': 60
-        }, {
-        'hill_climbing_neighbors': 40,
-        'no_generations': 45,
-        'roulette_pop': 60,
-        'pop_size': 45
-        }, {
-            'prob_crossover': 0.90
-        }, {
-            'prob_crossover': 0.60
-        }, 
-        {'roulette_pop': 60},
-        {
-            'roulette_pop': 30
-        }]
+sover_config_list = [
+    {},
+    {'no_best_solutions': 15},
+    {'no_best_solutions': 5},
+    {'pop_size': 80},
+    {'random_walk_steps': 150},
+    {'random_walk_steps': 75},
+    {'hill_climbing_neighbors': 40},
+    {'no_generations': 50},
+    {'prob_crossover': 0.90},
+    {'prob_crossover': 0.60},
+    {'roulette_pop': 60},
+    {'roulette_pop': 30}]
 sover_config_list = [SolverConfig(f'SolverNo{i + 1}', sover_config_list[i]) for i in range(len(sover_config_list))]
 
 no_tests = int(argv[1])
