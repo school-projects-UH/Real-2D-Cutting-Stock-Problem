@@ -1,0 +1,4 @@
+-   Para instalar GLPK en Windows 64 se necesita tener PoweserShell v3.0+ (viene a partir de Windows 8, pero no en Windows 7)
+-   El archivo **w64.zip** con los bianrios debe estar en el mismo directorio de **install-glpk.ps1**
+-   Se debe ejecutar **install-glpk.ps1** con PowerShell (click derecho ejecutar con PowerSeheel deberia bastar)
+-   Para crear los binarios de la app PyQt5 instalar **pyinstaller** via **pip** y hacer **pyinstaller app.py**
