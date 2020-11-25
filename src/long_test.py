@@ -28,20 +28,12 @@ class SolverConfig:
         self.worst_time = max(time, self.worst_time)
         self.worst_fitness = max(fitness, self.worst_fitness)
 
-sover_config_list = [
-    {},
-    {'no_best_solutions': 15},
-    {'no_best_solutions': 5},
-    {'pop_size': 80},
-    {'random_walk_steps': 150},
-    {'random_walk_steps': 75},
-    {'hill_climbing_neighbors': 40},
-    {'no_generations': 50},
-    {'prob_crossover': 0.90},
-    {'prob_crossover': 0.60},
-    {'roulette_pop': 60},
-    {'roulette_pop': 30}]
-sover_config_list = [SolverConfig(f'SolverNo{i + 1}', sover_config_list[i]) for i in range(len(sover_config_list))]
+# Put here the different solvers you want to test. Every dictionary represents a solver.
+# The keys are the parameters of the genetic algorithm that are different of the default ones
+# and the values are their new values. This list now contains only the default solver.
+solver_config_list = [{}]
+
+solver_config_list = [SolverConfig(f'SolverNo{i + 1}', solver_config_list[i]) for i in range(len(solver_config_list))]
 
 no_tests = int(argv[1])
 for i in range(no_tests):
@@ -67,14 +59,14 @@ for i in range(no_tests):
     with open(f'tests/test{i + 1}.txt', "w") as input_file:
         input_file.write('\n'.join(test_info.split('\n')[1:-1]))
 
-    for solver_config in sover_config_list:
+    for solver_config in solver_config_list:
         print(f"\nCalling {solver_config.name}...\n")
         solver_config.call_solver(main_sheet, sheets, output=f'tests/results/testNo{i + 1}_{solver_config.name}.txt')
 
-sorted_by_fitness = sorted(sover_config_list, key=lambda sc: sc.total_fitness)
-sorted_by_time = sorted(sover_config_list, key=lambda sc: sc.total_time)
-sorted_by_worst_fitness = sorted(sover_config_list, key=lambda sc: sc.worst_fitness)
-sorted_by_worst_time = sorted(sover_config_list, key=lambda sc: sc.worst_time)
+sorted_by_fitness = sorted(solver_config_list, key=lambda sc: sc.total_fitness)
+sorted_by_time = sorted(solver_config_list, key=lambda sc: sc.total_time)
+sorted_by_worst_fitness = sorted(solver_config_list, key=lambda sc: sc.worst_fitness)
+sorted_by_worst_time = sorted(solver_config_list, key=lambda sc: sc.worst_time)
 
 results_by_fitness = open('tests/results/results_by_fitness.txt', "w")
 for i, result in enumerate(sorted_by_fitness):
