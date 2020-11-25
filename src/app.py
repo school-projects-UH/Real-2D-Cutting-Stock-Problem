@@ -186,9 +186,6 @@ class SolverWindow(QWidget):
                 self.windows.append(PatternWindow(self, self.rectangle, i, bin, solution.prints_per_pattern[k], total))
                 i += 1
             self.windows[0].show() 
-            print(solution)
-        else:
-            print("Stopped")
         self.close()
         self.parent.w = None 
 
@@ -232,7 +229,7 @@ class Canvas(QLabel):
         for cut in self.bin.cuts:
             x, y = cut.top_left   
             pen = QPen(QColor(self.black))
-
+            pen.setWidth(0.5)
             # pen.setStyle(Qt.DashLine)
             painter.setPen(pen)
             painter.setBrush(Qt.white)
