@@ -310,12 +310,8 @@ class Solver():
         return current_solution
 
     def genetic_algorithm(self):
-        # self.trace = open("trace.txt", "w")
         current_generation = self.create_initial_population()
-        print(f"Generation #0")
-        # self.trace.write(f"Initial Generation:\n{self.print_population(current_generation)}")
         best_known = self.update_best_solution(current_generation)
-        # self.trace.write(f"Best known solution: {best_known}")
 
         for k in range(self.no_generations):
             if self.stopped:
@@ -330,10 +326,6 @@ class Solver():
                     current_generation.append(self.mutation(intermediate_generation))
 
             best_known = self.update_best_solution(current_generation)
-            print(f"Generation #{k+1}")
-            #self.trace.write(f"Generation #{k+1}:\n{self.print_population(current_generation)}")
-            #self.trace.write(f"Best known solution:\n{best_known}\n")
-            #self.trace.write("----------------------------------------------------------------------------------------------\n\n")
 
         best_known = self.hill_climbing(best_known)
         self.clean_solution(best_known)
