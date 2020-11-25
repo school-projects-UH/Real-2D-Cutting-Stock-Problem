@@ -132,7 +132,7 @@ This paper aims to solve a two-dimensional cutting stock problem associated with
 %-----------------------------------------------------------------------------------
 \begin{keywords}
 	Problema de Patrones de Corte en dos dimensiones,
-	Problema de Empaqauetamiento en dos dimensiones,
+	Problema de Empaquetamiento en dos dimensiones,
 	Algoritmo Genético,
 	Industria del Papel.
 \end{keywords}
@@ -290,7 +290,7 @@ Para satisfacer la demanda $d_i$ solicitada para cada hoja $i$ van a aparecer $n
 \label{eq2}
 \end{equation}
 
-Es necesario también tener en cuenta la sobreproducción a la hora de analizar el espacio desperdiciado dado que cuando una solución sobrecumple la demanda se tiene que esas hojas sobreproducidas también van a ser desechadas. Por tanto para tener lo anterior en consideración hay que modificar la función objetivo que se muestra en la Ecuación \eqref{eq1}. Sea $a_i$ el área total de la hoja $i$ se tiene que:
+Es necesario también tener en cuenta la sobreproducción a la hora de analizar el espacio desperdiciado dado que cuando una solución sobrecumple la demanda se tiene que esas hojas sobreproducidas también van a ser desechadas. Por tanto para tener lo anterior en consideración hay que modificar la función objetivo que se muestra en la Ecuación \eqref{eq1}. Sea $a_i$ el área total de la hoja $i$, se tiene que:
  $$sobreProd = \sum_{i \in I} sobreProd_i $$ 
 donde $sobreProd_i = (\sum_{j \in J} p_{ji}x_ja_i)  -  d_ia_i$ va a ser el área total que ocupa la sobreproducción de hoja de tipo $i$ sobreproducidas.
 La nueva función objetivo sería la siguiente:
@@ -334,7 +334,7 @@ En la implementación del algoritmo \textit{Guillotine} se usaron las siguientes
 	Ordenar la entrada $(R_1,...,R_n)$ de acuerdo al siguiente criterio:
 	$$R_i < R_j \Longleftrightarrow min(w_i,h_i) < min (w_j,h_j)$$ 
 	\item \textbf{RM:} \textit{Rectangle Merge}\\
-	La principal limitante del algoritmo es que a causa de mantener una lista de rectángulos libres disjuntos es posible que no permita colocar un rectángulo aún cuando hay suficiente área libre para ello. Una manera en la que se puede mejorar el algoritmo es después de colocar un rectángulo encontrar todos los pares de rectángulos libre vecinos que pueden ser mezclados en uno solo y mezclarlos. Repetir este procedimiento mientras exista al menos un par de rectángulos libres $F_i, F_j$ que cumplan dicha condición.
+	La principal limitante del algoritmo es que a causa de mantener una lista de rectángulos libres disjuntos es posible que no permita colocar un rectángulo aún cuando hay suficiente área libre para ello. Una manera en la que se puede mejorar el algoritmo es después de colocar un rectángulo encontrar todos los pares de rectángulos libres vecinos que pueden ser mezclados en uno solo y mezclarlos. Repetir este procedimiento mientras exista al menos un par de rectángulos libres $F_i, F_j$ que cumplan dicha condición.
 	
 	Se probó el algoritmo tanto con esta heurística como sin ella y de manera general el algoritmo produce mejores salidas aplicando la heurística pero para algunos casos produce una salida peor, por lo que se decidió que a la hora de ejecutar el algoritmo se decide si utilizar o no produciendo un número aleatorio entre 0 y 1. Si ese número es menor que un valor fijo (con 0.75 se obtuvieron buenos resultados) entonces se usa la heurística en esa ejecución del algoritmo. De esta manera se garantiza que se use la heurística en la mayor parte de las ejecuciones del algoritmo pero también permite explorar otras soluciones que solo se obtienen sin usarla y que podrían ser mejores. 
 \end{itemize}
@@ -348,11 +348,12 @@ En el Algoritmo \ref{guillotine} se muestra un pseudocódigo de la variante de s
 \begin{algorithmic}[1]
 	\Require $R \gets \{ R_1 = (w_1 \times h_1), ..., R_n = (w_n \times h_n) \}$ $ M \gets (W \times H)$ \Comment Dimensión de la hoja principal
 	\State $F \gets \{(W \times H)\}$
+	\State Bins $\gets $ \{ \}
 	\State Ordenar R de acuerdo al criterio DESCSS
 	\ForAll {$R_k \gets (w_k \times h_k) \in R$}
 		\State Elegir rectángulo libre $F_i$ y bin $B_j$ donde colocar $R_k$
 		\If {$F_i$, $B_j$ no existen}
-			\State Abrir nuevo bin $B$
+			\State Abrir nuevo bin $B$ y a\~nadirlo a Bins
 			\State $F \gets F \cup \{(W \times H)\}$
 			\State $F_i \gets (W \times H)$
 			\State $B_j \gets B$ 
@@ -365,7 +366,8 @@ En el Algoritmo \ref{guillotine} se muestra un pseudocódigo de la variante de s
 			\State Mezclar $F_a$ y $F_b$ en $F^*$
 			\State $F \gets F \cup F^* \setminus \{F_a, F_b\}  $
 		\EndWhile
-	\EndFor
+	\EndFor\\
+	\Return  Bins
 \end{algorithmic}
 \end{algorithm}
 
@@ -388,7 +390,7 @@ El funcionamiento de un algoritmo genético básico se puede resumir en los paso
 \end{itemize}
 
 \subsubsection{Inicialización}\label{init}
-Para explicar el proceso seguido a la hora de crear una poblción inicial para el algoritmo lo primero sería definir qué sería el vecindario de una solución. Sea $s \in S$ una solución formada por la configuración $(\pi_1,...,\pi_m)$ correspondiente a $(p_1,...,p_m)$ y $(x_1,...,x_n)$. Un vecino de $s$ se va a construir usando unos de los siguientes operadores: \textit{añadir, eliminar, mover, intercambiar}. 
+Para explicar el proceso seguido a la hora de crear una poblción inicial para el algoritmo lo primero sería definir qué sería el vecindario de una solución. Sea $s \in S$ una solución formada por la configuración $(\pi_1,...,\pi_m)$ correspondiente a $(p_1,...,p_m)$ y $(x_1,...,x_m)$. Un vecino de $s$ se va a construir usando unos de los siguientes operadores: \textit{añadir, eliminar, mover, intercambiar}. 
 
 Sea $L_{max}(i)$ el máximo número posible de hojas de tipo $i$ en un patrón:
 $$ L_{max}(i) = \lfloor \frac{H \times W}{h_iw_i} \rfloor$$
@@ -397,7 +399,7 @@ Aplicar el operador \textit{añadir} a una solución $s \in S$ añade una hoja $
 
 Un vecino de una solución va a ser generado seleccionando aleatoriamente un operador, uno (\textit{añadir,eliminar}) o dos (\textit{mover, intercambiar}) patrones y una (\textit{añadir,eliminar,mover}) o dos (\textit{intercambiar}) hojas en esos patrones. La aplicación de dichos operadores puede dar como resultado una solución no válida porque sea imposible lograr una configuración para las cantidades $p_j$ obtenidas. Para comprobar la validez de la solución obtenida se utilizó una versión del algoritmo \ref{guillotine}, descrito en la Sección \ref{binpacking}, donde solo va a existir un \textit{bin} disponible y se tratará de construir cada una de las configuraciones solicitadas en la nueva solución, la cual solo pertenecerá a la vecindad de $s$ si este proceso pudo llevarse a cabo exitosamente.      
 
-Para crear la población inicial es necesario generar un conjunto de soluciones válidas. Primero se va a generar una solución $s_0$. Usando el algoritmo \ref{guillotine} solicitando solo una vez cada una de las hojas que se demandan se obtiene las configuraciones $(\pi_1,...,\pi_k)$ y los correspondientes $(p_1,...,p_k)$. Luego resolviendo el problema lineal descrito en la Sección \ref{def} se obtendrían los $(x_1,...,x_n)$ y aplicando la Ecuación \ref{eq3} se asocia a $s_0$ su \textit{fitness}, que es el valor que describe cuán bien cumple el objetivo propuesto. 
+Para crear la población inicial es necesario generar un conjunto de soluciones válidas. Primero se va a generar una solución $s_0$. Usando el algoritmo \ref{guillotine} solicitando solo una vez cada una de las hojas que se demandan se obtiene las configuraciones $(\pi_1,...,\pi_k)$ y los correspondientes $(p_1,...,p_k)$. Luego resolviendo el problema lineal descrito en la Sección \ref{def} se obtendrían los $(x_1,...,x_k)$ y aplicando la Ecuación \ref{eq3} se asocia a $s_0$ su \textit{fitness}, que es el valor que describe cuán bien cumple el objetivo propuesto. 
 
 Para obtener otra solución a partir de $s_0$ se va a seleccionar una solución $s_1$ que pertenezca al vecinadario de $s_0$ y luego se selecciona una solución $s_2$ que pertenezca al vecinadario de $s_1$ y así sucesivamente hasta que se halla realizado un
 número fijo de iteraciones \texttt{NWalk}. Este proceso está encapsulado en la función \textit{RandomWalk(s)}. 
@@ -443,7 +445,7 @@ En la etapa de selección se utiliza una combinación de dos métodos: Selecció
 
 
 \subsubsection{Cruzamiento}\label{cruzamiento}
-El cruzamiento es el principal operador genético, el cual va a realizaarse en la función $Crossover(P)$.Se encarga de construir una nueva solución a partir de dos soluciones diferentes que va a escoger de la población $P$. Se escoge un subconjunto de patrones de cada una de las soluciones que serían los padres. El número de patrones escogidos en cada padre va a estar determinado  por un porcentaje del total de patrones del padre que se va a seleccionar aleatoriamente entre 25\% y 50\%. La selección de los patrones va a priorizar aquellos que sean considerados "mejores". La calidad de un patrón va a estar dada por su área libre, la cual mientra menor sea mejor será el patrón. Si existe alguna de las hojas demandadas que no se encuentre en los patrones seleccionados de ambos padres, se construirán nuevos patrones que las incluyan haciendo uso del Algoritmo \ref{guillotine} solicitando una vez cada una de las hojas faltantes. Estos nuevos patrones construidos también van a formar parte de la nueva solución, para la cual a continuación se resolverá el problema de programación lineal descrito en  la Sección \ref{def} y se le asocirán los $(x_1,...,x_n)$ obtenidos así como el valor de $fitness$ correspondiente.
+El cruzamiento es el principal operador genético, el cual va a realizaarse en la función $Crossover(P)$.Se encarga de construir una nueva solución a partir de dos soluciones diferentes que va a escoger de la población $P$. Se escoge un subconjunto de patrones de cada una de las soluciones que serían los padres. El número de patrones escogidos en cada padre va a estar determinado  por un porcentaje del total de patrones del padre que se va a seleccionar aleatoriamente entre 25\% y 50\%. La selección de los patrones va a priorizar aquellos que sean considerados "mejores". La calidad de un patrón va a estar dada por su área libre, la cual mientra menor sea mejor será el patrón. Si existe alguna de las hojas demandadas que no se encuentre en los patrones seleccionados de ambos padres, se construirán nuevos patrones que las incluyan haciendo uso del Algoritmo \ref{guillotine} solicitando una vez cada una de las hojas faltantes. Estos nuevos patrones construidos también van a formar parte de la nueva solución, para la cual a continuación se resolverá el problema de programación lineal descrito en  la Sección \ref{def} y se le asocirán los $(x_1,...,x_m)$  obtenidos así como el valor de $fitness$ correspondiente.
 
 Una vez que se ha obtenido una nueva solución se realiza una mejora de la misma con la función $HillClimbing(s)$. Este proceso va a consistir en buscar una solución $s'$ en el vecindario de $s$, si $s'$ es mejor que que $s$ se repite la búsqueda esta vez en el vecindario de $s'$ y así hasta que la solución vecina no represente una mejora. Para buscar la solución vecina se generan un número fijo de soluciones \texttt{NHill} del vecindario y se selecciona la mejor de estas.     
 
@@ -456,8 +458,8 @@ Una vez que se ha obtenido una nueva solución se realiza una mejora de la misma
 		\State Offspring $\gets$ \textbf{new} \textit{Solution()}
 		\State Parent1 $\gets $ Elegir una solución de $P$
 		\State Parent2 $\gets $ Elegir otra solución de $P$
-		\State SetPattern1 $\gets $ Elegir una solución de $P$
-		\State SetPattern2 $\gets $ Elegir otra solución de $P$
+		\State SetPattern1 $\gets $ Elegir patrones de Parent1
+		\State SetPattern2 $\gets $ Elegir patrones de Parent2
 		\State Añadir $\{$SetPattern1 $\cup$ SetPattern2 $\}$ a Offspring
 		\State $R \gets $ Hojas $\notin $ $\{$SetPattern1 $\cup$ SetPattern2
 		$\}$
