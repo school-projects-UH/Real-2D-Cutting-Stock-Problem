@@ -329,7 +329,22 @@ En la implementación del algoritmo \textit{Guillotine} se usaron las siguientes
 	\item \textbf{BFF:} \textit{Bin First Fit}\\
 	Como se pueden tener varios \textit{bins} abiertos a la vez se decide colocar $R = (w \times h)$ en el primer \textit{bin} en el que quepa.
 	\item \textbf{SAS:} \textit{Shorter Axis Split}\\
-	Cuando se va a sustituir $F_i$ por $F',F''$ se realiza un corte paralelo al lado más pequeño de $F_i$.
+	Cuando se va a sustituir $F_i$ por $F',F''$ se realiza un corte paralelo al lado más pequeño de $F_i$. Sea $F_i = (w_i \times h_i)$, cuando se tiene que $w_i < h_i$ el corte quedar\'ia como se muestra en la Figura \ref{fig:1}, mientras que en la Figura \ref{fig:2} se puede observar el resultado si $w_i \ge h_i$.
+	
+	\begin{figure}[htb]%
+		\begin{center}
+			\includegraphics[height=2.3in]{./img1.jpg}
+		\end{center}
+		\caption{Resultado de dividir $F_i = (w_i \times h_i)$ cuando $w_i < h_i$  \label{fig:1}}%
+	\end{figure}
+	
+	\begin{figure}[htb]%
+		\begin{center}
+			\includegraphics{./img2.jpg}
+		\end{center}
+		\caption{Resultado de dividir $F_i = (w_i \times h_i)$ cuando $w_i \ge h_i$ \label{fig:2}}%
+	\end{figure}
+
 	\item \textbf{DESCSS:} \textit{Sort by Shorter Side First in Descending Order}\\
 	Ordenar la entrada $(R_1,...,R_n)$ de acuerdo al siguiente criterio:
 	$$R_i < R_j \Longleftrightarrow min(w_i,h_i) < min (w_j,h_j)$$ 
@@ -542,10 +557,13 @@ En este proyecto se resolvi\'o un problema de patrones de cortes relacionado a l
 %===================================================================================
 
 %===================================================================================
+\renewcommand{\refname}{Referencias Bibliogr\'aficas}
 % Bibliografía
 %-----------------------------------------------------------------------------------
 \begin{thebibliography}{99}
 %-----------------------------------------------------------------------------------	
+
+
 	\bibitem{51} Ben Lagha, G.a , Dahmani, N.b , Krichen, S.a.
 	Particle swarm optimization approach for resolving the
 	cutting stock problem. 2014 International Conference
