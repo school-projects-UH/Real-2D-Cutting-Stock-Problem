@@ -1,4 +1,4 @@
-Para ejecutar el programa con interfaz visual ejecutar: python app.py
+﻿Para ejecutar el programa con interfaz visual ejecutar: python app.py
 
 Para ejecutar el programa sin interfaz visual:
 Crear un archivo dentro de esta misma carpeta, que contendrá la entrada. El formato del archivo debe ser el siguiente:
@@ -11,9 +11,11 @@ Luego de finalizada la ejecución del programa la salida del mismo se encontrar�
 - Primero se lista la entrada del programa.
 - Luego se muestran los parametros que utilizó el algoritmo genético en su ejecución.
 - A continuación se muestra la salida del programa:
-    - Una lista de patrones de corte. Cada patron de corte se representa con tres elementos: una lista de cortes, el desperdicio que genera aplicar ese patrón, y la cantidad de veces que debe utilizarse. Cada corte tiene el formato <(x, y): w X h>. x, y son las coordenadas de la esquina inferiror izquierda del corte. w,h son el ancho y el alto correspondiente a las dimensiones del corte.
-    - El desperdicio total que se genera.
-    - El tiempo que demoró la ejecución del programa.
+	- Una lista de patrones de corte. Cada patron de corte se representa con tres elementos: una lista de cortes, el desperdicio que genera aplicar ese patrón,
+	y la cantidad de veces que debe utilizarse. Cada corte tiene el formato <(x, y): w X h>. x, y son las coordenadas de la esquina inferiror izquierda del corte.
+	w,h son el ancho y el alto correspondiente a las dimensiones del corte.
+    	- El desperdicio total que se genera.
+    	- El tiempo que demoró la ejecución del programa.
 
 Ejemplo:
 input.txt:
