@@ -13,5 +13,8 @@ if __name__ == "__main__":
         [width, height, demand] = line.split(' ')
         sheets.append(Sheet(int(width), int(height), int(demand)))
 
+    # rectangle = Rectangle(70, 70)
+    # sheets = [Sheet(25, 25, 2), Sheet(22, 26, 3)]
     solver = Solver()
     solver.solve(rectangle, sheets, output=f"{argv[2]}")
+    # solver.solve(rectangle, sheets)
