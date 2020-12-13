@@ -202,7 +202,7 @@ class Canvas(QLabel):
         super().__init__(parent)
         self.parent = parent
         self.bin = bin
-        self.setFixedSize(parent.width * 6, parent.height * 6)
+        self.setFixedSize(parent.width * 6 + 30, parent.height * 6 + 30)
 
         # Create a few pen colors
         self.black = '#000000'
@@ -249,7 +249,17 @@ class Canvas(QLabel):
                 painter.rotate(90)
                 painter.drawText( y + cut.height // 3 ,-x - cut.width // 2 , text)
                 painter.rotate(-90)
-
+        
+        cuts = self.bin.list_cuts()
+        for i,c in enumerate(cuts):
+            text = f'{i + 1}'
+            pen = QPen(QColor(self.green))
+            painter.setFont(QFont("Helvetica", 2))
+            painter.setPen(pen)
+            if c[2] == 'up':
+                painter.drawText(c[0], c[1] + 5, text)
+            else:
+                painter.drawText(c[0] - 5 , c[1], text)
         painter.end()
 
 
@@ -272,6 +282,7 @@ class PatternWindow(QWidget):
     def initialize_ui(self):
         label = QLabel(f'Patrón de Corte {self.id + 1} de {self.n}')
         amount = QLabel(f'Cantidad necesaria de repeticiones del patrón: {self.k}')
+        waste = QLabel(f'Desperdicio total del patrón: {self.bin.free_area * self.k}')
         prev_button = QPushButton('Anterior', self)
         if self.id == 0:
             prev_button.setEnabled(False)
@@ -287,6 +298,7 @@ class PatternWindow(QWidget):
         hbox.addWidget(next_button)
         vbox = QVBoxLayout()
         vbox.addWidget(amount)
+        vbox.addWidget(waste)
         canvas = Canvas(self, self.bin)
         form.addRow(hbox)
         form.addRow(canvas)
