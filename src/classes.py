@@ -5,6 +5,7 @@ import sys
 
 from collections import namedtuple
 Rect = namedtuple('Rect', ['value', 'direction'])
+Cut = namedtuple('Cut', ['src', 'dest', 'dir'])
 
 ''' Base class for sheet'''
 class Rectangle:
@@ -112,7 +113,6 @@ class Bin(FixedRectangle):
         return B1, B2
 
     def find_cut(self):
-        # print(self.cuts)
         for cut in self.cuts:
             if cut.up > self.up:
                 if any(map(lambda c: c.up < cut.up and c.down > cut.up, self.cuts)):
@@ -134,11 +134,9 @@ class Bin(FixedRectangle):
                     pass
                 else:
                     return Rect(cut.right, 'v')
-        raise Exception()
-        # assert(False, "There should be always a guillotine cut")
+        assert(False, "There should be always a guillotine cut")
 
     def list_cuts(self):
-        # print(self.cuts)
         if self.cuts == []:
             return []
         if len(self.cuts) == 1 and self.cuts[0].width == self.width and self.cuts[0].height == self.height:
@@ -147,10 +145,10 @@ class Bin(FixedRectangle):
         cut = self.find_cut()
         p = None
         if cut.direction == 'h':
-            p = (self.left, cut.value, 'right')
+            p = Cut((self.left, cut.value),(self.right, cut.value), 'right')
         else:
-            p = (cut.value, self.down, 'up')
-        # print(cut)
+            p = Cut((cut.value, self.down), (cut.value, self.up), 'up')
+
         B1, B2 = self.split(cut)
 
         return [p] + B1.list_cuts() + B2.list_cuts()
