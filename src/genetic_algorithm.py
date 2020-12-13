@@ -246,7 +246,7 @@ class Solver():
         all_selected_patterns = []
         covered_sheets = set()
         for fz in set_patterns1 | set_patterns2:
-            b = Bin(self.rectangle.width, self.rectangle.height)
+            b = Bin(self.rectangle.width, self.rectangle.height, position=(0, self.rectangle.height))
             for w, h, pos, r in fz:
                 if r:
                     b.cuts.append(FixedRectangle(h, w, pos, r))
@@ -311,6 +311,8 @@ class Solver():
 
     def genetic_algorithm(self):
         current_generation = self.create_initial_population()
+        # print(f"Generation #0")
+        # self.trace.write(f"Initial Generation:\n{self.print_population(current_generation)}")
         best_known = self.update_best_solution(current_generation)
 
         for k in range(self.no_generations):
@@ -326,9 +328,16 @@ class Solver():
                     current_generation.append(self.mutation(intermediate_generation))
 
             best_known = self.update_best_solution(current_generation)
+            #print(f"Generation #{k+1}")
+            #self.trace.write(f"Generation #{k+1}:\n{self.print_population(current_generation)}")
+            #self.trace.write(f"Best known solution:\n{best_known}\n")
+            #self.trace.write("----------------------------------------------------------------------------------------------\n\n")
 
         best_known = self.hill_climbing(best_known)
         self.clean_solution(best_known)
+
+        for b in best_known.bins:
+            print(b.list_cuts())
         return best_known
 
     def clean_solution(self, solution):

@@ -40,7 +40,7 @@ def split(rectangle, free_rectangle):
 
 def pack_rectangles(rectangle, sheets, unlimited_bins=False):
     # start with an empty bin
-    bins = [Bin(width=rectangle.width, height=rectangle.height)]
+    bins = [Bin(width=rectangle.width, height=rectangle.height, position=(0, rectangle.height))]
     p = {}  # p[(i,j)] = number of images of type j on pattern(bin) i
 
     sheets_list = sorted(sheets, key=lambda sheet: (min(sheet.width, sheet.height), max(sheet.width, sheet.height)), reverse=True)
@@ -54,7 +54,7 @@ def pack_rectangles(rectangle, sheets, unlimited_bins=False):
             if bin_idx == -1:
                 # Add a new bin
                 if unlimited_bins:
-                    bins.append(Bin(width=rectangle.width, height=rectangle.height))
+                    bins.append(Bin(width=rectangle.width, height=rectangle.height, position=(0, rectangle.height)))
                     _, _, need_to_rotate = find_best_fit(sheet, [bins[-1]])
                     bin_idx = len(bins) - 1
                     fr_idx = 0
