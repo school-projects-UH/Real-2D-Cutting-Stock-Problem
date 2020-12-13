@@ -202,7 +202,7 @@ class Canvas(QLabel):
         super().__init__(parent)
         self.parent = parent
         self.bin = bin
-        self.setFixedSize(parent.width * 6 + 30, parent.height * 6 + 30)
+        self.setFixedSize(parent.width * 6 + 10, parent.height * 6)
 
         # Create a few pen colors
         self.black = '#000000'
@@ -257,9 +257,9 @@ class Canvas(QLabel):
             painter.setFont(QFont("Helvetica", 2))
             painter.setPen(pen)
             if c[2] == 'up':
-                painter.drawText(c[0], c[1] + 5, text)
+                painter.drawText(c[0][0], c[0][1], text)
             else:
-                painter.drawText(c[0] - 5 , c[1], text)
+                painter.drawText(c[1][0], c[1][1], text)
         painter.end()
 
 
