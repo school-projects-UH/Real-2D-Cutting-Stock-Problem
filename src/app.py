@@ -253,7 +253,7 @@ class Canvas(QLabel):
         cuts = self.bin.list_cuts()
         for i,c in enumerate(cuts):
             text = f'{i + 1}'
-            pen = QPen(QColor(self.green))
+            pen = QPen(QColor(self.blue))
             painter.setFont(QFont("Helvetica", 2))
             painter.setPen(pen)
             if c[2] == 'up':
