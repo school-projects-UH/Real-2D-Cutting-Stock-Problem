@@ -3,6 +3,10 @@ import hashlib
 import json
 import sys
 
+from collections import namedtuple
+Rect = namedtuple('Rect', ['value', 'direction'])
+Cut = namedtuple('Cut', ['src', 'dest', 'dir'])
+
 ''' Base class for sheet'''
 class Rectangle:
     def __init__(self, width, height):
@@ -61,21 +65,21 @@ class FixedRectangle(Rectangle):
     def __repr__(self):
         # return f'topleft {self.top_left} , position {self.position}: {self.width} X {self.height}'
         return f'{self.position}: {self.width} X {self.height}'
-    
+
     def __eq__(self, other):
         return self.as_tuple() == other.as_tuple()
-    
+
     def __hash__(self):
         return hash(self.as_tuple())
 
 
 class Bin(FixedRectangle):
 
-    def __init__(self, width, height):
-        super().__init__(width, height, position=(0, height))
+    def __init__(self, width, height, position=None):
+        super().__init__(width, height, position=position)
         self.cuts = []
         self.free_area = width * height
-        self.free_rectangles = [FixedRectangle(width, height, position=(0, height))]
+        self.free_rectangles = [FixedRectangle(width, height, position=position)]
 
     def add_cut(self, sheet):
         self.cuts.append(sheet)
@@ -88,6 +92,66 @@ class Bin(FixedRectangle):
         result += f'\nfree space: {self.free_area}   '
         return result
 
+    def split(self, r: Rect):
+        B1, B2 = None, None
+        if r.direction == 'h':
+            B1 = Bin(self.width, r.value - self.up, position=(self.left, r.value))
+            B2 = Bin(self.width, self.down - r.value, position=(self.left, self.down))
+            for c in self.cuts:
+                if c.down <= r.value:
+                    B1.add_cut(c)
+                else:
+                    B2.add_cut(c)
+        else:
+            B1 = Bin(r.value - self.left, self.height, position=(self.left, self.down))
+            B2 = Bin(self.right - r.value, self.height, position=(r.value, self.down))
+            for c in self.cuts:
+                if c.right <= r.value:
+                    B1.add_cut(c)
+                else:
+                    B2.add_cut(c)
+        return B1, B2
+
+    def find_cut(self):
+        for cut in self.cuts:
+            if cut.up > self.up:
+                if any(map(lambda c: c.up < cut.up and c.down > cut.up, self.cuts)):
+                    pass
+                else:
+                    return Rect(cut.up, 'h')
+            if cut.down < self.down:
+                if any(map(lambda c: c.up < cut.down and c.down > cut.down, self.cuts)):
+                    pass
+                else:
+                    return Rect(cut.down, 'h')
+            if cut.left > self.left:
+                if any(map(lambda c: c.left < cut.left and c.right > cut.left, self.cuts)):
+                    pass
+                else:
+                    return Rect(cut.left, 'v')
+            if cut.right < self.right:
+                if any(map(lambda c: c.left < cut.right and c.right > cut.right, self.cuts)):
+                    pass
+                else:
+                    return Rect(cut.right, 'v')
+        assert(False, "There should be always a guillotine cut")
+
+    def list_cuts(self):
+        if self.cuts == []:
+            return []
+        if len(self.cuts) == 1 and self.cuts[0].width == self.width and self.cuts[0].height == self.height:
+            return []
+
+        cut = self.find_cut()
+        p = None
+        if cut.direction == 'h':
+            p = Cut((self.left, cut.value),(self.right, cut.value), 'right')
+        else:
+            p = Cut((cut.value, self.down), (cut.value, self.up), 'up')
+
+        B1, B2 = self.split(cut)
+
+        return [p] + B1.list_cuts() + B2.list_cuts()
 
 class Solution:
     def __init__(self, bins, sheets_per_pattern, prints_per_pattern=None, fitness=None):
