@@ -336,8 +336,6 @@ class Solver():
         best_known = self.hill_climbing(best_known)
         self.clean_solution(best_known)
 
-        for b in best_known.bins:
-            print(b.list_cuts())
         return best_known
 
     def clean_solution(self, solution):
